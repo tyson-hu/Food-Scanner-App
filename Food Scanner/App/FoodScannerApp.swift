@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
-struct Food_ScannerApp: App {
+struct FoodScannerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .modelContainer(for: [FoodEntry.self])
         }
     }
 }

@@ -1,0 +1,142 @@
+# =========================
+# Xcode / iOS / macOS
+# =========================
+# Build artifacts
+build/
+Build/
+DerivedData/
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# User-specific Xcode state
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.xcuserstate
+*.moved-aside
+*.xcusernote
+
+# Per-user Xcode project files (keep the shared defaults)
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# Swift Playgrounds & timelines
+timeline.xctimeline
+playground.xcworkspace
+
+# Instruments & profiling
+*.trace
+*.profdata
+
+# Module cache / index
+ModuleCache.noindex/
+index.noindex/
+
+# DocC build output
+.docc-build/
+*.doccarchive
+
+# Xcode’s SPM integration
+SourcePackages/
+SwiftPM/
+
+# =========================
+# Swift Package Manager
+# =========================
+.swiftpm/
+.build/
+
+# Note: For apps, many teams commit Package.resolved for reproducible builds.
+# If you prefer NOT to commit it, uncomment the next line.
+# Package.resolved
+
+# =========================
+# CocoaPods / Carthage / Mint / Tuist
+# =========================
+# CocoaPods
+Pods/
+*.xcworkspace/*checksums.lock
+
+# Carthage
+Carthage/Build/
+Carthage/Checkouts/
+Carthage/IntermediateBuildFiles/
+
+# Mint
+Mint/
+
+# Tuist
+Tuist/Dependencies/
+Tuist/DependenciesGraph.json
+Tuist/Cache/
+
+# Accio
+Dependencies/
+
+# SwiftGen / Sourcery (generated artifacts — keep config files)
+.generated/
+
+# =========================
+# Fastlane
+# =========================
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# =========================
+# Other IDEs & Editors
+# =========================
+# JetBrains (AppCode, IntelliJ, Fleet)
+.idea/
+*.iml
+.fleet/
+
+# VS Code
+.vscode/
+.history/
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# Xcode playground shared data sometimes created by editors
+*.playgroundbook/UserEdits/
+
+# =========================
+# Credentials / Signing (keep these out of git)
+# =========================
+*.mobileprovision
+*.cer
+*.p12
+*.pem
+*.key
+*.keystore
+*.der
+
+# =========================
+# OS-level noise
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# =========================
+# Logs & temp
+# =========================
+*.log
+*.tmp
+*.swp
+*.lock
