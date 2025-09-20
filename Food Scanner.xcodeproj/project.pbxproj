@@ -6,8 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		842FD0C52E7E072C00CD2A5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 842FCEB12E7B365000CD2A5F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 842FCEB82E7B365000CD2A5F;
+			remoteInfo = "Food Scanner";
+		};
+		842FD0D42E7E073700CD2A5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 842FCEB12E7B365000CD2A5F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 842FCEB82E7B365000CD2A5F;
+			remoteInfo = "Food Scanner";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		842FCEB92E7B365000CD2A5F /* Food Scanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Food Scanner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +35,34 @@
 			path = "Food Scanner";
 			sourceTree = "<group>";
 		};
+		842FD0C22E7E072C00CD2A5F /* FoodScannerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FoodScannerTests;
+			sourceTree = "<group>";
+		};
+		842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FoodScannerUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		842FCEB62E7B365000CD2A5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		842FD0BE2E7E072C00CD2A5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		842FD0CB2E7E073700CD2A5F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				842FCEBB2E7B365000CD2A5F /* Food Scanner */,
+				842FD0C22E7E072C00CD2A5F /* FoodScannerTests */,
+				842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */,
 				842FCEBA2E7B365000CD2A5F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				842FCEB92E7B365000CD2A5F /* Food Scanner.app */,
+				842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */,
+				842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +117,52 @@
 			productReference = 842FCEB92E7B365000CD2A5F /* Food Scanner.app */;
 			productType = "com.apple.product-type.application";
 		};
+		842FD0C02E7E072C00CD2A5F /* FoodScannerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 842FD0C72E7E072C00CD2A5F /* Build configuration list for PBXNativeTarget "FoodScannerTests" */;
+			buildPhases = (
+				842FD0BD2E7E072C00CD2A5F /* Sources */,
+				842FD0BE2E7E072C00CD2A5F /* Frameworks */,
+				842FD0BF2E7E072C00CD2A5F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				842FD0C62E7E072C00CD2A5F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				842FD0C22E7E072C00CD2A5F /* FoodScannerTests */,
+			);
+			name = FoodScannerTests;
+			packageProductDependencies = (
+			);
+			productName = FoodScannerTests;
+			productReference = 842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		842FD0CD2E7E073700CD2A5F /* FoodScannerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 842FD0D62E7E073800CD2A5F /* Build configuration list for PBXNativeTarget "FoodScannerUITests" */;
+			buildPhases = (
+				842FD0CA2E7E073700CD2A5F /* Sources */,
+				842FD0CB2E7E073700CD2A5F /* Frameworks */,
+				842FD0CC2E7E073700CD2A5F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				842FD0D52E7E073700CD2A5F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */,
+			);
+			name = FoodScannerUITests;
+			packageProductDependencies = (
+			);
+			productName = FoodScannerUITests;
+			productReference = 842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +175,14 @@
 				TargetAttributes = {
 					842FCEB82E7B365000CD2A5F = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					842FD0C02E7E072C00CD2A5F = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 842FCEB82E7B365000CD2A5F;
+					};
+					842FD0CD2E7E073700CD2A5F = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 842FCEB82E7B365000CD2A5F;
 					};
 				};
 			};
@@ -100,12 +201,28 @@
 			projectRoot = "";
 			targets = (
 				842FCEB82E7B365000CD2A5F /* Food Scanner */,
+				842FD0C02E7E072C00CD2A5F /* FoodScannerTests */,
+				842FD0CD2E7E073700CD2A5F /* FoodScannerUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		842FCEB72E7B365000CD2A5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		842FD0BF2E7E072C00CD2A5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		842FD0CC2E7E073700CD2A5F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +239,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		842FD0BD2E7E072C00CD2A5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		842FD0CA2E7E073700CD2A5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		842FD0C62E7E072C00CD2A5F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 842FCEB82E7B365000CD2A5F /* Food Scanner */;
+			targetProxy = 842FD0C52E7E072C00CD2A5F /* PBXContainerItemProxy */;
+		};
+		842FD0D52E7E073700CD2A5F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 842FCEB82E7B365000CD2A5F /* Food Scanner */;
+			targetProxy = 842FD0D42E7E073700CD2A5F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		842FCEC22E7B365100CD2A5F /* Debug */ = {
@@ -184,6 +328,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -241,6 +386,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -257,6 +403,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -290,6 +438,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,6 +462,98 @@
 			};
 			name = Release;
 		};
+		842FD0C82E7E072C00CD2A5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EQ8K2UN7YU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tysonhu.FoodScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Food Scanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Food Scanner";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		842FD0C92E7E072C00CD2A5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EQ8K2UN7YU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tysonhu.FoodScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Food Scanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Food Scanner";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		842FD0D72E7E073800CD2A5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EQ8K2UN7YU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tysonhu.FoodScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Food Scanner";
+			};
+			name = Debug;
+		};
+		842FD0D82E7E073800CD2A5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EQ8K2UN7YU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tysonhu.FoodScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Food Scanner";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -329,6 +571,24 @@
 			buildConfigurations = (
 				842FCEC52E7B365100CD2A5F /* Debug */,
 				842FCEC62E7B365100CD2A5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		842FD0C72E7E072C00CD2A5F /* Build configuration list for PBXNativeTarget "FoodScannerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				842FD0C82E7E072C00CD2A5F /* Debug */,
+				842FD0C92E7E072C00CD2A5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		842FD0D62E7E073800CD2A5F /* Build configuration list for PBXNativeTarget "FoodScannerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				842FD0D72E7E073800CD2A5F /* Debug */,
+				842FD0D82E7E073800CD2A5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
