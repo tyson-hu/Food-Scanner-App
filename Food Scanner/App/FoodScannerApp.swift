@@ -10,10 +10,14 @@ import SwiftData
 
 @main
 struct FoodScannerApp: App {
+    // Compose once at launch
+    @State private var appEnv = AppEnvironment.live()
+    
     var body: some Scene {
         WindowGroup {
             RootView()
                 .modelContainer(for: [FoodEntry.self])
+                .environment(\.appEnv, appEnv)
         }
     }
 }

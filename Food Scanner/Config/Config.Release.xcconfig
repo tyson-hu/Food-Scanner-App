@@ -1,0 +1,12 @@
+//
+//  Config.Release.xcconfig
+//  Food Scanner
+//
+//  Created by Tyson Hu on 9/21/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Release defaults to REMOTE; no runtime toggle needed.
+FEATURE_FDC_REMOTE = 1
