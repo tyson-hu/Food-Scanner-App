@@ -140,3 +140,8 @@ Thumbs.db
 *.tmp
 *.swp
 *.lock
+
+# =========================
+# Secrets
+# =========================
+Food Scanner/Config/Secrets.plist
