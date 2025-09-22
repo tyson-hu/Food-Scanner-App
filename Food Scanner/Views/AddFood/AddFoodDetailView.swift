@@ -38,7 +38,7 @@ struct AddFoodDetailView: View {
         @Bindable var bindableVM = vm
         
         Group {
-            switch vm.phase {
+            switch bindableVM.phase {
             case .loading:
                 ProgressView()
                     .task { await vm.load() }
@@ -47,7 +47,7 @@ struct AddFoodDetailView: View {
                 Form {
                     Section {
                         Stepper(value: $bindableVM.servingMultiplier, in: 0.25...10.0, step: 0.25) {
-                            Text("Serving: \(vm.servingMultiplier, specifier: "%.2f")×")
+                            Text("Serving: \(bindableVM.servingMultiplier, specifier: "%.2f")×")
                         }
                     }
                     Section("Nutrition (approx)") {
@@ -60,7 +60,7 @@ struct AddFoodDetailView: View {
                         Button("Log to Today") {
                             let entry = FoodEntry.from(
                                 details: d,
-                                multiplier: vm.servingMultiplier
+                                multiplier: bindableVM.servingMultiplier
                             )
                             onLog(entry)
                         }
