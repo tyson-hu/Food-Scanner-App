@@ -9,7 +9,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 final class AddFoodSearchViewModel {
     enum Phase: Equatable { case idle, searching, results, error(String) }
     
@@ -36,6 +35,7 @@ final class AddFoodSearchViewModel {
         searchTask?.cancel()
     }
     
+    @MainActor
     func onQueryChange() {
         // Cancel any existing search
         searchTask?.cancel()
@@ -75,7 +75,7 @@ final class AddFoodSearchViewModel {
                 // Debounce delay
                 try await Task.sleep(nanoseconds: self.debounceNanos)
                 
-                // Check if this is still the current search (now safe from main actor)
+                // Check if this is still the current search (safe - only reading)
                 let isCurrentSearch = await MainActor.run {
                     searchId == self.currentSearchId
                 }
@@ -91,7 +91,7 @@ final class AddFoodSearchViewModel {
                     }
                 }
                 
-                // Perform the actual search
+                // Perform the actual search (now runs on background thread)
                 try await self.performSearch(trimmed, searchId: searchId)
                 
             } catch is CancellationError {
@@ -122,16 +122,18 @@ final class AddFoodSearchViewModel {
         }
     }
     
+    // This method now runs on background thread (no @MainActor)
     private func performSearch(_ q: String, searchId: Int) async throws {
-        // Check if this is still the current search (now safe from main actor)
+        // Check if this is still the current search (safe - only reading)
         let isCurrentSearch = await MainActor.run {
             searchId == self.currentSearchId
         }
         guard isCurrentSearch else { return }
         
+        // Network call now runs on background thread ✅
         let page1 = try await client.searchFoods(matching: q, page: 1)
         
-        // Check if this is still the current search after network call (now safe from main actor)
+        // Check if this is still the current search after network call (safe - only reading)
         let isStillCurrentSearch = await MainActor.run {
             searchId == self.currentSearchId
         }
@@ -140,6 +142,7 @@ final class AddFoodSearchViewModel {
         // Check cancellation after network call
         try Task.checkCancellation()
         
+        // UI updates on main actor
         await MainActor.run {
             self.results = page1
             self.phase = .results
