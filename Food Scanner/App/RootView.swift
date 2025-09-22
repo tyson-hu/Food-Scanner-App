@@ -23,7 +23,7 @@ struct RootView: View {
             }
             
             Tab("Profile", systemImage: "person.crop.circle", value: .profile) {
-                Text("Profile page")
+                ProfileView()
             }
             
             Tab("Add", systemImage: "plus", value: .add, role: .search) {
@@ -38,7 +38,6 @@ struct RootView: View {
                 })
             }
         }
-        .environment(\.appEnv, AppEnvironment())
     }
 }
 

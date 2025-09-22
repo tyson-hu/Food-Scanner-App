@@ -14,7 +14,9 @@ struct AddFoodSearchViewModelTests {
     @Test func typing_query_debounces_and_populates_results() async throws {
         let vm = AddFoodSearchViewModel(client: FDCMock())
         vm.query = "yogurt"
-        vm.onQueryChange()
+        await MainActor.run {
+            vm.onQueryChange()
+        }
         
         // debounce(250ms) + mock latency(~150ms) headroom
         try? await Task.sleep(nanoseconds: 500_000_000)
@@ -26,12 +28,16 @@ struct AddFoodSearchViewModelTests {
     @Test func clearing_query_resets_to_idle() async throws {
         let vm = AddFoodSearchViewModel(client: FDCMock())
         vm.query = "rice"
-        vm.onQueryChange()
+        await MainActor.run {
+            vm.onQueryChange()
+        }
         try? await Task.sleep(nanoseconds: 500_000_000)
         #expect(vm.results.isEmpty == false)
         
         vm.query = ""
-        vm.onQueryChange()
+        await MainActor.run {
+            vm.onQueryChange()
+        }
         #expect(vm.phase == .idle)
         #expect(vm.results.isEmpty)
     }

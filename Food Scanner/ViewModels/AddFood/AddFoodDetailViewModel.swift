@@ -39,6 +39,6 @@ final class AddFoodDetailViewModel {
     
     // Helpers
     func scaled(_ value: Int) -> Int {
-        Int(Double(value) * servingMultiplier.rounded())
+        Int((Double(value) * servingMultiplier).rounded())
     }
 }

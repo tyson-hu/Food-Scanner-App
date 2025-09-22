@@ -8,7 +8,7 @@
 import Foundation
 
 struct FDCRemoteClient: FDCClient {
-    let apiKet: String
+    let apiKey: String
     let session: URLSession = .shared
     
     func searchFoods(matching query: String, page: Int) async throws -> [FDCFoodSummary] {

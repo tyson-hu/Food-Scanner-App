@@ -29,9 +29,22 @@
 		842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		842FD2A92E80A74800CD2A5F /* Exceptions for "Food Scanner" folder in "Food Scanner" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Config/Secrets.plist,
+			);
+			target = 842FCEB82E7B365000CD2A5F /* Food Scanner */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		842FCEBB2E7B365000CD2A5F /* Food Scanner */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				842FD2A92E80A74800CD2A5F /* Exceptions for "Food Scanner" folder in "Food Scanner" target */,
+			);
 			path = "Food Scanner";
 			sourceTree = "<group>";
 		};
@@ -394,6 +407,8 @@
 		};
 		842FCEC52E7B365100CD2A5F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Food Scanner */;
+			baseConfigurationReferenceRelativePath = Config/Config.Debug.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -402,6 +417,7 @@
 				DEVELOPMENT_TEAM = EQ8K2UN7YU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Calry;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
@@ -435,6 +451,8 @@
 		};
 		842FCEC62E7B365100CD2A5F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Food Scanner */;
+			baseConfigurationReferenceRelativePath = Config/Config.Release.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -443,7 +461,7 @@
 				DEVELOPMENT_TEAM = EQ8K2UN7YU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Calry;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
