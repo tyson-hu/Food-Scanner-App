@@ -19,6 +19,7 @@ final class AddFoodSearchViewModel {
     private let client: FDCClient
     private var searchTask: Task<Void, Never>?
     private var lastSearchQuery: String = ""
+    private var currentSearchId: Int = 0
     
     // Tunables
     private let minQueryLength: Int
@@ -45,7 +46,7 @@ final class AddFoodSearchViewModel {
         guard !trimmed.isEmpty else {
             results = []
             phase = .idle
-            lastSearchQuery = ""
+            lastSearchQuery = "" // Reset to allow re-querying when user types back
             return
         }
         
@@ -62,13 +63,20 @@ final class AddFoodSearchViewModel {
             return
         }
         
+        // Increment search ID to track current search
+        currentSearchId += 1
+        let searchId = currentSearchId
+        
         // Start new search task with explicit capture
-        searchTask = Task { [trimmed, weak self] in
+        searchTask = Task { [trimmed, searchId, weak self] in
             guard let self = self else { return }
             
             do {
                 // Debounce delay
                 try await Task.sleep(nanoseconds: self.debounceNanos)
+                
+                // Check if this is still the current search
+                guard searchId == self.currentSearchId else { return }
                 
                 // Check cancellation after debounce
                 try Task.checkCancellation()
@@ -81,32 +89,44 @@ final class AddFoodSearchViewModel {
                 }
                 
                 // Perform the actual search
-                try await self.performSearch(trimmed)
+                try await self.performSearch(trimmed, searchId: searchId)
                 
             } catch is CancellationError {
-                // Task was cancelled, clear task reference
+                // Task was cancelled, only clear if this is still the current search
                 await MainActor.run {
-                    self.searchTask = nil
+                    if searchId == self.currentSearchId {
+                        self.searchTask = nil
+                    }
                 }
                 return
             } catch let urlError as URLError where urlError.code == .cancelled {
                 // URLSession cancelled - treat as silent cancel
                 await MainActor.run {
-                    self.searchTask = nil
+                    if searchId == self.currentSearchId {
+                        self.searchTask = nil
+                    }
                 }
                 return
             } catch {
                 // Handle other errors
                 await MainActor.run {
-                    self.phase = .error(error.localizedDescription)
-                    self.searchTask = nil
+                    if searchId == self.currentSearchId {
+                        self.phase = .error(error.localizedDescription)
+                        self.searchTask = nil
+                    }
                 }
             }
         }
     }
     
-    private func performSearch(_ q: String) async throws {
+    private func performSearch(_ q: String, searchId: Int) async throws {
+        // Check if this is still the current search
+        guard searchId == currentSearchId else { return }
+        
         let page1 = try await client.searchFoods(matching: q, page: 1)
+        
+        // Check if this is still the current search after network call
+        guard searchId == currentSearchId else { return }
         
         // Check cancellation after network call
         try Task.checkCancellation()
