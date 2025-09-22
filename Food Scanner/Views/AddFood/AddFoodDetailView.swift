@@ -12,23 +12,30 @@ struct AddFoodDetailView: View {
     let fdcId: Int
     var onLog: (FoodEntry) -> Void
     
-    // MARK: Default to mock; swap in DI later (AppEnvironment/FDCRemoteClient).
-    @State private var viewModel: AddFoodDetailViewModel
+    @Environment(\.appEnv) private var appEnv
+    @State private var viewModel: AddFoodDetailViewModel?
     
-    init(
-        fdcId: Int,
-        onLog: @escaping (FoodEntry) -> Void,
-        client: FDCClient = FDCMock()
-    ) {
+    init(fdcId: Int, onLog: @escaping (FoodEntry) -> Void) {
         self.fdcId = fdcId
         self.onLog = onLog
-        _viewModel = State(
-            initialValue: AddFoodDetailViewModel(fdcId: fdcId, client: client)
-        )
     }
     
     var body: some View {
-        @Bindable var vm = viewModel
+        Group {
+            if let vm = viewModel {
+                detailContent(vm)
+            } else {
+                ProgressView()
+                    .onAppear {
+                        viewModel = AddFoodDetailViewModel(fdcId: fdcId, client: appEnv.fdcClient)
+                    }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func detailContent(_ vm: AddFoodDetailViewModel) -> some View {
+        @Bindable var bindableVM = vm
         
         Group {
             switch vm.phase {
@@ -39,7 +46,7 @@ struct AddFoodDetailView: View {
             case .loaded(let d):
                 Form {
                     Section {
-                        Stepper(value: $vm.servingMultiplier, in: 0.25...10.0, step: 0.25) {
+                        Stepper(value: $bindableVM.servingMultiplier, in: 0.25...10.0, step: 0.25) {
                             Text("Serving: \(vm.servingMultiplier, specifier: "%.2f")×")
                         }
                     }
@@ -77,7 +84,7 @@ struct AddFoodDetailView: View {
 #Preview("Sample Food Detail") {
     AddFoodDetailView(
         fdcId: 123456,
-        onLog: {_ in },
-        client: FDCMock()
+        onLog: {_ in }
     )
+    .environment(\.appEnv, .preview)
 }

@@ -12,16 +12,29 @@ struct AddFoodSearchView: View {
     /// Parent provides selection handler (push to detail).
     var onSelect: (Int) -> Void
     
-    // MARK: Default to mock; swap in DI later (AppEnvironment/FDCRemoteClient).
-    @State private var viewModel: AddFoodSearchViewModel
+    @Environment(\.appEnv) private var appEnv
+    @State private var viewModel: AddFoodSearchViewModel?
     
-    init(onSelect: @escaping (Int) -> Void, client: FDCClient = FDCMock()) {
+    init(onSelect: @escaping (Int) -> Void) {
         self.onSelect = onSelect
-        _viewModel = State(initialValue: AddFoodSearchViewModel(client: client))
     }
     
     var body: some View {
-        @Bindable var vm = viewModel
+        Group {
+            if let vm = viewModel {
+                searchContent(vm)
+            } else {
+                ProgressView()
+                    .onAppear {
+                        viewModel = AddFoodSearchViewModel(client: appEnv.fdcClient)
+                    }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func searchContent(_ vm: AddFoodSearchViewModel) -> some View {
+        @Bindable var bindableVM = vm
         
         List {
             ForEach(vm.results, id: \.id) { item in
@@ -73,11 +86,12 @@ struct AddFoodSearchView: View {
                 )
             }
         }
-        .searchable(text: $vm.query, placement: .automatic)
+        .searchable(text: $bindableVM.query, placement: .automatic)
         .onChange(of: vm.query) { _, _ in vm.onQueryChange() }
     }
 }
 
 #Preview {
     AddFoodSearchView(onSelect: { _ in })
+        .environment(\.appEnv, .preview)
 }

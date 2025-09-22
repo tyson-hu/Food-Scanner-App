@@ -79,4 +79,5 @@ struct AddFoodHomeView: View {
     @Previewable @State var tab: AppTab = .today
     @Previewable @State var addAvtivation: AddActivation?
     AddFoodHomeView(activation: $addAvtivation, onLogged: {_ in })
+        .environment(\.appEnv, .preview)
 }
