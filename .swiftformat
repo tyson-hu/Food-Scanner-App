@@ -1,5 +1,4 @@
 --allman
---blankLinesAtStartOfScope
 --blanklinesbetweenscopes
 --braces
 --consecutiveblanklines
@@ -65,3 +64,4 @@
 --wrapattributes before-first
 --wrapmultilinestatementbraces
 --wrapsinglelinestatementbraces
+--swiftversion 6.2

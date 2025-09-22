@@ -17,7 +17,7 @@ final class AddFoodSearchViewModel {
     var results: [FDCFoodSummary] = []
     
     private let client: FDCClient
-    nonisolated private var searchTask: Task<Void, Never>?
+    @MainActor private var searchTask: Task<Void, Never>?
     private var lastSearchQuery: String = ""
     private var currentSearchId: Int = 0
     
@@ -32,7 +32,9 @@ final class AddFoodSearchViewModel {
     }
     
     deinit {
-        searchTask?.cancel()
+        Task { @MainActor in
+            searchTask?.cancel()
+        }
     }
     
     @MainActor
