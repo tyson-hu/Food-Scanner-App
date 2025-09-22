@@ -61,7 +61,7 @@ final class AddFoodSearchViewModel {
 
     @MainActor
     private func shouldProcessQuery(_ query: String) -> Bool {
-        return !query.isEmpty && query.count >= minQueryLength
+        !query.isEmpty && query.count >= minQueryLength
     }
 
     @MainActor
