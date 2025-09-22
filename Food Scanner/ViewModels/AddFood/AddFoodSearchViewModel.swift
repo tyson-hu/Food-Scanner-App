@@ -9,6 +9,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class AddFoodSearchViewModel {
     enum Phase: Equatable { case idle, searching, results, error(String) }
     
@@ -35,7 +36,6 @@ final class AddFoodSearchViewModel {
         searchTask?.cancel()
     }
     
-    @MainActor
     func onQueryChange() {
         // Cancel any existing search
         searchTask?.cancel()
@@ -75,8 +75,10 @@ final class AddFoodSearchViewModel {
                 // Debounce delay
                 try await Task.sleep(nanoseconds: self.debounceNanos)
                 
-                // Check if this is still the current search
-                guard searchId == self.currentSearchId else { return }
+                // Check if this is still the current search (now safe from main actor)
+                await MainActor.run {
+                    guard searchId == self.currentSearchId else { return }
+                }
                 
                 // Check cancellation after debounce
                 try Task.checkCancellation()
@@ -120,13 +122,17 @@ final class AddFoodSearchViewModel {
     }
     
     private func performSearch(_ q: String, searchId: Int) async throws {
-        // Check if this is still the current search
-        guard searchId == currentSearchId else { return }
+        // Check if this is still the current search (now safe from main actor)
+        await MainActor.run {
+            guard searchId == self.currentSearchId else { return }
+        }
         
         let page1 = try await client.searchFoods(matching: q, page: 1)
         
-        // Check if this is still the current search after network call
-        guard searchId == currentSearchId else { return }
+        // Check if this is still the current search after network call (now safe from main actor)
+        await MainActor.run {
+            guard searchId == self.currentSearchId else { return }
+        }
         
         // Check cancellation after network call
         try Task.checkCancellation()

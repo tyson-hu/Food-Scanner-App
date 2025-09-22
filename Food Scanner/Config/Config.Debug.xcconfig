@@ -10,3 +10,6 @@
 
 // Debug defaults to MOCK; can flip at runtime
 FEATURE_FDC_REMOTE = 0
+
+// Emit the flag to Info.plist via INFOPLIST_KEY
+INFOPLIST_KEY_FeatureFDCRemoteDefault = $(FEATURE_FDC_REMOTE)
