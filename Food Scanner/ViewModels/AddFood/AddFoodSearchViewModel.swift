@@ -36,14 +36,17 @@ final class AddFoodSearchViewModel {
         }
     }
     
-    @MainActor
     private func performSearch(_ q: String) async {
         do {
             let page1 = try await client.searchFoods(matching: q, page: 1)
-            self.results = page1
-            self.phase = .results
+            await MainActor.run {
+                self.results = page1
+                self.phase = .results
+            }
         } catch {
-            self.phase = .error(error.localizedDescription)
+            await MainActor.run {
+                self.phase = .error(error.localizedDescription)
+            }
         }
     }
 }
