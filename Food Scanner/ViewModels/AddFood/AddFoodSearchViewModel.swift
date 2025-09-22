@@ -43,19 +43,9 @@ final class AddFoodSearchViewModel {
 
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Handle empty query
-        guard !trimmed.isEmpty else {
-            results = []
-            phase = .idle
-            lastSearchQuery = "" // Reset to allow re-querying when user types back
-            return
-        }
-
-        // Skip if query is too short
-        guard trimmed.count >= minQueryLength else {
-            results = []
-            phase = .idle
-            lastSearchQuery = "" // Reset to allow re-querying when user types back
+        // Handle empty or invalid query
+        guard shouldProcessQuery(trimmed) else {
+            resetToIdleState()
             return
         }
 
@@ -64,12 +54,31 @@ final class AddFoodSearchViewModel {
             return
         }
 
+        startSearchTask(for: trimmed)
+    }
+
+    // MARK: - Private Helper Methods
+
+    @MainActor
+    private func shouldProcessQuery(_ query: String) -> Bool {
+        return !query.isEmpty && query.count >= minQueryLength
+    }
+
+    @MainActor
+    private func resetToIdleState() {
+        results = []
+        phase = .idle
+        lastSearchQuery = "" // Reset to allow re-querying when user types back
+    }
+
+    @MainActor
+    private func startSearchTask(for query: String) {
         // Increment search ID to track current search
         currentSearchId += 1
         let searchId = currentSearchId
 
         // Start new search task with explicit capture
-        searchTask = Task { [trimmed, searchId, weak self] in
+        searchTask = Task { [query, searchId, weak self] in
             guard let self else { return }
 
             do {
@@ -93,7 +102,7 @@ final class AddFoodSearchViewModel {
                 }
 
                 // Perform the actual search (now runs on background thread)
-                try await performSearch(trimmed, searchId: searchId)
+                try await performSearch(query, searchId: searchId)
 
             } catch is CancellationError {
                 // Task was cancelled, only clear if this is still the current search
@@ -124,7 +133,7 @@ final class AddFoodSearchViewModel {
     }
 
     // This method now runs on background thread (no @MainActor)
-    private func performSearch(_ q: String, searchId: Int) async throws {
+    private func performSearch(_ searchQuery: String, searchId: Int) async throws {
         // Check if this is still the current search (safe - only reading)
         let isCurrentSearch = await MainActor.run {
             searchId == self.currentSearchId
@@ -132,7 +141,7 @@ final class AddFoodSearchViewModel {
         guard isCurrentSearch else { return }
 
         // Network call now runs on background thread ✅
-        let page1 = try await client.searchFoods(matching: q, page: 1)
+        let page1 = try await client.searchFoods(matching: searchQuery, page: 1)
 
         // Check if this is still the current search after network call (safe - only reading)
         let isStillCurrentSearch = await MainActor.run {
@@ -147,7 +156,7 @@ final class AddFoodSearchViewModel {
         await MainActor.run {
             self.results = page1
             self.phase = .results
-            self.lastSearchQuery = q
+            self.lastSearchQuery = searchQuery
             self.searchTask = nil
         }
     }
