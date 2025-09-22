@@ -21,7 +21,7 @@ jobs:
       FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Optional: lock Xcode version if you need a specific SDK
       # - uses: maxim-lobanov/setup-xcode@v1
