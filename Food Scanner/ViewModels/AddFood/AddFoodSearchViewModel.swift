@@ -17,7 +17,7 @@ final class AddFoodSearchViewModel {
     var results: [FDCFoodSummary] = []
     
     private let client: FDCClient
-    private var searchTask: Task<Void, Never>?
+    nonisolated private var searchTask: Task<Void, Never>?
     private var lastSearchQuery: String = ""
     private var currentSearchId: Int = 0
     
