@@ -1,0 +1,46 @@
+name: Nightly Live API Smoke
+
+on:
+  schedule:
+    - cron: "18 7 * * *"   # 07:18 UTC daily (~2:18 AM America/Chicago while on CDT)
+  workflow_dispatch:        # allow manual runs
+
+concurrency:
+  group: nightly-live-api-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  fdc-smoke:
+    if: ${{ github.ref_name == 'main' }}   # only run on default branch
+    runs-on: macos-latest
+    timeout-minutes: 15
+    env:
+      FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Optional: lock Xcode version if you need a specific SDK
+      # - uses: maxim-lobanov/setup-xcode@v1
+      #   with: { xcode-version: "16.2" }
+
+      - name: Skip if no key
+        if: ${{ env.FDC_API_KEY == '' }}
+        run: echo "No FDC_API_KEY configured; skipping." && exit 0
+
+      - name: Run integration tests (Xcode scheme)
+        run: |
+          set -eo pipefail
+          xcodebuild \
+            -scheme "Food Scanner" \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            OTHER_SWIFT_FLAGS='-warnings-as-errors' \
+            test \
+            -only-testing:IntegrationTests | xcpretty
+
+      # If your integration tests live in pure SPM targets instead, use this instead of xcodebuild:
+      # - name: Run integration tests (SwiftPM)
+      #   run: swift test --filter Integration -Xswiftc -warnings-as-errors
