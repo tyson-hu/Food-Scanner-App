@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PhotoIntakeView: View {
     var onRecognize: (Int) -> Void = { _ in }
-    
+
     var body: some View {
         ContentUnavailableView(
             "Photo recognition coming soon",

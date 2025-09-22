@@ -5,21 +5,21 @@
 //  Created by Tyson Hu on 9/17/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AddFoodDetailView: View {
     let fdcId: Int
     var onLog: (FoodEntry) -> Void
-    
+
     @Environment(\.appEnv) private var appEnv
     @State private var viewModel: AddFoodDetailViewModel?
-    
+
     init(fdcId: Int, onLog: @escaping (FoodEntry) -> Void) {
         self.fdcId = fdcId
         self.onLog = onLog
     }
-    
+
     var body: some View {
         Group {
             if let vm = viewModel {
@@ -32,29 +32,29 @@ struct AddFoodDetailView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private func detailContent(_ vm: AddFoodDetailViewModel) -> some View {
         @Bindable var bindableVM = vm
-        
+
         Group {
             switch bindableVM.phase {
             case .loading:
                 ProgressView()
                     .task { await vm.load() }
-                
-            case .loaded(let d):
+
+            case let .loaded(d):
                 Form {
                     Section {
-                        Stepper(value: $bindableVM.servingMultiplier, in: 0.25...10.0, step: 0.25) {
+                        Stepper(value: $bindableVM.servingMultiplier, in: 0.25 ... 10.0, step: 0.25) {
                             Text("Serving: \(bindableVM.servingMultiplier, specifier: "%.2f")×")
                         }
                     }
                     Section("Nutrition (approx)") {
                         LabeledContent("Calories", value: "\(vm.scaled(d.calories)) kcal")
-                        LabeledContent("Protein",  value: "\(vm.scaled(d.protein)) g")
-                        LabeledContent("Carbs",    value: "\(vm.scaled(d.carbs)) g")
-                        LabeledContent("Fat",      value: "\(vm.scaled(d.fat)) g")
+                        LabeledContent("Protein", value: "\(vm.scaled(d.protein)) g")
+                        LabeledContent("Carbs", value: "\(vm.scaled(d.carbs)) g")
+                        LabeledContent("Fat", value: "\(vm.scaled(d.fat)) g")
                     }
                     Section {
                         Button("Log to Today") {
@@ -69,8 +69,8 @@ struct AddFoodDetailView: View {
                 }
                 .navigationTitle(d.name)
                 .navigationBarTitleDisplayMode(.inline)
-                
-            case .error(let msg):
+
+            case let .error(msg):
                 ContentUnavailableView(
                     "Failed to load",
                     systemImage: "exclamationmark.triangle",
@@ -83,8 +83,8 @@ struct AddFoodDetailView: View {
 
 #Preview("Sample Food Detail") {
     AddFoodDetailView(
-        fdcId: 123456,
-        onLog: {_ in }
+        fdcId: 123_456,
+        onLog: { _ in }
     )
     .environment(\.appEnv, .preview)
 }

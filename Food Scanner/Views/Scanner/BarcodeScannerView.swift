@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BarcodeScannerView: View {
     var onDetect: (Int) -> Void = { _ in } // later: hand back real fdcId
-    
+
     var body: some View {
         ContentUnavailableView(
             "Scanner coming soon",

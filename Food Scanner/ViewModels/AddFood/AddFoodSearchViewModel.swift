@@ -11,38 +11,38 @@ import Observation
 @Observable
 final class AddFoodSearchViewModel {
     enum Phase: Equatable { case idle, searching, results, error(String) }
-    
+
     var query: String = ""
     var phase: Phase = .idle
     var results: [FDCFoodSummary] = []
-    
+
     private let client: FDCClient
     // Not main-actor isolated so deinit can cancel safely. All other mutations occur on MainActor.
     private var searchTask: Task<Void, Never>?
     private var lastSearchQuery: String = ""
     private var currentSearchId: Int = 0
-    
+
     // Tunables
     private let minQueryLength: Int
     private let debounceNanos: UInt64
-    
+
     init(client: FDCClient, minQueryLength: Int = 2, debounceMs: UInt64 = 250) {
         self.client = client
         self.minQueryLength = minQueryLength
-        self.debounceNanos = debounceMs * 1_000_000 // ms → ns
+        debounceNanos = debounceMs * 1_000_000 // ms → ns
     }
-    
+
     deinit {
         searchTask?.cancel()
     }
-    
+
     @MainActor
     func onQueryChange() {
         // Cancel any existing search
         searchTask?.cancel()
-        
+
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         // Handle empty query
         guard !trimmed.isEmpty else {
             results = []
@@ -50,7 +50,7 @@ final class AddFoodSearchViewModel {
             lastSearchQuery = "" // Reset to allow re-querying when user types back
             return
         }
-        
+
         // Skip if query is too short
         guard trimmed.count >= minQueryLength else {
             results = []
@@ -58,43 +58,43 @@ final class AddFoodSearchViewModel {
             lastSearchQuery = "" // Reset to allow re-querying when user types back
             return
         }
-        
+
         // Skip duplicate work
         guard trimmed != lastSearchQuery else {
             return
         }
-        
+
         // Increment search ID to track current search
         currentSearchId += 1
         let searchId = currentSearchId
-        
+
         // Start new search task with explicit capture
         searchTask = Task { [trimmed, searchId, weak self] in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             do {
                 // Debounce delay
-                try await Task.sleep(nanoseconds: self.debounceNanos)
-                
+                try await Task.sleep(nanoseconds: debounceNanos)
+
                 // Check if this is still the current search (safe - only reading)
                 let isCurrentSearch = await MainActor.run {
                     searchId == self.currentSearchId
                 }
                 guard isCurrentSearch else { return }
-                
+
                 // Check cancellation after debounce
                 try Task.checkCancellation()
-                
+
                 // Only set searching state if we don't have results (reduces flicker)
                 await MainActor.run {
                     if self.results.isEmpty {
                         self.phase = .searching
                     }
                 }
-                
+
                 // Perform the actual search (now runs on background thread)
-                try await self.performSearch(trimmed, searchId: searchId)
-                
+                try await performSearch(trimmed, searchId: searchId)
+
             } catch is CancellationError {
                 // Task was cancelled, only clear if this is still the current search
                 await MainActor.run {
@@ -122,7 +122,7 @@ final class AddFoodSearchViewModel {
             }
         }
     }
-    
+
     // This method now runs on background thread (no @MainActor)
     private func performSearch(_ q: String, searchId: Int) async throws {
         // Check if this is still the current search (safe - only reading)
@@ -130,19 +130,19 @@ final class AddFoodSearchViewModel {
             searchId == self.currentSearchId
         }
         guard isCurrentSearch else { return }
-        
+
         // Network call now runs on background thread ✅
         let page1 = try await client.searchFoods(matching: q, page: 1)
-        
+
         // Check if this is still the current search after network call (safe - only reading)
         let isStillCurrentSearch = await MainActor.run {
             searchId == self.currentSearchId
         }
         guard isStillCurrentSearch else { return }
-        
+
         // Check cancellation after network call
         try Task.checkCancellation()
-        
+
         // UI updates on main actor
         await MainActor.run {
             self.results = page1
