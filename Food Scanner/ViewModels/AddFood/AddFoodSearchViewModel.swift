@@ -17,7 +17,8 @@ final class AddFoodSearchViewModel {
     var results: [FDCFoodSummary] = []
     
     private let client: FDCClient
-    @MainActor private var searchTask: Task<Void, Never>?
+    // Not main-actor isolated so deinit can cancel safely. All other mutations occur on MainActor.
+    private var searchTask: Task<Void, Never>?
     private var lastSearchQuery: String = ""
     private var currentSearchId: Int = 0
     

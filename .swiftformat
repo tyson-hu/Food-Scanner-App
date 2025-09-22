@@ -1,66 +1,14 @@
---swiftversion 6.2
+--swiftversion 6.0
+--exclude Carthage,Pods,.build,DerivedData,Resources/Generated,**/*.generated.swift
+
 --indent 4
---allman
---braces
---consecutiveblanklines
---consecutivespaces
---duplicateimports
---elseonsameline
---emptybraces
---fileheader
---hoistpatternlet
---leadingdelimiters
---linebreakatendoffile
---noblanklinebeforeimports
---noconsecutiveblanklines
---noextrablanklines
---nospacearoundbraces
---nospacearoundbrackets
---nospacearoundcomments
---nospacearoundgenerics
---nospacearoundoperators
---nospacearoundparens
---nospaceinmultilinecomment
---notrailingcommas
---notrailingspace
---operatorfunc
---organizedeclarations
---patternparens
---redundantbreak
---redundantextensionacl
---redundantfileprivate
---redundantget
---redundantinit
---redundantlet
---redundantnilinit
---redundantobjc
---redundantparens
---redundantpattern
---redundantreturn
---redundantself
---redundanttype
---redundantvoidreturntype
---semicolons never
---sortedimports
---spacearoundbraces
---spacearoundbrackets
---spacearoundcomments
---spacearoundgenerics
---spacearoundoperators
---spacearoundparens
---spaceinsidebraces
---spaceinsidebrackets
---spaceinsidecomments
---spaceinsidegenerics
---spaceinsideparens
---strongifiedself
---strongoutlets
---trailingcommas always
---trailingspace
---typesugar
---unusedarguments
---wrap 120
+--linebreaks lf
+--trimwhitespace always
+
+--maxwidth 120
 --wraparguments before-first
---wrapattributes before-first
---wrapmultilinestatementbraces
---wrapsinglelinestatementbraces
+--wrapcollections before-first
+
+--stripunusedargs closure-only
+--trailingcommas always
+--importgrouping alphabetized
