@@ -1,7 +1,5 @@
 --allman
---blanklinesatendofscope
 --blanklinesatstartofscope
---blanklinesbetweenimports
 --blanklinesbetweenscopes
 --braces
 --consecutiveblanklines

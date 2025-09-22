@@ -12,7 +12,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with: 
-          xcode-version: '26.0.1'
+          xcode-version: '26.0.0'
 
       - name: Cache DerivedData
         uses: actions/cache@v4
@@ -29,7 +29,7 @@ jobs:
           set -eo pipefail
           xcodebuild \
             -scheme "Food Scanner" \
-            -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             SWIFT_STRICT_CONCURRENCY=complete \
             OTHER_SWIFT_FLAGS='-warnings-as-errors' \
             -enableCodeCoverage YES \
@@ -72,7 +72,7 @@ jobs:
         run: |
           xcodebuild \
             -scheme "Food Scanner" \
-            -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             build
       - uses: github/codeql-action/analyze@v3
 
