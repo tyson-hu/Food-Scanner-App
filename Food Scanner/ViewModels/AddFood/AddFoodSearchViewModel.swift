@@ -76,9 +76,10 @@ final class AddFoodSearchViewModel {
                 try await Task.sleep(nanoseconds: self.debounceNanos)
                 
                 // Check if this is still the current search (now safe from main actor)
-                await MainActor.run {
-                    guard searchId == self.currentSearchId else { return }
+                let isCurrentSearch = await MainActor.run {
+                    searchId == self.currentSearchId
                 }
+                guard isCurrentSearch else { return }
                 
                 // Check cancellation after debounce
                 try Task.checkCancellation()
@@ -123,16 +124,18 @@ final class AddFoodSearchViewModel {
     
     private func performSearch(_ q: String, searchId: Int) async throws {
         // Check if this is still the current search (now safe from main actor)
-        await MainActor.run {
-            guard searchId == self.currentSearchId else { return }
+        let isCurrentSearch = await MainActor.run {
+            searchId == self.currentSearchId
         }
+        guard isCurrentSearch else { return }
         
         let page1 = try await client.searchFoods(matching: q, page: 1)
         
         // Check if this is still the current search after network call (now safe from main actor)
-        await MainActor.run {
-            guard searchId == self.currentSearchId else { return }
+        let isStillCurrentSearch = await MainActor.run {
+            searchId == self.currentSearchId
         }
+        guard isStillCurrentSearch else { return }
         
         // Check cancellation after network call
         try Task.checkCancellation()
