@@ -32,9 +32,7 @@ final class AddFoodSearchViewModel {
     }
     
     deinit {
-        Task { @MainActor in
-            searchTask?.cancel()
-        }
+        searchTask?.cancel()
     }
     
     @MainActor

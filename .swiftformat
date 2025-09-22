@@ -1,5 +1,6 @@
+--swiftversion 6.2
+--indent 4
 --allman
---blanklinesbetweenscopes
 --braces
 --consecutiveblanklines
 --consecutivespaces
@@ -8,7 +9,6 @@
 --emptybraces
 --fileheader
 --hoistpatternlet
---indent 4
 --leadingdelimiters
 --linebreakatendoffile
 --noblanklinebeforeimports
@@ -64,4 +64,3 @@
 --wrapattributes before-first
 --wrapmultilinestatementbraces
 --wrapsinglelinestatementbraces
---swiftversion 6.2
