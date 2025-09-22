@@ -37,7 +37,7 @@ struct AddFoodSearchView: View {
         @Bindable var bindableVM = vm
         
         List {
-            ForEach(vm.results, id: \.id) { item in
+            ForEach(bindableVM.results, id: \.id) { item in
                 Button{
                     onSelect(item.id)
                 } label: {
@@ -61,7 +61,7 @@ struct AddFoodSearchView: View {
             }
         }
         .overlay {
-            switch vm.phase {
+            switch bindableVM.phase {
             case .idle:
                 ContentUnavailableView(
                     "Search foods",
@@ -71,7 +71,7 @@ struct AddFoodSearchView: View {
             case .searching:
                 ProgressView().controlSize(.large)
             case .results:
-                if vm.results.isEmpty {
+                if bindableVM.results.isEmpty {
                     ContentUnavailableView(
                         "No matches",
                         systemImage: "exclamationmark.magnifyingglass",
@@ -87,7 +87,7 @@ struct AddFoodSearchView: View {
             }
         }
         .searchable(text: $bindableVM.query, placement: .automatic)
-        .onChange(of: vm.query) { _, _ in vm.onQueryChange() }
+        .onChange(of: bindableVM.query) { _, _ in vm.onQueryChange() }
     }
 }
 
