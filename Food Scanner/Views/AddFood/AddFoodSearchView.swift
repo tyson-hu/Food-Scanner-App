@@ -21,8 +21,8 @@ struct AddFoodSearchView: View {
 
     var body: some View {
         Group {
-            if let vm = viewModel {
-                searchContent(vm)
+            if let viewModel = viewModel {
+                searchContent(viewModel)
             } else {
                 ProgressView()
                     .onAppear {
@@ -33,11 +33,11 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func searchContent(_ vm: AddFoodSearchViewModel) -> some View {
-        @Bindable var bindableVM = vm
+    private func searchContent(_ viewModel: AddFoodSearchViewModel) -> some View {
+        @Bindable var bindableViewModel = viewModel
 
         List {
-            ForEach(bindableVM.results, id: \.id) { item in
+            ForEach(bindableViewModel.results, id: \.id) { item in
                 Button {
                     onSelect(item.id)
                 } label: {
@@ -61,7 +61,7 @@ struct AddFoodSearchView: View {
             }
         }
         .overlay {
-            switch bindableVM.phase {
+            switch bindableViewModel.phase {
             case .idle:
                 ContentUnavailableView(
                     "Search foods",
@@ -71,7 +71,7 @@ struct AddFoodSearchView: View {
             case .searching:
                 ProgressView().controlSize(.large)
             case .results:
-                if bindableVM.results.isEmpty {
+                if bindableViewModel.results.isEmpty {
                     ContentUnavailableView(
                         "No matches",
                         systemImage: "exclamationmark.magnifyingglass",
@@ -86,8 +86,8 @@ struct AddFoodSearchView: View {
                 )
             }
         }
-        .searchable(text: $bindableVM.query, placement: .automatic)
-        .onChange(of: bindableVM.query) { _, _ in vm.onQueryChange() }
+        .searchable(text: $bindableViewModel.query, placement: .automatic)
+        .onChange(of: bindableViewModel.query) { _, _ in viewModel?.onQueryChange() }
     }
 }
 

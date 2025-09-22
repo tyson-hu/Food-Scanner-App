@@ -13,9 +13,9 @@ struct TodayView: View {
     @Query private var entries: [FoodEntry]
 
     init() {
-        let cal = Calendar.current
-        let start = cal.startOfDay(for: Date())
-        let end = cal.date(byAdding: .day, value: 1, to: start)!
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: Date())
+        let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start
         _entries = Query(
             filter: #Predicate<FoodEntry> { $0.date >= start && $0.date < end },
             sort: [SortDescriptor(\.date, order: .reverse)],
@@ -24,14 +24,26 @@ struct TodayView: View {
     }
 
     // Aggregate totals, rounded to whole numbers for the UI.
-    private var totals: (cal: Int, p: Int, f: Int, c: Int) {
-        let agg = entries.reduce(into: (0.0, 0.0, 0.0, 0.0)) { acc, e in
-            acc.0 += e.calories
-            acc.1 += e.protein
-            acc.2 += e.fat
-            acc.3 += e.carbs
+    private struct NutritionTotals {
+        let calories: Int
+        let protein: Int
+        let fat: Int
+        let carbs: Int
+    }
+    
+    private var totals: NutritionTotals {
+        let aggregated = entries.reduce(into: (0.0, 0.0, 0.0, 0.0)) { accumulator, entry in
+            accumulator.0 += entry.calories
+            accumulator.1 += entry.protein
+            accumulator.2 += entry.fat
+            accumulator.3 += entry.carbs
         }
-        return (Int(agg.0.rounded()), Int(agg.1.rounded()), Int(agg.2.rounded()), Int(agg.3.rounded()))
+        return NutritionTotals(
+            calories: Int(aggregated.0.rounded()),
+            protein: Int(aggregated.1.rounded()),
+            fat: Int(aggregated.2.rounded()),
+            carbs: Int(aggregated.3.rounded())
+        )
     }
 
     var body: some View {
@@ -41,20 +53,21 @@ struct TodayView: View {
                     Text("Summary").font(.title2).bold()
 
                     HStack {
-                        Text("Calories \(totals.cal)")
+                        Text("Calories \(totals.calories)")
                         Spacer()
-                        Text("P \(totals.p) • F \(totals.f) • C \(totals.c) g")
+                        Text("P \(totals.protein) • F \(totals.fat) • C \(totals.carbs) g")
                     }
                     .foregroundStyle(.secondary)
                 }
             }
 
             Section("Entries") {
-                ForEach(entries, id: \.id) { e in
+                ForEach(entries, id: \.id) { entry in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(e.name)
-                        Text("\(e.servingDescription) × \(e.quantity, specifier: "%.2f") — \(Int(e.calories)) kcal")
-                            .font(.footnote)
+                        Text(entry.name)
+                            .font(.headline)
+                        Text(entry.servingDescription)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }

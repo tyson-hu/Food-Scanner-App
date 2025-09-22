@@ -22,8 +22,8 @@ struct AddFoodDetailView: View {
 
     var body: some View {
         Group {
-            if let vm = viewModel {
-                detailContent(vm)
+            if let viewModel = viewModel {
+                detailContent(viewModel)
             } else {
                 ProgressView()
                     .onAppear {
@@ -34,48 +34,61 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func detailContent(_ vm: AddFoodDetailViewModel) -> some View {
-        @Bindable var bindableVM = vm
+    private func detailContent(_ viewModel: AddFoodDetailViewModel) -> some View {
+        @Bindable var bindableViewModel = viewModel
 
         Group {
-            switch bindableVM.phase {
+            switch bindableViewModel.phase {
             case .loading:
                 ProgressView()
-                    .task { await vm.load() }
+                    .task { await viewModel.load() }
 
-            case let .loaded(d):
+            case let .loaded(foodDetails):
                 Form {
                     Section {
-                        Stepper(value: $bindableVM.servingMultiplier, in: 0.25 ... 10.0, step: 0.25) {
-                            Text("Serving: \(bindableVM.servingMultiplier, specifier: "%.2f")×")
+                        Stepper(value: $bindableViewModel.servingMultiplier, in: 0.25 ... 10.0, step: 0.25) {
+                            Text("Serving: \(String(format: "%.2f", bindableViewModel.servingMultiplier))×")
                         }
                     }
-                    Section("Nutrition (approx)") {
-                        LabeledContent("Calories", value: "\(vm.scaled(d.calories)) kcal")
-                        LabeledContent("Protein", value: "\(vm.scaled(d.protein)) g")
-                        LabeledContent("Carbs", value: "\(vm.scaled(d.carbs)) g")
-                        LabeledContent("Fat", value: "\(vm.scaled(d.fat)) g")
+
+                    Section("Nutrition") {
+                        HStack {
+                            Text("Calories")
+                            Spacer()
+                            Text("\(Int(foodDetails.calories * bindableViewModel.servingMultiplier))")
+                        }
+                        HStack {
+                            Text("Protein")
+                            Spacer()
+                            Text("\(String(format: "%.1f", foodDetails.protein * bindableViewModel.servingMultiplier)) g")
+                        }
+                        HStack {
+                            Text("Fat")
+                            Spacer()
+                            Text("\(String(format: "%.1f", foodDetails.fat * bindableViewModel.servingMultiplier)) g")
+                        }
+                        HStack {
+                            Text("Carbs")
+                            Spacer()
+                            Text("\(String(format: "%.1f", foodDetails.carbs * bindableViewModel.servingMultiplier)) g")
+                        }
                     }
+
                     Section {
-                        Button("Log to Today") {
-                            let entry = FoodEntry.from(
-                                details: d,
-                                multiplier: bindableVM.servingMultiplier
-                            )
-                            onLog(entry)
+                        Button("Log Food") {
+                            onLog(FoodEntry.from(details: foodDetails, multiplier: bindableViewModel.servingMultiplier))
                         }
                         .buttonStyle(.borderedProminent)
                     }
                 }
-                .navigationTitle(d.name)
-                .navigationBarTitleDisplayMode(.inline)
-
-            case let .error(msg):
-                ContentUnavailableView(
-                    "Failed to load",
-                    systemImage: "exclamationmark.triangle",
-                    description: Text(msg)
-                )
+            case let .error(message):
+                VStack {
+                    Text("Error: \(message)")
+                        .foregroundColor(.red)
+                    Button("Retry") {
+                        Task { await viewModel.load() }
+                    }
+                }
             }
         }
     }
