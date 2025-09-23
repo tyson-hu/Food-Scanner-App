@@ -11,27 +11,27 @@ import Testing
 
 struct AddFoodDetailViewModelTests {
     @Test func load_fetches_details_and_allows_scaling() async throws {
-        let vm = AddFoodDetailViewModel(fdcId: 5678, client: FDCMock()) // Peanut Butter
-        await vm.load()
+        let viewModel = AddFoodDetailViewModel(fdcId: 5678, client: FDCMock()) // Peanut Butter
+        await viewModel.load()
 
-        guard case let .loaded(d) = vm.phase else {
-            Issue.record("Expected loaded state, got \(String(describing: vm.phase))")
+        guard case let .loaded(details) = viewModel.phase else {
+            Issue.record("Expected loaded state, got \(String(describing: viewModel.phase))")
             return
         }
 
-        #expect(d.name == "Peanut Butter")
-        vm.servingMultiplier = 2.0
-        #expect(vm.scaled(d.protein) == 14) // 7 * 2
-        #expect(vm.scaled(d.calories) == 380)
+        #expect(details.name == "Peanut Butter")
+        viewModel.servingMultiplier = 2.0
+        #expect(viewModel.scaled(details.protein) == 14) // 7 * 2
+        #expect(viewModel.scaled(details.calories) == 380)
     }
 
     @Test func load_unknown_id_still_succeeds_with_fallback() async throws {
-        let vm = AddFoodDetailViewModel(fdcId: 999_999, client: FDCMock())
-        await vm.load()
-        guard case let .loaded(d) = vm.phase else {
+        let viewModel = AddFoodDetailViewModel(fdcId: 999_999, client: FDCMock())
+        await viewModel.load()
+        guard case let .loaded(details) = viewModel.phase else {
             Issue.record("Expected loaded state")
             return
         }
-        #expect(d.name == "Brown Rice, cooked")
+        #expect(details.name == "Brown Rice, cooked")
     }
 }

@@ -11,33 +11,33 @@ import Testing
 
 struct AddFoodSearchViewModelTests {
     @Test func typing_query_debounces_and_populates_results() async throws {
-        let vm = AddFoodSearchViewModel(client: FDCMock())
-        vm.query = "yogurt"
+        let viewModel = AddFoodSearchViewModel(client: FDCMock())
+        viewModel.query = "yogurt"
         await MainActor.run {
-            vm.onQueryChange()
+            viewModel.onQueryChange()
         }
 
         // debounce(250ms) + mock latency(~150ms) headroom
         try? await Task.sleep(nanoseconds: 500_000_000)
 
-        #expect(vm.phase == .results)
-        #expect(vm.results.contains(where: { $0.id == 1234 }))
+        #expect(viewModel.phase == .results)
+        #expect(viewModel.results.contains(where: { $0.id == 1234 }))
     }
 
     @Test func clearing_query_resets_to_idle() async throws {
-        let vm = AddFoodSearchViewModel(client: FDCMock())
-        vm.query = "rice"
+        let viewModel = AddFoodSearchViewModel(client: FDCMock())
+        viewModel.query = "rice"
         await MainActor.run {
-            vm.onQueryChange()
+            viewModel.onQueryChange()
         }
         try? await Task.sleep(nanoseconds: 500_000_000)
-        #expect(vm.results.isEmpty == false)
+        #expect(viewModel.results.isEmpty == false)
 
-        vm.query = ""
+        viewModel.query = ""
         await MainActor.run {
-            vm.onQueryChange()
+            viewModel.onQueryChange()
         }
-        #expect(vm.phase == .idle)
-        #expect(vm.results.isEmpty)
+        #expect(viewModel.phase == .idle)
+        #expect(viewModel.results.isEmpty)
     }
 }

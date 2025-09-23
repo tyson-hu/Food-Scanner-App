@@ -38,19 +38,19 @@ struct FDCMockTests {
 
     // Details for known IDs are stable
     @Test func details_known_id_are_correct() async throws {
-        let d = try await client.fetchFoodDetails(fdcId: 5678) // Peanut Butter
-        #expect(d.name == "Peanut Butter")
-        #expect(d.brand == "Jif")
-        #expect(d.calories == 190)
-        #expect(d.protein == 7)
-        #expect(d.fat == 16)
-        #expect(d.carbs == 8)
+        let details = try await client.fetchFoodDetails(fdcId: 5678) // Peanut Butter
+        #expect(details.name == "Peanut Butter")
+        #expect(details.brand == "Jif")
+        #expect(details.calories == 190)
+        #expect(details.protein == 7)
+        #expect(details.fat == 16)
+        #expect(details.carbs == 8)
     }
 
     // Unknown IDs fall back to a safe default
     @Test func details_unknown_id_fallback() async throws {
-        let d = try await client.fetchFoodDetails(fdcId: 999_999)
-        #expect(d.name == "Brown Rice, cooked")
-        #expect(d.calories == 216)
+        let details = try await client.fetchFoodDetails(fdcId: 999_999)
+        #expect(details.name == "Brown Rice, cooked")
+        #expect(details.calories == 216)
     }
 }

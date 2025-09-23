@@ -54,28 +54,35 @@ struct FDCDISelectionTests {
     }
 
     // Optional: compact parameterized sweep over a few combos.
+    private struct TestCase {
+        let isRelease: Bool
+        let builtIn: Bool
+        let override: Bool
+        let apiKey: String?
+        let expectedRemote: Bool
+    }
+
     @Test(
         "Selection Matrix (parameterized)",
         arguments: [
-            // isRelease, builtIn, override, apiKey, expectedRemote
-            (true, true, false, "k", true),
-            (false, false, false, "k", false),
-            (false, true, false, "k", true), // Debug + build flag on
-            (false, true, true, "", false), // Override on but empty key → fallback
-            (true, false, false, nil, false), // Release wants remote by default, but no key → fallback
+            TestCase(isRelease: true, builtIn: true, override: false, apiKey: "k", expectedRemote: true),
+            TestCase(isRelease: false, builtIn: false, override: false, apiKey: "k", expectedRemote: false),
+            TestCase(isRelease: false, builtIn: true, override: false, apiKey: "k", expectedRemote: true), // Debug + build flag on
+            TestCase(isRelease: false, builtIn: true, override: true, apiKey: "", expectedRemote: false), // Override on but empty key → fallback
+            TestCase(isRelease: true, builtIn: false, override: false, apiKey: nil, expectedRemote: false) // Release wants remote by default, but no key → fallback
         ]
     )
     func selection_matrix(
-        _ args: (Bool, Bool, Bool, String?, Bool)
+        _ testCase: TestCase
     ) async throws {
         let env = makeEnv(
-            isRelease: args.0,
-            builtIn: args.1,
-            override: args.2,
-            apiKey: args.3
+            isRelease: testCase.isRelease,
+            builtIn: testCase.builtIn,
+            override: testCase.override,
+            apiKey: testCase.apiKey
         )
         let client = FDCClientFactory.make(env: env)
         let isRemote = client is FDCRemoteClient
-        #expect(isRemote == args.4)
+        #expect(isRemote == testCase.expectedRemote)
     }
 }

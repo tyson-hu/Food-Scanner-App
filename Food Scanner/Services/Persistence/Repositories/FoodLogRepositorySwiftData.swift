@@ -24,7 +24,9 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
     func entries(on day: Date) async throws -> [FoodEntry] {
         let cal = Calendar.current
         let start = cal.startOfDay(for: day)
-        let end = cal.date(byAdding: .day, value: 1, to: start)!
+        guard let end = cal.date(byAdding: .day, value: 1, to: start) else {
+            return []
+        }
         let descriptor = FetchDescriptor<FoodEntry>(
             predicate: #Predicate { $0.date >= start && $0.date < end },
             sortBy: [.init(\.date, order: .reverse)]
@@ -34,12 +36,12 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
 
     func totals(on day: Date) async throws -> DayTotals {
         let items = try await entries(on: day)
-        return items.reduce(.init(calories: 0, protein: 0, carbs: 0, fat: 0)) { acc, e in
+        return items.reduce(.init(calories: 0, protein: 0, carbs: 0, fat: 0)) { acc, entry in
             .init(
-                calories: acc.calories + e.calories,
-                protein: acc.protein + e.protein,
-                carbs: acc.carbs + e.carbs,
-                fat: acc.fat + e.fat
+                calories: acc.calories + entry.calories,
+                protein: acc.protein + entry.protein,
+                carbs: acc.carbs + entry.carbs,
+                fat: acc.fat + entry.fat
             )
         }
     }

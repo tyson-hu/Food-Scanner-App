@@ -26,7 +26,7 @@ struct FDCMock: FDCClient {
             protein: 12,
             fat: 2,
             carbs: 16
-        ),
+        )
     ]
 
     func searchFoods(matching query: String, page: Int) async throws -> [FDCFoodSummary] {
@@ -36,8 +36,8 @@ struct FDCMock: FDCClient {
         try? await Task.sleep(nanoseconds: 150_000_000) // small latency
 
         let tokens = trimmed.lowercased().split(separator: " ")
-        let filtered = Self.catalog.filter { d in
-            let hay = "\(d.name) \(d.brand ?? "")".lowercased()
+        let filtered = Self.catalog.filter { food in
+            let hay = "\(food.name) \(food.brand ?? "")".lowercased()
             return tokens.allSatisfy { hay.contains($0) }
         }
 
