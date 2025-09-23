@@ -20,6 +20,34 @@
                ReferencedContainer = "container:Food Scanner.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "842FD0C02E7E072C00CD2A5F"
+               BuildableName = "FoodScannerTests.xctest"
+               BlueprintName = "FoodScannerTests"
+               ReferencedContainer = "container:Food Scanner.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "842FD0CD2E7E073700CD2A5F"
+               BuildableName = "FoodScannerUITests.xctest"
+               BlueprintName = "FoodScannerUITests"
+               ReferencedContainer = "container:Food Scanner.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

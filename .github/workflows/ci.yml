@@ -65,7 +65,6 @@ jobs:
             -skipPackagePluginValidation \
             -skipMacroValidation \
             -disableAutomaticPackageResolution \
-            -parallel-testing-enabled YES \
             -maximum-concurrent-test-simulator-destinations 2 \
             test | xcpretty
         shell: bash
