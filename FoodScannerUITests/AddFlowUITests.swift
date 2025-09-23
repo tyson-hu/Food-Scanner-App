@@ -7,6 +7,7 @@
 
 import XCTest
 
+@MainActor
 final class AddFlowUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
