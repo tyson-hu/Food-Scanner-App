@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class AddFoodDetailViewModel {
     enum Phase: Equatable {
