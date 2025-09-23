@@ -30,7 +30,7 @@ struct TodayView: View {
         let fat: Int
         let carbs: Int
     }
-    
+
     private var totals: NutritionTotals {
         let aggregated = entries.reduce(into: (0.0, 0.0, 0.0, 0.0)) { accumulator, entry in
             accumulator.0 += entry.calories
