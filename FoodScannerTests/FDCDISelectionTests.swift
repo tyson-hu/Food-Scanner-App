@@ -90,7 +90,7 @@ struct FDCDISelectionTests {
             ), // Release wants remote by default, but no key → fallback
         ]
     )
-    func selection_matrix(
+    private func selection_matrix(
         _ testCase: TestCase
     ) async throws {
         let env = makeEnv(
