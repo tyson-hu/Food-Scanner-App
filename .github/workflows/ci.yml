@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       code: ${{ steps.filter.outputs.code }}
+      project: ${{ steps.filter.outputs.project }}
       ci: ${{ steps.filter.outputs.ci }}
       linttools: ${{ steps.filter.outputs.linttools }}
       docs: ${{ steps.filter.outputs.docs }}
@@ -37,12 +38,20 @@ jobs:
               - '.swiftlint.yml'
               - '.swiftformat'
               - '.swift-format'
+            project:
+              - '**/*.xcodeproj/**'
+              - '**/*.xcworkspace/**'
+              - '**/*.pbxproj'
+              - '**/*.xcscheme'
+              - '**/*.xcconfig'
+              - '**/*.xctestplan'
+              - '**/*.entitlements'
+              - '**/*.xcprivacy'
             code:
               - '**/*.swift'
               - '**/*.plist'
               - '**/*.strings'
               - '**/*.xcassets/**'
-              - '**/*.xctestplan'
               - 'Package.swift'
               - 'Package.resolved'
               - 'Food Scanner/**'
@@ -59,21 +68,23 @@ jobs:
       - run: |
           echo "docs=${{ needs.changes.outputs.docs }}" >> $GITHUB_STEP_SUMMARY
           echo "code=${{ needs.changes.outputs.code }}" >> $GITHUB_STEP_SUMMARY
+          echo "project=${{ needs.changes.outputs.project }}" >> $GITHUB_STEP_SUMMARY
           echo "ci=${{ needs.changes.outputs.ci }}" >> $GITHUB_STEP_SUMMARY
           echo "linttools=${{ needs.changes.outputs.linttools }}" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ needs.changes.outputs.docs }}" == 'true' && \
                 "${{ needs.changes.outputs.code }}" != 'true' && \
+                "${{ needs.changes.outputs.project }}" != 'true' && \
                 "${{ needs.changes.outputs.ci }}" != 'true' && \
                 "${{ needs.changes.outputs.linttools }}" != 'true' ]]; then
             echo "Docs-only PR → skipping heavy jobs." >> $GITHUB_STEP_SUMMARY
           else
-            echo "Code/config changed → running full checks." >> $GITHUB_STEP_SUMMARY
+            echo "Code/config/project changed → running full checks." >> $GITHUB_STEP_SUMMARY
           fi
 
   build-test:
     name: Build & Unit Tests (fast)
     needs: [changes, gate]
-    if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.ci == 'true' || needs.changes.outputs.linttools == 'true' }}
+    if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true' || needs.changes.outputs.ci == 'true' || needs.changes.outputs.linttools == 'true' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -97,7 +108,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./DerivedData
-          key: ${{ runner.os }}-dd-${{ hashFiles('**/Package.resolved', '**/*.xctestplan') }}-xcode-26.0
+          key: ${{ runner.os }}-dd-${{ hashFiles('**/Package.resolved', '**/*.xctestplan', '**/*.pbxproj', '**/*.xcscheme', '**/*.xcconfig') }}-xcode-26.0
           restore-keys: |
             ${{ runner.os }}-dd-
 
@@ -133,7 +144,7 @@ jobs:
   lint:
     name: Lint (SwiftFormat + SwiftLint)
     needs: [changes, gate]
-    if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.linttools == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true' || needs.changes.outputs.linttools == 'true' || needs.changes.outputs.ci == 'true' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -150,7 +161,7 @@ jobs:
   guards:
     name: Guards (no TODO/FIXME, no legacy APIs)
     needs: [changes, gate]
-    if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true' || needs.changes.outputs.ci == 'true' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -166,7 +177,7 @@ jobs:
   codeql:
     name: CodeQL (Swift) — pinned to Xcode 16
     needs: [changes, gate]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.changes.outputs.code == 'true' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && (needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true') }}
     runs-on: macos-latest
     permissions:
       security-events: write
