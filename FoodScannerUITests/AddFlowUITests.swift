@@ -34,7 +34,7 @@ final class AddFlowUITests: XCTestCase {
         resultCell.tap()
 
         // Tap "Log to Today"
-        let logButton = app.buttons["Log to Today"]
+        let logButton = app.buttons["Log Food"]
         XCTAssertTrue(logButton.waitForExistence(timeout: 3), "Log button not found")
         logButton.tap()
 
