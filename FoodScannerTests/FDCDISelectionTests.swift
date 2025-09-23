@@ -26,6 +26,7 @@ struct FDCDISelectionTests {
     }
 
     @Test("Release defaults to Remote when API key present")
+    @MainActor
     func release_defaults_remote_with_key() async throws {
         let env = makeEnv(isRelease: true, builtIn: true, override: false, apiKey: "k")
         let client = FDCClientFactory.make(env: env)
@@ -33,6 +34,7 @@ struct FDCDISelectionTests {
     }
 
     @Test("Debug defaults to Mock (even if key present)")
+    @MainActor
     func debug_defaults_mock_even_with_key() async throws {
         let env = makeEnv(isRelease: false, builtIn: false, override: false, apiKey: "k")
         let client = FDCClientFactory.make(env: env)
@@ -40,6 +42,7 @@ struct FDCDISelectionTests {
     }
 
     @Test("Debug runtime override → Remote when API key present")
+    @MainActor
     func debug_override_forces_remote_with_key() async throws {
         let env = makeEnv(isRelease: false, builtIn: false, override: true, apiKey: "k")
         let client = FDCClientFactory.make(env: env)
@@ -47,6 +50,7 @@ struct FDCDISelectionTests {
     }
 
     @Test("Fallback to Mock when Remote wanted but API key missing")
+    @MainActor
     func fallback_to_mock_when_key_missing() async throws {
         let env = makeEnv(isRelease: true, builtIn: true, override: true, apiKey: nil)
         let client = FDCClientFactory.make(env: env)
@@ -90,6 +94,7 @@ struct FDCDISelectionTests {
             ), // Release wants remote by default, but no key → fallback
         ]
     )
+    @MainActor
     private func selection_matrix(
         _ testCase: TestCase
     ) async throws {
