@@ -6,14 +6,16 @@ on:
   push:
     branches: [ master ]
 
+# Cancel older runs of the same PR/branch when a new commit arrives
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   changes:
     name: Detect changes
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     outputs:
       code: ${{ steps.filter.outputs.code }}
       project: ${{ steps.filter.outputs.project }}
@@ -64,6 +66,7 @@ jobs:
     name: CI gate
     needs: changes
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - run: |
           echo "docs=${{ needs.changes.outputs.docs }}" >> $GITHUB_STEP_SUMMARY
@@ -86,6 +89,7 @@ jobs:
     needs: [changes, gate]
     if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true' || needs.changes.outputs.ci == 'true' || needs.changes.outputs.linttools == 'true' }}
     runs-on: macos-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -129,6 +133,7 @@ jobs:
             -scheme "Food Scanner" \
             -testPlan "FoodScanner-PR" \
             -destination "id=$DEST_ID" \
+            -destination-timeout 60 \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             ENABLE_PREVIEWS=NO \
@@ -146,6 +151,7 @@ jobs:
     needs: [changes, gate]
     if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true' || needs.changes.outputs.linttools == 'true' || needs.changes.outputs.ci == 'true' }}
     runs-on: macos-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - name: Install SwiftLint & SwiftFormat
@@ -163,6 +169,7 @@ jobs:
     needs: [changes, gate]
     if: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true' || needs.changes.outputs.ci == 'true' }}
     runs-on: macos-latest
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
       - name: Fail on TODO/FIXME
@@ -179,6 +186,7 @@ jobs:
     needs: [changes, gate]
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && (needs.changes.outputs.code == 'true' || needs.changes.outputs.project == 'true') }}
     runs-on: macos-latest
+    timeout-minutes: 30
     permissions:
       security-events: write
       contents: read
@@ -207,6 +215,7 @@ jobs:
             -scheme "Food Scanner" \
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
+            -destination-timeout 60 \
             -configuration Debug \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
