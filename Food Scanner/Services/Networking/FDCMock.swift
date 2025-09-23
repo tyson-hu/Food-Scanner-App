@@ -26,7 +26,7 @@ struct FDCMock: FDCClient {
             protein: 12,
             fat: 2,
             carbs: 16
-        )
+        ),
     ]
 
     func searchFoods(matching query: String, page: Int) async throws -> [FDCFoodSummary] {
