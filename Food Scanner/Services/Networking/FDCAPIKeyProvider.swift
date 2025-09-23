@@ -14,10 +14,11 @@ protocol FDCAPIKeyProviding {
 struct DebugPlistKeyProvider: FDCAPIKeyProviding {
     func loadAPIKey() -> String? {
         #if DEBUG
-        if let url = Bundle.main.url(forResource: "Secrets", withExtension: "plist"),
-           let dict = NSDictionary(contentsOf: url) as? [String: Any] {
-            return dict["FDC_API_KEY"] as? String
-        }
+            if let url = Bundle.main.url(forResource: "Secrets", withExtension: "plist"),
+               let dict = NSDictionary(contentsOf: url) as? [String: Any]
+            {
+                return dict["FDC_API_KEY"] as? String
+            }
         #endif
         return nil
     }

@@ -22,7 +22,7 @@ struct AddFoodDetailView: View {
 
     var body: some View {
         Group {
-            if let viewModel = viewModel {
+            if let viewModel {
                 detailContent(viewModel)
             } else {
                 ProgressView()
@@ -46,7 +46,11 @@ struct AddFoodDetailView: View {
             case let .loaded(foodDetails):
                 Form {
                     Section {
-                        Stepper(value: $bindableViewModel.servingMultiplier, in: 0.25 ... 10.0, step: 0.25) {
+                        Stepper(
+                            value: $bindableViewModel.servingMultiplier,
+                            in: 0.25 ... 10.0,
+                            step: 0.25
+                        ) {
                             Text("Serving: \(String(format: "%.2f", bindableViewModel.servingMultiplier))×")
                         }
                     }
@@ -55,32 +59,36 @@ struct AddFoodDetailView: View {
                         HStack {
                             Text("Calories")
                             Spacer()
-                            Text("\(Int(foodDetails.calories * bindableViewModel.servingMultiplier))")
+                            Text("\(Int(Double(foodDetails.calories) * bindableViewModel.servingMultiplier))")
                         }
                         HStack {
                             Text("Protein")
                             Spacer()
-                            Text("\(String(format: "%.1f", foodDetails.protein * bindableViewModel.servingMultiplier)) g")
+                            Text("\(String(format: "%.1f", Double(foodDetails.protein) * bindableViewModel.servingMultiplier)) g")
                         }
                         HStack {
                             Text("Fat")
                             Spacer()
-                            Text("\(String(format: "%.1f", foodDetails.fat * bindableViewModel.servingMultiplier)) g")
+                            Text("\(String(format: "%.1f", Double(foodDetails.fat) * bindableViewModel.servingMultiplier)) g")
                         }
                         HStack {
                             Text("Carbs")
                             Spacer()
-                            Text("\(String(format: "%.1f", foodDetails.carbs * bindableViewModel.servingMultiplier)) g")
+                            Text("\(String(format: "%.1f", Double(foodDetails.carbs) * bindableViewModel.servingMultiplier)) g")
                         }
                     }
 
                     Section {
                         Button("Log Food") {
-                            onLog(FoodEntry.from(details: foodDetails, multiplier: bindableViewModel.servingMultiplier))
+                            onLog(FoodEntry.from(
+                                details: foodDetails,
+                                multiplier: bindableViewModel.servingMultiplier
+                            ))
                         }
                         .buttonStyle(.borderedProminent)
                     }
                 }
+
             case let .error(message):
                 VStack {
                     Text("Error: \(message)")

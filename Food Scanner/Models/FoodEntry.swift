@@ -49,7 +49,11 @@ final class FoodEntry {
 // MARK: - Builder from FDC details
 
 extension FoodEntry {
-    static func from(details foodDetails: FDCFoodDetails, multiplier servingMultiplier: Double, at date: Date = Date()) -> FoodEntry {
+    static func from(
+        details foodDetails: FDCFoodDetails,
+        multiplier servingMultiplier: Double,
+        at date: Date = Date()
+    ) -> FoodEntry {
         FoodEntry(
             name: foodDetails.name,
             brand: foodDetails.brand,
@@ -59,9 +63,8 @@ extension FoodEntry {
             calories: Double(foodDetails.calories) * servingMultiplier,
             protein: Double(foodDetails.protein) * servingMultiplier,
             fat: Double(foodDetails.fat) * servingMultiplier,
-            carbs: Double(foodDetails.carbs) * servingMultiplier,
-            date: date
-        )
+            carbs: Double(foodDetails.carbs) * servingMultiplier
+        ).withDate(date)
     }
 
     // tiny helper to assign date inline

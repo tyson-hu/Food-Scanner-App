@@ -21,7 +21,7 @@ struct AddFoodSearchView: View {
 
     var body: some View {
         Group {
-            if let viewModel = viewModel {
+            if let viewModel {
                 searchContent(viewModel)
             } else {
                 ProgressView()
@@ -66,7 +66,7 @@ struct AddFoodSearchView: View {
                 ContentUnavailableView(
                     "Search foods",
                     systemImage: "magnifyingglass",
-                    description: Text("Try \"yougurt\", \"rice\", or a brand name.")
+                    description: Text("Try \"yogurt\", \"rice\", or a brand name.")
                 )
             case .searching:
                 ProgressView().controlSize(.large)
@@ -87,7 +87,7 @@ struct AddFoodSearchView: View {
             }
         }
         .searchable(text: $bindableViewModel.query, placement: .automatic)
-        .onChange(of: bindableViewModel.query) { _, _ in viewModel?.onQueryChange() }
+        .onChange(of: bindableViewModel.query) { _, _ in bindableViewModel.onQueryChange() }
     }
 }
 
