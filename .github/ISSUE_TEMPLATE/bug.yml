@@ -1,0 +1,75 @@
+# .github/ISSUE_TEMPLATE/bug.yml
+name: "Bug report"
+description: "Something isn't working"
+title: "[Bug] <concise title>"
+labels: ["type: bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us reproduce it quickly. Include logs/screens if possible.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - S0 — Blocking/no workaround
+        - S1 — Major/has workaround
+        - S2 — Moderate
+        - S3 — Minor/cosmetic
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Device/OS, app version/build, network, account state."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Tap …
+        3. Observe …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Paste logs (redact secrets) or attach images.
+      render: shell
+  - type: input
+    id: regression
+    attributes:
+      label: Regression?
+      placeholder: "First version/build where this appeared (if known)."
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Workarounds, related issues/PRs, hypotheses.
+  - type: checkboxes
+    id: done
+    attributes:
+      label: Triage checklist
+      options:
+        - label: Labeled with area and severity
+        - label: Linked to milestone (if needed)
+        - label: Added reproduction to tests (or planned)

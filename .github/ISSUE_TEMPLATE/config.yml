@@ -1,0 +1,6 @@
+# .github/ISSUE_TEMPLATE/config.yml
+blank_issues_enabled: false
+contact_links:
+  - name: Contributing Guide | Confluence
+    url: https://tianzhe.atlassian.net/wiki/spaces/AD/overview?homepageId=131346
+    about: Read this first before opening an issue.
