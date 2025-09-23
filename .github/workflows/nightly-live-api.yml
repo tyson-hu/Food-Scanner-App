@@ -36,10 +36,16 @@ jobs:
           set -eo pipefail
           xcodebuild \
             -scheme "Food Scanner" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -testPlan "FoodScanner-Full" \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=26.0' \
+            -derivedDataPath ./DerivedData \
+            -enableCodeCoverage YES \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_STRICT_CONCURRENCY=complete \
             OTHER_SWIFT_FLAGS='-warnings-as-errors' \
-            test \
-            -only-testing:IntegrationTests | xcpretty
+            -parallel-testing-enabled YES \
+            test | xcpretty
+
 
       # If your integration tests live in pure SPM targets instead, use this instead of xcodebuild:
       # - name: Run integration tests (SwiftPM)
