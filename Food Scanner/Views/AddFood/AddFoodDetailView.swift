@@ -64,17 +64,23 @@ struct AddFoodDetailView: View {
                         HStack {
                             Text("Protein")
                             Spacer()
-                            Text("\(String(format: "%.1f", Double(foodDetails.protein) * bindableViewModel.servingMultiplier)) g")
+                            Text(
+                                "\(String(format: "%.1f", Double(foodDetails.protein) * bindableViewModel.servingMultiplier)) g"
+                            )
                         }
                         HStack {
                             Text("Fat")
                             Spacer()
-                            Text("\(String(format: "%.1f", Double(foodDetails.fat) * bindableViewModel.servingMultiplier)) g")
+                            Text(
+                                "\(String(format: "%.1f", Double(foodDetails.fat) * bindableViewModel.servingMultiplier)) g"
+                            )
                         }
                         HStack {
                             Text("Carbs")
                             Spacer()
-                            Text("\(String(format: "%.1f", Double(foodDetails.carbs) * bindableViewModel.servingMultiplier)) g")
+                            Text(
+                                "\(String(format: "%.1f", Double(foodDetails.carbs) * bindableViewModel.servingMultiplier)) g"
+                            )
                         }
                     }
 
