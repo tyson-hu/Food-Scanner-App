@@ -34,6 +34,9 @@
 		842FD2A92E80A74800CD2A5F /* Exceptions for "Food Scanner" folder in "Food Scanner" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Config/Config.Debug.xcconfig,
+				Config/Config.Release.xcconfig,
+				Config/Secrets.example,
 				Config/Secrets.plist,
 			);
 			target = 842FCEB82E7B365000CD2A5F /* Food Scanner */;

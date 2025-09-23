@@ -43,7 +43,13 @@ jobs:
       - name: Resolve packages
         run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
 
-      - name: Build & Unit Tests (no coverage, unit only)
+      - name: Preboot simulator
+        run: |
+          xcrun simctl list devices
+          xcrun simctl boot "iPhone 16" || true
+          xcrun simctl bootstatus "iPhone 16" -b
+      
+      - name: Build & Unit Tests (no coverage, PR plan)
         run: |
           set -eo pipefail
           xcodebuild \
@@ -52,12 +58,15 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=26.0' \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
+            ENABLE_PREVIEWS=NO \
             SWIFT_STRICT_CONCURRENCY=complete \
             OTHER_SWIFT_FLAGS='-warnings-as-errors' \
+            -skipPackagePluginValidation YES \
+            -skipMacroValidation YES \
+            -disableAutomaticPackageResolution YES \
             -parallel-testing-enabled YES \
             -maximum-concurrent-test-simulator-destinations 2 \
             test | xcpretty
-
         shell: bash
 
   lint:
