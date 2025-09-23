@@ -87,7 +87,7 @@ struct FDCDISelectionTests {
                 override: false,
                 apiKey: nil,
                 expectedRemote: false
-            ) // Release wants remote by default, but no key → fallback
+            ), // Release wants remote by default, but no key → fallback
         ]
     )
     func selection_matrix(
