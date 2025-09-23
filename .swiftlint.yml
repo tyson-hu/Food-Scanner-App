@@ -1,6 +1,5 @@
 # SwiftLint Configuration for Food Scanner App
 
-# Paths to include/exclude
 included:
   - "Food Scanner"
   - "FoodScannerTests"
@@ -11,45 +10,38 @@ excluded:
   - "Food Scanner/Config"
   - "DerivedData"
   - ".build"
+  - "**/*.generated.swift"
 
-# Rules to disable (adjust based on your preferences)
 disabled_rules:
   - trailing_whitespace
   - line_length
   - function_body_length
   - file_length
   - type_body_length
+  # Turn these off so SwiftLint doesn't fight SwiftFormat's wrapping style
+  - vertical_parameter_alignment
+  - vertical_parameter_alignment_on_call
 
-# Rules to enable
 opt_in_rules:
   - empty_count
   - empty_string
   - force_unwrapping
   - implicitly_unwrapped_optional
   - todo
+  # DO NOT enable sorted_imports unless you want SwiftLint to reorder imports
+  # (SwiftFormat already does alphabetized grouping).
+
+analyzer_rules:
   - unused_import
 
-# Configuration
-line_length:
-  warning: 120
-  error: 150
-
-function_body_length:
-  warning: 50
-  error: 100
-
-file_length:
-  warning: 500
-  error: 1000
-
-type_body_length:
-  warning: 300
-  error: 500
-
-# Allow force unwrapping in specific cases
+# Rule configs
 force_unwrapping:
   severity: warning
 
-# Allow TODO comments but flag them
 todo:
+  severity: warning
+
+# Match SwiftFormat's `--trailingcommas always`
+trailing_comma:
+  mandatory_comma: true     # require trailing comma in multiline literals
   severity: warning

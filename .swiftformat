@@ -12,3 +12,5 @@
 --stripunusedargs closure-only
 --trailingcommas always
 --importgrouping alphabetized
+
+--disable wrapMultilineStatementBraces
