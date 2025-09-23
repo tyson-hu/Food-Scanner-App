@@ -43,27 +43,28 @@ jobs:
       - name: Resolve packages
         run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
 
-      - name: Preboot simulator
+      - name: Preboot iPhone 16 simulator
         run: |
-          xcrun simctl list devices
           xcrun simctl boot "iPhone 16" || true
           xcrun simctl bootstatus "iPhone 16" -b
-      
-      - name: Build & Unit Tests (no coverage, PR plan)
+
+      - name: Build & Unit Tests (PR plan, no coverage)
         run: |
           set -eo pipefail
+          DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')
+          echo "Using destination id: $DEST_ID"
           xcodebuild \
             -scheme "Food Scanner" \
             -testPlan "FoodScanner-PR" \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=26.0' \
+            -destination "id=$DEST_ID" \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             ENABLE_PREVIEWS=NO \
             SWIFT_STRICT_CONCURRENCY=complete \
             OTHER_SWIFT_FLAGS='-warnings-as-errors' \
-            -skipPackagePluginValidation YES \
-            -skipMacroValidation YES \
-            -disableAutomaticPackageResolution YES \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            -disableAutomaticPackageResolution \
             -parallel-testing-enabled YES \
             -maximum-concurrent-test-simulator-destinations 2 \
             test | xcpretty
@@ -75,13 +76,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install SwiftLint & SwiftFormat
-        run: |
-          brew install swiftlint swiftformat
+        run: brew install swiftlint swiftformat
       - name: SwiftFormat (lint only)
         run: |
-          swiftformat --lint "Food Scanner" || exit 1
-          swiftformat --lint "FoodScannerTests" || exit 1
-          swiftformat --lint "FoodScannerUITests" || exit 1
+          swiftformat --lint "Food Scanner"
+          swiftformat --lint "FoodScannerTests"
+          swiftformat --lint "FoodScannerUITests"
       - name: SwiftLint (strict)
         run: swiftlint --strict
 
@@ -109,27 +109,27 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
-
-      # Workaround current incompatibility of CodeQL Swift with Xcode 26.
-      # See: https://github.com/github/codeql-action/issues/3111
       - name: Setup Xcode 16.2
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '16.2'
-
       - name: Init CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: swift
           build-mode: manual
-
       - name: Resolve packages
         run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
-
       - name: Build for CodeQL (compile only)
         run: |
           set -eo pipefail
-          xcodebuild             -scheme "Food Scanner"             -sdk iphonesimulator             -destination 'generic/platform=iOS Simulator'             -configuration Debug             -derivedDataPath ./DerivedData             CODE_SIGNING_ALLOWED=NO             build | xcpretty
-
+          xcodebuild \
+            -scheme "Food Scanner" \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            -derivedDataPath ./DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build | xcpretty
       - name: Analyze
         uses: github/codeql-action/analyze@v3
