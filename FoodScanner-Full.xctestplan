@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "88B2A73A-4229-4A6B-80B5-7C6CD5D084EE",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Food Scanner.xcodeproj",
+        "identifier" : "842FD0C02E7E072C00CD2A5F",
+        "name" : "FoodScannerTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Food Scanner.xcodeproj",
+        "identifier" : "842FD0CD2E7E073700CD2A5F",
+        "name" : "FoodScannerUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

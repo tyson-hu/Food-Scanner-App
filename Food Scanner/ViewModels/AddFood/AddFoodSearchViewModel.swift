@@ -3,151 +3,142 @@
 //  Food Scanner
 //
 //  Created by Tyson Hu on 9/19/25.
+//  Updated to resolve MainActor isolation issues under Strict Concurrency.
 //
 
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class AddFoodSearchViewModel {
-    enum Phase: Equatable { case idle, searching, results, error(String) }
-    
+    enum Phase: Equatable {
+        case idle
+        case searching
+        case results
+        case error(String)
+    }
+
+    // MARK: - Observed State
+
     var query: String = ""
     var phase: Phase = .idle
     var results: [FDCFoodSummary] = []
-    
-    private let client: FDCClient
-    private var searchTask: Task<Void, Never>?
-    private var lastSearchQuery: String = ""
-    private var currentSearchId: Int = 0
-    
+
+    // MARK: - Non-observed Dependencies & Internals
+
+    @ObservationIgnored private let client: FDCClient
+    @ObservationIgnored private var searchTask: Task<Void, Never>?
+    @ObservationIgnored private var lastSearchQuery: String = ""
+    @ObservationIgnored private var currentSearchId: Int = 0
+
     // Tunables
-    private let minQueryLength: Int
-    private let debounceNanos: UInt64
-    
+    @ObservationIgnored private let minQueryLength: Int
+    @ObservationIgnored private let debounceNanos: UInt64
+
+    // MARK: - Init / Deinit
+
     init(client: FDCClient, minQueryLength: Int = 2, debounceMs: UInt64 = 250) {
         self.client = client
         self.minQueryLength = minQueryLength
-        self.debounceNanos = debounceMs * 1_000_000 // ms → ns
+        debounceNanos = debounceMs * 1_000_000 // ms → ns
     }
-    
+
     deinit {
         searchTask?.cancel()
     }
-    
-    @MainActor
+
+    // MARK: - Public API
+
     func onQueryChange() {
         // Cancel any existing search
         searchTask?.cancel()
-        
+
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // Handle empty query
-        guard !trimmed.isEmpty else {
-            results = []
-            phase = .idle
-            lastSearchQuery = "" // Reset to allow re-querying when user types back
+
+        // Handle empty or too-short query
+        guard shouldProcessQuery(trimmed) else {
+            resetToIdleState()
             return
         }
-        
-        // Skip if query is too short
-        guard trimmed.count >= minQueryLength else {
-            results = []
-            phase = .idle
-            lastSearchQuery = "" // Reset to allow re-querying when user types back
-            return
-        }
-        
+
         // Skip duplicate work
-        guard trimmed != lastSearchQuery else {
-            return
-        }
-        
-        // Increment search ID to track current search
+        guard trimmed != lastSearchQuery else { return }
+
+        startSearchTask(for: trimmed)
+    }
+
+    // MARK: - Private Helpers
+
+    private func shouldProcessQuery(_ query: String) -> Bool {
+        !query.isEmpty && query.count >= minQueryLength
+    }
+
+    private func resetToIdleState() {
+        results = []
+        phase = .idle
+        lastSearchQuery = ""
+    }
+
+    private func startSearchTask(for query: String) {
+        // Mark this as the current search
         currentSearchId += 1
         let searchId = currentSearchId
-        
-        // Start new search task with explicit capture
-        searchTask = Task { [trimmed, searchId, weak self] in
-            guard let self = self else { return }
-            
+
+        // Launch an async task; this method is MainActor-isolated,
+        // and we keep all state touches on MainActor.
+        searchTask = Task { [query, searchId, weak self] in
+            guard let self else { return }
+
             do {
-                // Debounce delay
-                try await Task.sleep(nanoseconds: self.debounceNanos)
-                
-                // Check if this is still the current search (safe - only reading)
-                let isCurrentSearch = await MainActor.run {
-                    searchId == self.currentSearchId
-                }
-                guard isCurrentSearch else { return }
-                
-                // Check cancellation after debounce
+                // Debounce
+                try await Task.sleep(nanoseconds: debounceNanos)
+
+                // Still the latest search?
+                guard searchId == currentSearchId else { return }
+
                 try Task.checkCancellation()
-                
-                // Only set searching state if we don't have results (reduces flicker)
-                await MainActor.run {
-                    if self.results.isEmpty {
-                        self.phase = .searching
-                    }
+
+                if results.isEmpty {
+                    phase = .searching
                 }
-                
-                // Perform the actual search (now runs on background thread)
-                try await self.performSearch(trimmed, searchId: searchId)
-                
+
+                try await performSearch(query, searchId: searchId)
             } catch is CancellationError {
-                // Task was cancelled, only clear if this is still the current search
-                await MainActor.run {
-                    if searchId == self.currentSearchId {
-                        self.searchTask = nil
-                    }
+                if searchId == currentSearchId {
+                    searchTask = nil
                 }
-                return
             } catch let urlError as URLError where urlError.code == .cancelled {
-                // URLSession cancelled - treat as silent cancel
-                await MainActor.run {
-                    if searchId == self.currentSearchId {
-                        self.searchTask = nil
-                    }
+                if searchId == currentSearchId {
+                    searchTask = nil
                 }
-                return
             } catch {
-                // Handle other errors
-                await MainActor.run {
-                    if searchId == self.currentSearchId {
-                        self.phase = .error(error.localizedDescription)
-                        self.searchTask = nil
-                    }
+                if searchId == currentSearchId {
+                    phase = .error(error.localizedDescription)
+                    searchTask = nil
                 }
             }
         }
     }
-    
-    // This method now runs on background thread (no @MainActor)
-    private func performSearch(_ q: String, searchId: Int) async throws {
-        // Check if this is still the current search (safe - only reading)
-        let isCurrentSearch = await MainActor.run {
-            searchId == self.currentSearchId
-        }
-        guard isCurrentSearch else { return }
-        
-        // Network call now runs on background thread ✅
-        let page1 = try await client.searchFoods(matching: q, page: 1)
-        
-        // Check if this is still the current search after network call (safe - only reading)
-        let isStillCurrentSearch = await MainActor.run {
-            searchId == self.currentSearchId
-        }
-        guard isStillCurrentSearch else { return }
-        
-        // Check cancellation after network call
+
+    /// Performs the actual search. Runs under MainActor (class-isolated).
+    /// Awaiting the network call does not block the main thread.
+    private func performSearch(_ searchQuery: String, searchId: Int) async throws {
+        // Verify we’re still the current search
+        guard searchId == currentSearchId else { return }
+
+        // Network call (await suspends MainActor while URLSession works off-main)
+        let page1 = try await client.searchFoods(matching: searchQuery, page: 1)
+
+        // Still current after the call?
+        guard searchId == currentSearchId else { return }
+
         try Task.checkCancellation()
-        
-        // UI updates on main actor
-        await MainActor.run {
-            self.results = page1
-            self.phase = .results
-            self.lastSearchQuery = q
-            self.searchTask = nil
-        }
+
+        // Update UI state
+        results = page1
+        phase = .results
+        lastSearchQuery = searchQuery
+        searchTask = nil
     }
 }

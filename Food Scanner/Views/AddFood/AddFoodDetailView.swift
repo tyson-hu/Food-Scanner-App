@@ -5,25 +5,25 @@
 //  Created by Tyson Hu on 9/17/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AddFoodDetailView: View {
     let fdcId: Int
     var onLog: (FoodEntry) -> Void
-    
+
     @Environment(\.appEnv) private var appEnv
     @State private var viewModel: AddFoodDetailViewModel?
-    
+
     init(fdcId: Int, onLog: @escaping (FoodEntry) -> Void) {
         self.fdcId = fdcId
         self.onLog = onLog
     }
-    
+
     var body: some View {
         Group {
-            if let vm = viewModel {
-                detailContent(vm)
+            if let viewModel {
+                detailContent(viewModel)
             } else {
                 ProgressView()
                     .onAppear {
@@ -32,50 +32,77 @@ struct AddFoodDetailView: View {
             }
         }
     }
-    
+
     @ViewBuilder
-    private func detailContent(_ vm: AddFoodDetailViewModel) -> some View {
-        @Bindable var bindableVM = vm
-        
+    private func detailContent(_ viewModel: AddFoodDetailViewModel) -> some View {
+        @Bindable var bindableViewModel = viewModel
+
         Group {
-            switch bindableVM.phase {
+            switch bindableViewModel.phase {
             case .loading:
                 ProgressView()
-                    .task { await vm.load() }
-                
-            case .loaded(let d):
+                    .task { await viewModel.load() }
+
+            case let .loaded(foodDetails):
                 Form {
                     Section {
-                        Stepper(value: $bindableVM.servingMultiplier, in: 0.25...10.0, step: 0.25) {
-                            Text("Serving: \(bindableVM.servingMultiplier, specifier: "%.2f")×")
+                        Stepper(
+                            value: $bindableViewModel.servingMultiplier,
+                            in: 0.25 ... 10.0,
+                            step: 0.25
+                        ) {
+                            Text("Serving: \(String(format: "%.2f", bindableViewModel.servingMultiplier))×")
                         }
                     }
-                    Section("Nutrition (approx)") {
-                        LabeledContent("Calories", value: "\(vm.scaled(d.calories)) kcal")
-                        LabeledContent("Protein",  value: "\(vm.scaled(d.protein)) g")
-                        LabeledContent("Carbs",    value: "\(vm.scaled(d.carbs)) g")
-                        LabeledContent("Fat",      value: "\(vm.scaled(d.fat)) g")
-                    }
-                    Section {
-                        Button("Log to Today") {
-                            let entry = FoodEntry.from(
-                                details: d,
-                                multiplier: bindableVM.servingMultiplier
+
+                    Section("Nutrition") {
+                        HStack {
+                            Text("Calories")
+                            Spacer()
+                            Text("\(Int(Double(foodDetails.calories) * bindableViewModel.servingMultiplier))")
+                        }
+                        HStack {
+                            Text("Protein")
+                            Spacer()
+                            Text(
+                                "\(String(format: "%.1f", Double(foodDetails.protein) * bindableViewModel.servingMultiplier)) g"
                             )
-                            onLog(entry)
+                        }
+                        HStack {
+                            Text("Fat")
+                            Spacer()
+                            Text(
+                                "\(String(format: "%.1f", Double(foodDetails.fat) * bindableViewModel.servingMultiplier)) g"
+                            )
+                        }
+                        HStack {
+                            Text("Carbs")
+                            Spacer()
+                            Text(
+                                "\(String(format: "%.1f", Double(foodDetails.carbs) * bindableViewModel.servingMultiplier)) g"
+                            )
+                        }
+                    }
+
+                    Section {
+                        Button("Log Food") {
+                            onLog(FoodEntry.from(
+                                details: foodDetails,
+                                multiplier: bindableViewModel.servingMultiplier
+                            ))
                         }
                         .buttonStyle(.borderedProminent)
                     }
                 }
-                .navigationTitle(d.name)
-                .navigationBarTitleDisplayMode(.inline)
-                
-            case .error(let msg):
-                ContentUnavailableView(
-                    "Failed to load",
-                    systemImage: "exclamationmark.triangle",
-                    description: Text(msg)
-                )
+
+            case let .error(message):
+                VStack {
+                    Text("Error: \(message)")
+                        .foregroundColor(.red)
+                    Button("Retry") {
+                        Task { await viewModel.load() }
+                    }
+                }
             }
         }
     }
@@ -83,8 +110,8 @@ struct AddFoodDetailView: View {
 
 #Preview("Sample Food Detail") {
     AddFoodDetailView(
-        fdcId: 123456,
-        onLog: {_ in }
+        fdcId: 123_456,
+        onLog: { _ in }
     )
     .environment(\.appEnv, .preview)
 }

@@ -1,72 +1,91 @@
 name: CI
+
 on:
-  pull_request: { branches: [ master ] }
-  push: { branches: [ master ] }
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-test:
+    name: Build & Unit Tests (fast)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
-      # If you need a specific Xcode, uncomment:
-      # - uses: maxim-lobanov/setup-xcode@v1
-      #   with: { xcode-version: '16.2' }
+      - name: Setup Xcode 26
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.0.0'
+
+      - name: Cache SPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.swiftpm
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}-xcode-26.0
+          restore-keys: |
+            ${{ runner.os }}-spm-
 
       - name: Cache DerivedData
         uses: actions/cache@v4
         with:
-          path: |
-            ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift') }}
+          path: ./DerivedData
+          key: ${{ runner.os }}-dd-${{ hashFiles('**/Package.resolved') }}-xcode-26.0
+          restore-keys: |
+            ${{ runner.os }}-dd-
 
-      - name: List schemes (debug aid)
-        run: xcodebuild -list
+      - name: Resolve packages
+        run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
 
-      - name: Build & Test (strict)
+      - name: Preboot iPhone 16 simulator
+        run: |
+          xcrun simctl boot "iPhone 16" || true
+          xcrun simctl bootstatus "iPhone 16" -b
+
+      - name: Build & Unit Tests (PR plan, no coverage)
         run: |
           set -eo pipefail
+          DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')
+          echo "Using destination id: $DEST_ID"
           xcodebuild \
             -scheme "Food Scanner" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -testPlan "FoodScanner-PR" \
+            -destination "id=$DEST_ID" \
+            -derivedDataPath ./DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            ENABLE_PREVIEWS=NO \
             SWIFT_STRICT_CONCURRENCY=complete \
             OTHER_SWIFT_FLAGS='-warnings-as-errors' \
-            -enableCodeCoverage YES \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            -disableAutomaticPackageResolution \
+            -maximum-concurrent-test-simulator-destinations 2 \
             test | xcpretty
         shell: bash
 
   lint:
+    name: Lint (SwiftFormat + SwiftLint)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install SwiftLint
+      - name: Install SwiftLint & SwiftFormat
+        run: brew install swiftlint swiftformat
+      - name: SwiftFormat (lint only)
         run: |
-          brew install swiftlint
-          
-      - name: Install SwiftFormat
-        run: |
-          brew install swiftformat
-          
-      - name: SwiftFormat (check)
-        run: swiftformat --lint "Food Scanner" "FoodScannerTests" "FoodScannerUITests"
-        
+          swiftformat --lint "Food Scanner"
+          swiftformat --lint "FoodScannerTests"
+          swiftformat --lint "FoodScannerUITests"
       - name: SwiftLint (strict)
         run: swiftlint --strict
 
-  codeql:
-    runs-on: macos-latest
-    permissions:
-      security-events: write
-      contents: read
-      actions: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
-        with: { languages: swift }
-      - uses: github/codeql-action/analyze@v3
-
   guards:
+    name: Guards (no TODO/FIXME, no legacy APIs)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -78,3 +97,38 @@ jobs:
         run: |
           if grep -RIn -E 'UIWebView|NSURLConnection' "Food Scanner"; then
             echo "::error::Legacy API detected."; exit 1; fi
+
+  codeql:
+    name: CodeQL (Swift) — pinned to Xcode 16
+    runs-on: macos-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Xcode 16.2
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2'
+      - name: Init CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: swift
+          build-mode: manual
+      - name: Resolve packages
+        run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
+      - name: Build for CodeQL (compile only)
+        run: |
+          set -eo pipefail
+          xcodebuild \
+            -scheme "Food Scanner" \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            -derivedDataPath ./DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build | xcpretty
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3

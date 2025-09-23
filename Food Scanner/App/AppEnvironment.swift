@@ -10,21 +10,21 @@ import SwiftUI
 struct AppEnvironment: Sendable {
     // Services
     let fdcClient: FDCClient
-    
+
     // Utilities
     var dateProvider: () -> Date = { Date() }
-    
+
     // Live composition (decides Mock vs Remote via flag/override)
     static func live() -> AppEnvironment {
         let launch = AppLaunchEnvironment.fromProcess()
         let client = FDCClientFactory.make(env: launch)
         return AppEnvironment(fdcClient: client, dateProvider: { Date() })
     }
-    
+
     // Used as a safe default for previews / if not injected
     static let preview = AppEnvironment(
         fdcClient: FDCMock(),
-        dateProvider: { Date(timeIntervalSince1970: 0)}
+        dateProvider: { Date(timeIntervalSince1970: 0) }
     )
 }
 

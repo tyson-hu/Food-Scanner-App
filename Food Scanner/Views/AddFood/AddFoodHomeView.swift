@@ -18,10 +18,10 @@ struct AddActivation: Equatable {
 struct AddFoodHomeView: View {
     @Binding var activation: AddActivation?
     var onLogged: (FoodEntry) -> Void
-    
+
     @State private var mode: AddFoodMode = .search
     @State private var path: [AddFoodRoute] = []
-    
+
     var body: some View {
         NavigationStack(path: $path) {
             VStack(spacing: 12) {
@@ -32,7 +32,7 @@ struct AddFoodHomeView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
-                
+
                 Group {
                     switch mode {
                     case .search:
@@ -54,7 +54,7 @@ struct AddFoodHomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: AddFoodRoute.self) { route in
                 switch route {
-                case .detail(let id):
+                case let .detail(id):
                     AddFoodDetailView(fdcId: id) { entry in
                         onLogged(entry)
                     }
@@ -66,7 +66,7 @@ struct AddFoodHomeView: View {
             guard let newValue else { return }
             mode = newValue.mode
             path.removeAll()
-            
+
             // reset so future activations re-trigger
             DispatchQueue.main.sync {
                 activation = nil
@@ -78,6 +78,6 @@ struct AddFoodHomeView: View {
 #Preview() {
     @Previewable @State var tab: AppTab = .today
     @Previewable @State var addAvtivation: AddActivation?
-    AddFoodHomeView(activation: $addAvtivation, onLogged: {_ in })
+    AddFoodHomeView(activation: $addAvtivation, onLogged: { _ in })
         .environment(\.appEnv, .preview)
 }

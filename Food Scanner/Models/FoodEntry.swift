@@ -5,8 +5,8 @@
 //  Created by Tyson Hu on 9/17/25.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 @Model
 final class FoodEntry {
@@ -22,7 +22,7 @@ final class FoodEntry {
     var protein: Double = 0.0
     var fat: Double = 0.0
     var carbs: Double = 0.0
-    
+
     init(
         name: String,
         brand: String? = nil,
@@ -47,21 +47,26 @@ final class FoodEntry {
 }
 
 // MARK: - Builder from FDC details
+
 extension FoodEntry {
-    static func from(details d: FDCFoodDetails, multiplier m: Double, at date: Date = Date()) -> FoodEntry {
+    static func from(
+        details foodDetails: FDCFoodDetails,
+        multiplier servingMultiplier: Double,
+        at date: Date = Date()
+    ) -> FoodEntry {
         FoodEntry(
-            name: d.name,
-            brand: d.brand,
-            fdcId: d.id,
-            quantity: m,
-            servingDescription: String(format: "%.2f× serving", m),
-            calories: Double(d.calories) * m,
-            protein:  Double(d.protein)  * m,
-            fat:      Double(d.fat)      * m,
-            carbs:    Double(d.carbs)    * m
+            name: foodDetails.name,
+            brand: foodDetails.brand,
+            fdcId: foodDetails.id,
+            quantity: servingMultiplier,
+            servingDescription: String(format: "%.2f× serving", servingMultiplier),
+            calories: Double(foodDetails.calories) * servingMultiplier,
+            protein: Double(foodDetails.protein) * servingMultiplier,
+            fat: Double(foodDetails.fat) * servingMultiplier,
+            carbs: Double(foodDetails.carbs) * servingMultiplier
         ).withDate(date)
     }
-    
+
     // tiny helper to assign date inline
     private func withDate(_ date: Date) -> FoodEntry {
         self.date = date

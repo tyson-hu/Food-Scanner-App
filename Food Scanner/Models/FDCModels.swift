@@ -26,4 +26,3 @@ public struct FDCFoodDetails: Sendable, Codable, Equatable {
     public let fat: Int
     public let carbs: Int
 }
-

@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class AddFoodDetailViewModel {
     enum Phase: Equatable {
@@ -15,18 +16,18 @@ final class AddFoodDetailViewModel {
         case loaded(FDCFoodDetails)
         case error(String)
     }
-    
+
     let fdcId: Int
     var servingMultiplier: Double = 1.0
     var phase: Phase = .loading
-    
+
     private let client: FDCClient
-    
+
     init(fdcId: Int, client: FDCClient) {
         self.fdcId = fdcId
         self.client = client
     }
-    
+
     func load() async {
         do {
             let details = try await client.fetchFoodDetails(fdcId: fdcId)
@@ -36,7 +37,7 @@ final class AddFoodDetailViewModel {
                 .run { self.phase = .error(error.localizedDescription) }
         }
     }
-    
+
     // Helpers
     func scaled(_ value: Int) -> Int {
         Int((Double(value) * servingMultiplier).rounded())

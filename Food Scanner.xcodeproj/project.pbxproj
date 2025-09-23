@@ -27,12 +27,16 @@
 		842FCEB92E7B365000CD2A5F /* Food Scanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Food Scanner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		842FD2BE2E82E2D300CD2A5F /* FoodScanner-Full.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "FoodScanner-Full.xctestplan"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		842FD2A92E80A74800CD2A5F /* Exceptions for "Food Scanner" folder in "Food Scanner" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Config/Config.Debug.xcconfig,
+				Config/Config.Release.xcconfig,
+				Config/Secrets.example,
 				Config/Secrets.plist,
 			);
 			target = 842FCEB82E7B365000CD2A5F /* Food Scanner */;
@@ -88,6 +92,7 @@
 		842FCEB02E7B365000CD2A5F = {
 			isa = PBXGroup;
 			children = (
+				842FD2BE2E82E2D300CD2A5F /* FoodScanner-Full.xctestplan */,
 				842FCEBB2E7B365000CD2A5F /* Food Scanner */,
 				842FD0C22E7E072C00CD2A5F /* FoodScannerTests */,
 				842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */,
