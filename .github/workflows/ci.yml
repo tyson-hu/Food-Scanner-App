@@ -46,7 +46,7 @@ jobs:
       - name: Build & Unit Tests (no coverage, unit only)
         run: |
           set -eo pipefail
-          xcodebuild             -scheme "Food Scanner"             -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0'             -derivedDataPath ./DerivedData             -only-testing:FoodScannerTests             CODE_SIGNING_ALLOWED=NO             SWIFT_STRICT_CONCURRENCY=complete             OTHER_SWIFT_FLAGS='-warnings-as-errors'             -parallel-testing-enabled YES             -maximum-concurrent-test-simulator-destinations 2             test | xcpretty
+          xcodebuild             -scheme "Food Scanner"             -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.0'             -derivedDataPath ./DerivedData             -only-testing:FoodScannerTests             CODE_SIGNING_ALLOWED=NO             SWIFT_STRICT_CONCURRENCY=complete             OTHER_SWIFT_FLAGS='-warnings-as-errors'             -parallel-testing-enabled YES             -maximum-concurrent-test-simulator-destinations 2             test | xcpretty
         shell: bash
 
   lint:
@@ -82,7 +82,7 @@ jobs:
   codeql:
     name: CodeQL (Swift) — pinned to Xcode 16
     runs-on: macos-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     permissions:
       security-events: write
       contents: read
