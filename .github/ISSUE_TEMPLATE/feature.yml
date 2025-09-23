@@ -1,0 +1,81 @@
+# .github/ISSUE_TEMPLATE/feature.yml
+name: "Feature request"
+description: "Propose a new capability or improvement"
+title: "[Feature] <concise title>"
+labels: ["type: feature"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. Give enough detail for someone else to build it.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences of the problem this solves.
+      placeholder: e.g., Add barcode scanning to Add Food flow.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation / user problem
+      description: Why this matters. Who benefits?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: High-level approach, scope boundaries, and key decisions.
+      placeholder: Brief sketch of UX/API, data flow, performance, and privacy notes.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you evaluated and why they were not chosen.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria (AC)
+      description: Bullet points the reviewer can check off to accept the work.
+      placeholder: |
+        - Search shows results within 500ms debounce
+        - Empty/loading/error states match design
+        - VoiceOver labels for all interactive elements
+    validations:
+      required: true
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: Explicitly call out what this issue will NOT do.
+  - type: textarea
+    id: test_plan
+    attributes:
+      label: Test plan
+      description: How you will validate this (unit/UI/snapshot/manual).
+      placeholder: Cases to cover, fixtures, and automation notes.
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies / blocked by
+      description: Link related issues/PRs, migrations, or external services.
+  - type: input
+    id: milestone
+    attributes:
+      label: Milestone
+      description: Name/ID of the milestone (if any).
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Definition of Done
+      options:
+        - label: Docs updated
+        - label: Telemetry/analytics added (if applicable)
+        - label: Accessibility reviewed
+        - label: Performance impact considered
+        - label: Feature flagged (if risky)
