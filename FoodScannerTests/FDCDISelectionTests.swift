@@ -67,9 +67,27 @@ struct FDCDISelectionTests {
         arguments: [
             TestCase(isRelease: true, builtIn: true, override: false, apiKey: "k", expectedRemote: true),
             TestCase(isRelease: false, builtIn: false, override: false, apiKey: "k", expectedRemote: false),
-            TestCase(isRelease: false, builtIn: true, override: false, apiKey: "k", expectedRemote: true), // Debug + build flag on
-            TestCase(isRelease: false, builtIn: true, override: true, apiKey: "", expectedRemote: false), // Override on but empty key → fallback
-            TestCase(isRelease: true, builtIn: false, override: false, apiKey: nil, expectedRemote: false) // Release wants remote by default, but no key → fallback
+            TestCase(
+                isRelease: false,
+                builtIn: true,
+                override: false,
+                apiKey: "k",
+                expectedRemote: true
+            ), // Debug + build flag on
+            TestCase(
+                isRelease: false,
+                builtIn: true,
+                override: true,
+                apiKey: "",
+                expectedRemote: false
+            ), // Override on but empty key → fallback
+            TestCase(
+                isRelease: true,
+                builtIn: false,
+                override: false,
+                apiKey: nil,
+                expectedRemote: false
+            ) // Release wants remote by default, but no key → fallback
         ]
     )
     func selection_matrix(
