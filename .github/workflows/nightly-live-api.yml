@@ -2,16 +2,18 @@ name: Nightly — Full Tests & Coverage & Live API Smoke
 
 on:
   schedule:
-    - cron: '18 7 * * *'
+    - cron: '18 7 * * *'   # 07:18 UTC daily
   workflow_dispatch:
 
+# Avoid overlapping nightly runs
 concurrency:
   group: ${{ github.workflow }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   nightly:
     runs-on: macos-latest
+    timeout-minutes: 45
     env:
       FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
     steps:
@@ -36,7 +38,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./DerivedData
-          key: ${{ runner.os }}-dd-${{ hashFiles('**/Package.resolved') }}-xcode-26.0
+          key: ${{ runner.os }}-dd-${{ hashFiles('**/Package.resolved', '**/*.xctestplan', '**/*.pbxproj', '**/*.xcscheme', '**/*.xcconfig') }}-xcode-26.0
           restore-keys: |
             ${{ runner.os }}-dd-
 
@@ -47,16 +49,17 @@ jobs:
         run: |
           xcrun simctl boot "iPhone 16" || true
           xcrun simctl bootstatus "iPhone 16" -b
+          DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')
+          echo "DEST_ID=$DEST_ID" >> $GITHUB_ENV
 
       - name: Build & All Tests (with coverage; includes UI tests)
         run: |
           set -eo pipefail
-          DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')
-          echo "Using destination id: $DEST_ID"
           xcodebuild \
             -scheme "Food Scanner" \
             -testPlan "FoodScanner-Full" \
             -destination "id=$DEST_ID" \
+            -destination-timeout 60 \
             -derivedDataPath ./DerivedData \
             -enableCodeCoverage YES \
             CODE_SIGNING_ALLOWED=NO \
@@ -73,11 +76,11 @@ jobs:
         if: env.FDC_API_KEY != ''
         run: |
           set -eo pipefail
-          DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')
           xcodebuild \
             -scheme "Food Scanner" \
             -testPlan "FoodScanner-Full" \
             -destination "id=$DEST_ID" \
+            -destination-timeout 60 \
             -derivedDataPath ./DerivedData \
             -only-testing:IntegrationTests \
             CODE_SIGNING_ALLOWED=NO \
