@@ -2,10 +2,9 @@ name: Nightly — Full Tests & Coverage & Live API Smoke
 
 on:
   schedule:
-    - cron: '18 7 * * *'   # 07:18 UTC daily
+    - cron: '18 7 * * *'
   workflow_dispatch:
 
-# Avoid overlapping nightly runs
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
@@ -49,39 +48,76 @@ jobs:
         run: |
           xcrun simctl boot "iPhone 16" || true
           xcrun simctl bootstatus "iPhone 16" -b
-          DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')
-          echo "DEST_ID=$DEST_ID" >> $GITHUB_ENV
+          echo "DEST_ID=$(xcrun simctl list devices | awk -F '[()]' '/iPhone 16 .*Booted/{print $2; exit}')" >> $GITHUB_ENV
 
-      - name: Build & All Tests (with coverage; includes UI tests)
+      # ---------- Unit tests first (fast, with coverage) ----------
+      - name: Unit tests (coverage)
+        timeout-minutes: 12
         run: |
           set -eo pipefail
           xcodebuild \
             -scheme "Food Scanner" \
             -testPlan "FoodScanner-Full" \
+            -only-testing:FoodScannerTests \
             -destination "id=$DEST_ID" \
             -destination-timeout 60 \
             -derivedDataPath ./DerivedData \
             -enableCodeCoverage YES \
             CODE_SIGNING_ALLOWED=NO \
+            ENABLE_PREVIEWS=NO \
             SWIFT_STRICT_CONCURRENCY=complete \
             OTHER_SWIFT_FLAGS='-warnings-as-errors' \
             -skipPackagePluginValidation \
             -skipMacroValidation \
             -disableAutomaticPackageResolution \
-            -parallel-testing-enabled YES \
             test | xcpretty
-        shell: bash
 
-      - name: Live API smoke (skips if no key)
-        if: env.FDC_API_KEY != ''
+      # ---------- Pre-grant privacy to avoid UI permission alerts ----------
+      - name: Grant sim privacy permissions to app (camera/photos/microphone/notifications)
+        run: |
+          set -eo pipefail
+          BUNDLE_ID=$(xcodebuild -scheme "Food Scanner" -showBuildSettings -json \
+            | plutil -extract 0.buildSettings.PRODUCT_BUNDLE_IDENTIFIER raw - 2>/dev/null)
+          echo "BundleID: $BUNDLE_ID"
+          xcrun simctl privacy "$DEST_ID" grant camera "$BUNDLE_ID" || true
+          xcrun simctl privacy "$DEST_ID" grant photos "$BUNDLE_ID" || true
+          xcrun simctl privacy "$DEST_ID" grant microphone "$BUNDLE_ID" || true
+          xcrun simctl privacy "$DEST_ID" grant notifications "$BUNDLE_ID" || true
+
+      # ---------- UI tests second (serial; tighter timeout) ----------
+      - name: UI tests (serial)
+        timeout-minutes: 20
         run: |
           set -eo pipefail
           xcodebuild \
             -scheme "Food Scanner" \
             -testPlan "FoodScanner-Full" \
+            -only-testing:FoodScannerUITests \
             -destination "id=$DEST_ID" \
             -destination-timeout 60 \
             -derivedDataPath ./DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            ENABLE_PREVIEWS=NO \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            OTHER_SWIFT_FLAGS='-warnings-as-errors' \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            test | xcpretty
+
+      # ---------- Live API smoke (kept tiny; skip if no key) ----------
+      - name: Live API smoke (skips if no key)
+        if: env.FDC_API_KEY != ''
+        timeout-minutes: 8
+        run: |
+          set -eo pipefail
+          xcodebuild \
+            -scheme "Food Scanner" \
+            -testPlan "FoodScanner-Full" \
             -only-testing:IntegrationTests \
+            -destination "id=$DEST_ID" \
+            -destination-timeout 60 \
+            -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             test | xcpretty
