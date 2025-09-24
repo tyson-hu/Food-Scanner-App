@@ -7,23 +7,20 @@
 
 import XCTest
 
+/// Keeps the standard launch performance test, measuring a clean cold start.
 final class FoodScannerUITestsLaunchTests: BaseUITestCase {
-    override static var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
-    }
-
     override var autoLaunch: Bool { false }
 
-    @MainActor
-    func testLaunch() throws {
-        app.launch()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        continueAfterFailure = false
+        // `app` is configured by Base; we intentionally haven't launched yet.
+    }
 
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
-
-        let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Launch Screen"
-        attachment.lifetime = .keepAlways
-        add(attachment)
+    func testLaunchPerformance() throws {
+        measure(metrics: [XCTApplicationLaunchMetric()]) {
+            app.launch()
+            app.tap() // trigger interruption handler once after launch
+        }
     }
 }

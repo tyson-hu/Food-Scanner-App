@@ -1,22 +1,38 @@
+//
+//  BaseUITestCase.swift
+//  BaseUITestCase
+//
+//  Created by Tyson Hu on 9/19/25.
+//
+
 import XCTest
 
-/// Shared base for all UI tests. Handles system alerts & common launch flags.
+/// Shared base for all UI tests. Main-actor isolated to satisfy Swift 6 concurrency.
+@MainActor
 class BaseUITestCase: XCTestCase {
-    /// The app under test. Lazy so it's initialized before first use in setUp.
-    private(set) lazy var app = XCUIApplication()
+    // Backing storage; initialized in setUpWithError() on the main actor.
+    private var _app: XCUIApplication?
 
-    /// Override to disable automatic app launch in setUp (used by LaunchTests).
-    /// Default is `true` so most tests auto-launch.
+    /// Non-optional accessor for tests. If setup didn't run, fail loudly.
+    var app: XCUIApplication {
+        if let app = _app { return app }
+        XCTFail("XCUIApplication not initialized. Did setUpWithError() run?")
+        // Return a fresh instance to avoid crashing; test will already be marked failed.
+        return XCUIApplication()
+    }
+
+    /// Override in subclasses to prevent auto-launch (used by LaunchTests).
     var autoLaunch: Bool { true }
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
 
-        // Touch `app` to ensure it's initialized, then configure it.
-        _ = app
+        // Create and configure on the main actor.
+        let app = XCUIApplication()
         app.launchArguments += ["-ui-tests", "1"]
         app.launchEnvironment["UITESTS"] = "1"
+        _app = app
 
         // One interruption monitor that handles common iOS 17/18 prompts.
         addUIInterruptionMonitor(withDescription: "System Alerts") { alert in
@@ -44,20 +60,21 @@ class BaseUITestCase: XCTestCase {
 
         if autoLaunch {
             app.launch()
-            // Important: interact once so interruption monitor can fire.
+            // Important: a tap gives the interruption monitor a chance to fire.
             app.tap()
         }
     }
 
     override func tearDownWithError() throws {
-        // Optional: keep sims clean
-        if app.state == .runningForeground || app.state == .runningBackground {
+        if let app = _app,
+           app.state == .runningForeground || app.state == .runningBackground {
             app.terminate()
         }
+        _app = nil
         try super.tearDownWithError()
     }
 
-    /// Call this after an action that *should* trigger a system alert.
+    /// Call after an action that *should* trigger a system alert.
     func acknowledgeSystemAlertsIfNeeded() {
         app.tap()
     }
