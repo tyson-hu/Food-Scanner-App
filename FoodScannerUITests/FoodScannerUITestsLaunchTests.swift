@@ -7,18 +7,15 @@
 
 import XCTest
 
-final class FoodScannerUITestsLaunchTests: XCTestCase {
+final class FoodScannerUITestsLaunchTests: BaseUITestCase {
     override static var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
 
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-    }
+    override var autoLaunch: Bool { false }
 
     @MainActor
     func testLaunch() throws {
-        let app = XCUIApplication()
         app.launch()
 
         // Insert steps here to perform after app launch but before taking a screenshot,
