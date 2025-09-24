@@ -25,6 +25,7 @@ class BaseUITestCase: XCTestCase {
     /// Default is `true` so most tests auto-launch.
     var autoLaunch: Bool { true }
 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
@@ -65,6 +66,7 @@ class BaseUITestCase: XCTestCase {
         }
     }
 
+    @MainActor
     override func tearDownWithError() throws {
         if let app = _app,
            app.state == .runningForeground || app.state == .runningBackground {
@@ -75,6 +77,7 @@ class BaseUITestCase: XCTestCase {
     }
 
     /// Call this after an action that *should* trigger a system alert.
+    @MainActor
     func acknowledgeSystemAlertsIfNeeded() {
         app.tap()
     }
