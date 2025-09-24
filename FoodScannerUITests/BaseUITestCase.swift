@@ -12,7 +12,7 @@
 /// - Use MainActor.assumeIsolated { } at the call sites that touch XCUI APIs.
 class BaseUITestCase: XCTestCase {
     // Backing store; only mutate/read inside MainActor.assumeIsolated blocks.
-    private static var _sharedApp: XCUIApplication?
+    @MainActor private static var _sharedApp: XCUIApplication?
 
     /// Non-optional accessor. Lazily creates/configures the app the first time.
     var app: XCUIApplication {
