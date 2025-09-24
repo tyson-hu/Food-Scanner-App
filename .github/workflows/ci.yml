@@ -138,68 +138,66 @@ jobs:
                       print(r["identifier"])
                       break
           PY
-          )
-          if [ -z "${RUNTIME:-}" ]; then
-            echo "JSON parse empty/failed — falling back to text"
-            RUNTIME=$(xcrun simctl list runtimes \
-              | awk '/iOS 26[.]0/ {for(i=1;i<=NF;i++){if($i ~ /com\.apple\.CoreSimulator\.SimRuntime\.iOS-26/){print $i; exit}}}')
-          fi
-          [ -z "${RUNTIME:-}" ] && { echo "::error::Could not resolve iOS 26 runtime from simctl."; exit 1; }
-          echo "Using runtime: ${RUNTIME}"
-      
-          # Resolve the device type identifier for "iPhone 16" (JSON first, text fallback)
-          DEVTYPE=$(
-            { xcrun simctl list -j devicetypes 2>/dev/null || true; } \
-            | /usr/bin/python3 - <<'PY' || true
-      import sys, json
-      try:
-          data=json.load(sys.stdin)
-      except Exception:
-          sys.exit(2)
-      for d in data.get("devicetypes", []):
-          if d.get("name")=="iPhone 16" and d.get("identifier"):
-              print(d["identifier"])
-              break
-      PY
-          )
-          if [ -z "${DEVTYPE:-}" ]; then
-            DEVTYPE=$(xcrun simctl list devicetypes \
-              | awk -F '[()]' '/^iPhone 16[[:space:]]\(/ {print $2; exit}')
-          fi
-          [ -z "${DEVTYPE:-}" ] && { echo "::error::Device type 'iPhone 16' not found."; xcrun simctl list devicetypes; exit 1; }
-          echo "Using device type: ${DEVTYPE}"
-      
-          NAME="CI-iPhone-16-$(date +%s)"
-          UDID=$(xcrun simctl create "${NAME}" "${DEVTYPE}" "${RUNTIME}")
-          echo "Created device: ${UDID}"
-      
-          # Boot and wait (no 'bootstatus -t' on this image)
-          boot_and_wait () {
-            local _udid="$1"
-            echo "Booting ${_udid}..."
-            xcrun simctl boot "${_udid}" || true
-            for i in $(seq 1 120); do
-              if xcrun simctl list devices | grep -q "${_udid}) (Booted"; then
-                echo "Booted: ${_udid}"
-                return 0
+              )
+              if [ -z "${RUNTIME:-}" ]; then
+                echo "JSON parse empty/failed — falling back to text"
+                RUNTIME=$(xcrun simctl list runtimes \
+                  | awk '/iOS 26[.]0/ {for(i=1;i<=NF;i++){if($i ~ /com\.apple\.CoreSimulator\.SimRuntime\.iOS-26/){print $i; exit}}}')
               fi
-              sleep 1
-            done
-            echo "Boot wait timed out for ${_udid}"
-            return 1
-          }
-      
-          if ! boot_and_wait "${UDID}"; then
-            echo "Erasing and retrying..."
-            xcrun simctl shutdown "${UDID}" || true
-            xcrun simctl erase "${UDID}" || true
-            boot_and_wait "${UDID}" || { echo "::error::Simulator failed to boot after retry."; xcrun simctl list devices; exit 1; }
-          fi
-      
-          echo "DEST_ID=${UDID}" >> "$GITHUB_ENV"
-          echo "UDID=${UDID}" >> "$GITHUB_OUTPUT"
-      
-        
+              [ -z "${RUNTIME:-}" ] && { echo "::error::Could not resolve iOS 26 runtime from simctl."; exit 1; }
+              echo "Using runtime: ${RUNTIME}"
+          
+              # Resolve the device type identifier for "iPhone 16" (JSON first, text fallback)
+              DEVTYPE=$(
+                { xcrun simctl list -j devicetypes 2>/dev/null || true; } \
+                | /usr/bin/python3 - <<'PY' || true
+          import sys, json
+          try:
+              data=json.load(sys.stdin)
+          except Exception:
+              sys.exit(2)
+          for d in data.get("devicetypes", []):
+              if d.get("name")=="iPhone 16" and d.get("identifier"):
+                  print(d["identifier"])
+                  break
+          PY
+              )
+              if [ -z "${DEVTYPE:-}" ]; then
+                DEVTYPE=$(xcrun simctl list devicetypes \
+                  | awk -F '[()]' '/^iPhone 16[[:space:]]\(/ {print $2; exit}')
+              fi
+              [ -z "${DEVTYPE:-}" ] && { echo "::error::Device type 'iPhone 16' not found."; xcrun simctl list devicetypes; exit 1; }
+              echo "Using device type: ${DEVTYPE}"
+          
+              NAME="CI-iPhone-16-$(date +%s)"
+              UDID=$(xcrun simctl create "${NAME}" "${DEVTYPE}" "${RUNTIME}")
+              echo "Created device: ${UDID}"
+          
+              # Boot and wait (no 'bootstatus -t' on this image)
+              boot_and_wait () {
+                local _udid="$1"
+                echo "Booting ${_udid}..."
+                xcrun simctl boot "${_udid}" || true
+                for i in $(seq 1 120); do
+                  if xcrun simctl list devices | grep -q "${_udid}) (Booted"; then
+                    echo "Booted: ${_udid}"
+                    return 0
+                  fi
+                  sleep 1
+                done
+                echo "Boot wait timed out for ${_udid}"
+                return 1
+              }
+          
+              if ! boot_and_wait "${UDID}"; then
+                echo "Erasing and retrying..."
+                xcrun simctl shutdown "${UDID}" || true
+                xcrun simctl erase "${UDID}" || true
+                boot_and_wait "${UDID}" || { echo "::error::Simulator failed to boot after retry."; xcrun simctl list devices; exit 1; }
+              fi
+          
+              echo "DEST_ID=${UDID}" >> "$GITHUB_ENV"
+              echo "UDID=${UDID}" >> "$GITHUB_OUTPUT"
 
       - name: Build & Unit Tests (PR plan, no coverage)
         timeout-minutes: 10
