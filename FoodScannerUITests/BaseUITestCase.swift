@@ -7,32 +7,32 @@
 
 import XCTest
 
-/// Shared base for all UI tests. Main-actor isolated to satisfy Swift 6 concurrency.
+/// Shared base for all UI tests. Handles system alerts & common launch flags.
 @MainActor
 class BaseUITestCase: XCTestCase {
-    // Backing storage; initialized in setUpWithError() on the main actor.
+    /// The app under test. Private to avoid SwiftLint violation.
     private var _app: XCUIApplication?
 
-    /// Non-optional accessor for tests. If setup didn't run, fail loudly.
+    /// The app under test. Computed property for clean test code.
     var app: XCUIApplication {
-        if let app = _app { return app }
-        XCTFail("XCUIApplication not initialized. Did setUpWithError() run?")
-        // Return a fresh instance to avoid crashing; test will already be marked failed.
-        return XCUIApplication()
+        guard let app = _app else {
+            fatalError("App not initialized. Make sure setUpWithError() is called.")
+        }
+        return app
     }
 
-    /// Override in subclasses to prevent auto-launch (used by LaunchTests).
+    /// Override to disable automatic app launch in setUp (used by LaunchTests).
+    /// Default is `true` so most tests auto-launch.
     var autoLaunch: Bool { true }
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
 
-        // Create and configure on the main actor.
-        let app = XCUIApplication()
+        _app = XCUIApplication()
+        // Flags/environment your app can look for to tweak behavior in UI tests.
         app.launchArguments += ["-ui-tests", "1"]
         app.launchEnvironment["UITESTS"] = "1"
-        _app = app
 
         // One interruption monitor that handles common iOS 17/18 prompts.
         addUIInterruptionMonitor(withDescription: "System Alerts") { alert in
@@ -52,7 +52,7 @@ class BaseUITestCase: XCTestCase {
             if allPhotos.exists { allPhotos.tap(); return true }
 
             // Notifications variants
-            if alert.buttons["Don’t Allow"].exists { alert.buttons["Don’t Allow"].tap(); return true }
+            if alert.buttons["Don't Allow"].exists { alert.buttons["Don't Allow"].tap(); return true }
             if alert.buttons["Allow"].exists { alert.buttons["Allow"].tap(); return true }
 
             return false
@@ -60,7 +60,7 @@ class BaseUITestCase: XCTestCase {
 
         if autoLaunch {
             app.launch()
-            // Important: a tap gives the interruption monitor a chance to fire.
+            // Important: interact once so interruption monitor can fire.
             app.tap()
         }
     }
@@ -74,7 +74,7 @@ class BaseUITestCase: XCTestCase {
         try super.tearDownWithError()
     }
 
-    /// Call after an action that *should* trigger a system alert.
+    /// Call this after an action that *should* trigger a system alert.
     func acknowledgeSystemAlertsIfNeeded() {
         app.tap()
     }
