@@ -1,16 +1,9 @@
-//
-//  BaseUITestCase.swift
-//  Food Scanner
-//
-//  Created by Tyson Hu on 9/24/25.
-//
-
 import XCTest
 
 /// Shared base for all UI tests. Handles system alerts & common launch flags.
 class BaseUITestCase: XCTestCase {
-    /// The app under test.
-    var app: XCUIApplication?
+    /// The app under test. Lazy so it's initialized before first use in setUp.
+    private(set) lazy var app = XCUIApplication()
 
     /// Override to disable automatic app launch in setUp (used by LaunchTests).
     /// Default is `true` so most tests auto-launch.
@@ -20,31 +13,13 @@ class BaseUITestCase: XCTestCase {
         try super.setUpWithError()
         continueAfterFailure = false
 
-        app = XCUIApplication()
-        // Flags/environment your app can look for to tweak behavior in UI tests.
-        app?.launchArguments += ["-ui-tests", "1"]
-        app?.launchEnvironment["UITESTS"] = "1"
+        // Touch `app` to ensure it's initialized, then configure it.
+        _ = app
+        app.launchArguments += ["-ui-tests", "1"]
+        app.launchEnvironment["UITESTS"] = "1"
 
-        // Set up comprehensive UI interruption monitors
-        setupUIInterruptionMonitors()
-
-        if autoLaunch {
-            app?.launch()
-            // Important: interact once so interruption monitor can fire.
-            app?.tap()
-        }
-    }
-
-    override func tearDownWithError() throws {
-        app = nil
-        try super.tearDownWithError()
-    }
-
-    /// Set up all UI interruption monitors for comprehensive alert handling
-    private func setupUIInterruptionMonitors() {
-        // Monitor 1: System Alerts (permissions, notifications, etc.)
+        // One interruption monitor that handles common iOS 17/18 prompts.
         addUIInterruptionMonitor(withDescription: "System Alerts") { alert in
-            // Try common buttons first.
             let buttons = [
                 "Allow", "OK",
                 "While Using the App", "Allow While Using App", "Allow Once",
@@ -60,89 +35,30 @@ class BaseUITestCase: XCTestCase {
             let allPhotos = alert.collectionViews.buttons["Allow Access to All Photos"]
             if allPhotos.exists { allPhotos.tap(); return true }
 
-            // Notifications "Don't Allow"/"Allow" sheet variants
-            if alert.buttons["Don't Allow"].exists { alert.buttons["Don't Allow"].tap(); return true }
+            // Notifications variants
+            if alert.buttons["Don’t Allow"].exists { alert.buttons["Don’t Allow"].tap(); return true }
             if alert.buttons["Allow"].exists { alert.buttons["Allow"].tap(); return true }
 
             return false
         }
 
-        // Monitor 2: Camera and Photo Library Permissions
-        addUIInterruptionMonitor(withDescription: "Camera/Photo Permissions") { alert in
-            let cameraButtons = ["Allow", "OK", "While Using the App", "Allow While Using App"]
-            for button in cameraButtons where alert.buttons[button].exists {
-                alert.buttons[button].tap()
-                return true
-            }
-            return false
+        if autoLaunch {
+            app.launch()
+            // Important: interact once so interruption monitor can fire.
+            app.tap()
         }
+    }
 
-        // Monitor 3: Location Services
-        addUIInterruptionMonitor(withDescription: "Location Services") { alert in
-            let locationButtons = ["Allow", "Allow While Using App", "Allow Once", "Don't Allow"]
-            for button in locationButtons where alert.buttons[button].exists {
-                alert.buttons[button].tap()
-                return true
-            }
-            return false
+    override func tearDownWithError() throws {
+        // Optional: keep sims clean
+        if app.state == .runningForeground || app.state == .runningBackground {
+            app.terminate()
         }
-
-        // Monitor 4: Network and Connectivity
-        addUIInterruptionMonitor(withDescription: "Network Alerts") { alert in
-            let networkButtons = ["OK", "Continue", "Retry", "Cancel", "Settings"]
-            for button in networkButtons where alert.buttons[button].exists {
-                alert.buttons[button].tap()
-                return true
-            }
-            return false
-        }
-
-        // Monitor 5: Generic System Dialogs
-        addUIInterruptionMonitor(withDescription: "Generic System Dialogs") { alert in
-            // Handle any remaining system dialogs
-            let genericButtons = ["OK", "Cancel", "Done", "Close", "Dismiss"]
-            for button in genericButtons where alert.buttons[button].exists {
-                alert.buttons[button].tap()
-                return true
-            }
-            return false
-        }
+        try super.tearDownWithError()
     }
 
     /// Call this after an action that *should* trigger a system alert.
     func acknowledgeSystemAlertsIfNeeded() {
-        // A lightweight poke that gives the monitor a chance to run.
-        app?.tap()
-    }
-
-    /// Wait for and handle any system alerts that might appear
-    func handleSystemAlerts(timeout: TimeInterval = 5.0) {
-        guard let app else { return }
-
-        let startTime = Date()
-        while Date().timeIntervalSince(startTime) < timeout {
-            if !app.alerts.isEmpty {
-                acknowledgeSystemAlertsIfNeeded()
-                // Small delay to allow interruption monitors to process
-                Thread.sleep(forTimeInterval: 0.5)
-            } else {
-                break
-            }
-        }
-    }
-
-    /// Tap an element and handle any resulting system alerts
-    func tapAndHandleAlerts(_ element: XCUIElement, timeout: TimeInterval = 5.0) {
-        XCTAssertTrue(element.waitForExistence(timeout: timeout), "Element not found: \(element)")
-        element.tap()
-        handleSystemAlerts()
-    }
-
-    /// Type text and handle any resulting system alerts
-    func typeTextAndHandleAlerts(_ text: String, in element: XCUIElement, timeout: TimeInterval = 5.0) {
-        XCTAssertTrue(element.waitForExistence(timeout: timeout), "Element not found: \(element)")
-        element.tap()
-        element.typeText(text)
-        handleSystemAlerts()
+        app.tap()
     }
 }
