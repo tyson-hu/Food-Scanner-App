@@ -12,16 +12,20 @@
 /// - Use MainActor.assumeIsolated { } at the call sites that touch XCUI APIs.
 class BaseUITestCase: XCTestCase {
     // Backing store; only mutate/read inside MainActor.assumeIsolated blocks.
-    private var _app: XCUIApplication?
+    private static var _sharedApp: XCUIApplication?
 
     /// Non-optional accessor. Lazily creates/configures the app the first time.
     var app: XCUIApplication {
+        BaseUITestCase.getApp()
+    }
+
+    private static func getApp() -> XCUIApplication {
         MainActor.assumeIsolated {
-            if let existingApp = _app { return existingApp }
+            if let existingApp = _sharedApp { return existingApp }
             let appInstance = XCUIApplication()
             appInstance.launchArguments += ["-ui-tests", "1"]
             appInstance.launchEnvironment["UITESTS"] = "1"
-            _app = appInstance
+            _sharedApp = appInstance
             return appInstance
         }
     }
@@ -61,6 +65,7 @@ class BaseUITestCase: XCTestCase {
 
         if autoLaunch {
             MainActor.assumeIsolated {
+                let app = BaseUITestCase.getApp()
                 app.launch()
                 // Poke once so the interruption monitor can fire.
                 app.tap()
@@ -70,17 +75,17 @@ class BaseUITestCase: XCTestCase {
 
     override func tearDownWithError() throws {
         MainActor.assumeIsolated {
-            if let appInstance = _app,
+            if let appInstance = BaseUITestCase._sharedApp,
                appInstance.state == .runningForeground || appInstance.state == .runningBackground {
                 appInstance.terminate()
             }
-            _app = nil
+            BaseUITestCase._sharedApp = nil
         }
         try super.tearDownWithError()
     }
 
     /// Call this after an action that *should* trigger a system alert.
     func acknowledgeSystemAlertsIfNeeded() {
-        MainActor.assumeIsolated { app.tap() }
+        MainActor.assumeIsolated { BaseUITestCase.getApp().tap() }
     }
 }
