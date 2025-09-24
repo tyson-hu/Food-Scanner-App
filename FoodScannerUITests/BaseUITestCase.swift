@@ -5,80 +5,82 @@
 //  Created by Tyson Hu on 9/19/25.
 //
 
-import XCTest
+@preconcurrency import XCTest
 
-/// Shared base for all UI tests. Handles system alerts & common launch flags.
-@MainActor
+/// Shared base for all UI tests.
+/// - No @MainActor on the class or overrides (so we match XCTestCase signatures).
+/// - Use MainActor.assumeIsolated { } at the call sites that touch XCUI APIs.
 class BaseUITestCase: XCTestCase {
-    /// The app under test. Private to avoid SwiftLint violation.
+    // Backing store; only mutate/read inside MainActor.assumeIsolated blocks.
     private var _app: XCUIApplication?
 
-    /// The app under test. Computed property for clean test code.
+    /// Non-optional accessor. Lazily creates/configures the app the first time.
     var app: XCUIApplication {
-        guard let app = _app else {
-            fatalError("App not initialized. Make sure setUpWithError() is called.")
+        MainActor.assumeIsolated {
+            if let existingApp = _app { return existingApp }
+            let appInstance = XCUIApplication()
+            appInstance.launchArguments += ["-ui-tests", "1"]
+            appInstance.launchEnvironment["UITESTS"] = "1"
+            _app = appInstance
+            return appInstance
         }
-        return app
     }
 
-    /// Override to disable automatic app launch in setUp (used by LaunchTests).
-    /// Default is `true` so most tests auto-launch.
+    /// Override in subclasses to prevent auto-launch (used by LaunchTests).
     var autoLaunch: Bool { true }
 
-    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
 
-        _app = XCUIApplication()
-        // Flags/environment your app can look for to tweak behavior in UI tests.
-        app.launchArguments += ["-ui-tests", "1"]
-        app.launchEnvironment["UITESTS"] = "1"
-
-        // One interruption monitor that handles common iOS 17/18 prompts.
+        // Handle common system alerts (camera/photos/mic/notifications/paste).
         addUIInterruptionMonitor(withDescription: "System Alerts") { alert in
-            let buttons = [
-                "Allow", "OK",
-                "While Using the App", "Allow While Using App", "Allow Once",
-                "Keep Only While Using",
-                "Allow All Photos", "Allow Access to All Photos",
-                "Allow Paste", "Connect", "Join", "Continue",
-            ]
-            for title in buttons where alert.buttons[title].exists {
-                alert.buttons[title].tap()
-                return true
+            MainActor.assumeIsolated {
+                let buttons = [
+                    "Allow", "OK",
+                    "While Using the App", "Allow While Using App", "Allow Once",
+                    "Keep Only While Using",
+                    "Allow All Photos", "Allow Access to All Photos",
+                    "Allow Paste", "Connect", "Join", "Continue",
+                ]
+                for title in buttons where alert.buttons[title].exists {
+                    alert.buttons[title].tap()
+                    return true
+                }
+                // Photos sheet variant (collection view) on newer iOS
+                let allPhotos = alert.collectionViews.buttons["Allow Access to All Photos"]
+                if allPhotos.exists { allPhotos.tap(); return true }
+
+                // Notifications variants
+                if alert.buttons["Don’t Allow"].exists { alert.buttons["Don’t Allow"].tap(); return true }
+                if alert.buttons["Allow"].exists { alert.buttons["Allow"].tap(); return true }
+
+                return false
             }
-            // Photos permission sometimes shows as a collection view in iOS 18.
-            let allPhotos = alert.collectionViews.buttons["Allow Access to All Photos"]
-            if allPhotos.exists { allPhotos.tap(); return true }
-
-            // Notifications variants
-            if alert.buttons["Don't Allow"].exists { alert.buttons["Don't Allow"].tap(); return true }
-            if alert.buttons["Allow"].exists { alert.buttons["Allow"].tap(); return true }
-
-            return false
         }
 
         if autoLaunch {
-            app.launch()
-            // Important: interact once so interruption monitor can fire.
-            app.tap()
+            MainActor.assumeIsolated {
+                app.launch()
+                // Poke once so the interruption monitor can fire.
+                app.tap()
+            }
         }
     }
 
-    @MainActor
     override func tearDownWithError() throws {
-        if let app = _app,
-           app.state == .runningForeground || app.state == .runningBackground {
-            app.terminate()
+        MainActor.assumeIsolated {
+            if let appInstance = _app,
+               appInstance.state == .runningForeground || appInstance.state == .runningBackground {
+                appInstance.terminate()
+            }
+            _app = nil
         }
-        _app = nil
         try super.tearDownWithError()
     }
 
     /// Call this after an action that *should* trigger a system alert.
-    @MainActor
     func acknowledgeSystemAlertsIfNeeded() {
-        app.tap()
+        MainActor.assumeIsolated { app.tap() }
     }
 }

@@ -5,7 +5,7 @@
 //  Created by Tyson Hu on 9/19/25.
 //
 
-import XCTest
+@preconcurrency import XCTest
 
 final class FoodScannerUITests: BaseUITestCase {
     @MainActor
