@@ -14,6 +14,9 @@ final class FoodScannerUITestsLaunchTests: BaseUITestCase {
     func testLaunchPerformance() throws {
         measure(metrics: [XCTApplicationLaunchMetric()]) {
             MainActor.assumeIsolated {
+                let app = XCUIApplication()
+                app.launchArguments += ["-ui-tests", "1"]
+                app.launchEnvironment["UITESTS"] = "1"
                 app.launch()
                 app.tap() // trigger the interruption monitor once
             }
