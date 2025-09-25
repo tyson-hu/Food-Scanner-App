@@ -5,18 +5,11 @@
 //  Created by Tyson Hu on 9/19/25.
 //
 
-import XCTest
+@preconcurrency import XCTest
 
 @MainActor
-final class AddFlowUITests: XCTestCase {
-    override func setUp() {
-        continueAfterFailure = false
-    }
-
+final class AddFlowUITests: BaseUITestCase {
     func test_AddFood_search_detail_log_updates_today() {
-        let app = XCUIApplication()
-        app.launch()
-
         // Go to Add tab
         let addTab = app.tabBars.buttons["Add"]
         XCTAssertTrue(addTab.waitForExistence(timeout: 3), "Add tab not found")

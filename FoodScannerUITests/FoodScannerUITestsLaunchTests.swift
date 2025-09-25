@@ -5,28 +5,21 @@
 //  Created by Tyson Hu on 9/19/25.
 //
 
-import XCTest
+@preconcurrency import XCTest
 
-final class FoodScannerUITestsLaunchTests: XCTestCase {
-    override static var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
-    }
+/// Measures a clean cold start without auto-launch from BaseUITestCase.
+final class FoodScannerUITestsLaunchTests: BaseUITestCase {
+    override var autoLaunch: Bool { false }
 
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-    }
-
-    @MainActor
-    func testLaunch() throws {
-        let app = XCUIApplication()
-        app.launch()
-
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
-
-        let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Launch Screen"
-        attachment.lifetime = .keepAlways
-        add(attachment)
+    func testLaunchPerformance() throws {
+        measure(metrics: [XCTApplicationLaunchMetric()]) {
+            MainActor.assumeIsolated {
+                let app = XCUIApplication()
+                app.launchArguments += ["-ui-tests", "1"]
+                app.launchEnvironment["UITESTS"] = "1"
+                app.launch()
+                app.tap() // trigger the interruption monitor once
+            }
+        }
     }
 }
