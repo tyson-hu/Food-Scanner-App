@@ -392,6 +392,35 @@ struct FDCNutrient: Codable {
 
 // MARK: - Conversion Extensions
 
+// Helper struct for nutrient parsing
+private struct NutrientValues {
+    var calories: Double = 0
+    var protein: Double = 0
+    var fat: Double = 0
+    var carbs: Double = 0
+
+    mutating func parseNutrient(id: Int, amount: Double) {
+        switch id {
+        case 1008: // Energy (kcal) - primary energy nutrient
+            calories = amount
+        case 2047, 2048: // Energy (Atwater General Factors or Specific Factors) - fallback
+            if calories == 0 {
+                calories = amount
+            }
+        case 1002: // Nitrogen - convert to protein (multiply by 6.25)
+            protein = amount * 6.25
+        case 1003: // Protein (if directly available)
+            protein = amount
+        case 1004: // Total lipid (fat)
+            fat = amount
+        case 1005: // Carbohydrate, by difference
+            carbs = amount
+        default:
+            break
+        }
+    }
+}
+
 extension ProxyFoodItem {
     func toFDCFoodSummary() -> FDCFoodSummary {
         // Map fields according to the issue specification
@@ -414,32 +443,14 @@ extension ProxyFoodItem {
     }
 
     func toFDCFoodDetails() -> FDCFoodDetails {
-        // Extract nutrients by searching through available nutrients
-        var calories: Double = 0
-        var protein: Double = 0
-        var fat: Double = 0
-        var carbs: Double = 0
+        var nutrientValues = NutrientValues()
 
-        // Search through all nutrients to find the ones we need
+        // Parse nutrients from foodNutrients array
         if let nutrients = foodNutrients {
             for nutrient in nutrients {
                 guard let nutrientId = nutrient.nutrient?.id,
                       let amount = nutrient.amount else { continue }
-
-                switch nutrientId {
-                case 2047, 2048: // Energy (Atwater General Factors or Specific Factors)
-                    calories = amount
-                case 1002: // Nitrogen - convert to protein (multiply by 6.25)
-                    protein = amount * 6.25
-                case 1003: // Protein (if directly available)
-                    protein = amount
-                case 1004: // Total lipid (fat)
-                    fat = amount
-                case 1005: // Carbohydrate, by difference
-                    carbs = amount
-                default:
-                    break
-                }
+                nutrientValues.parseNutrient(id: nutrientId, amount: amount)
             }
         }
 
@@ -449,10 +460,10 @@ extension ProxyFoodItem {
             id: fdcId,
             name: description.trimmingCharacters(in: .whitespacesAndNewlines),
             brand: brand.isEmpty ? nil : brand,
-            calories: Int(calories),
-            protein: Int(protein),
-            fat: Int(fat),
-            carbs: Int(carbs)
+            calories: Int(nutrientValues.calories),
+            protein: Int(nutrientValues.protein),
+            fat: Int(nutrientValues.fat),
+            carbs: Int(nutrientValues.carbs)
         )
     }
 }
@@ -460,32 +471,14 @@ extension ProxyFoodItem {
 // Conversion extension for ProxyFoodDetailResponse
 extension ProxyFoodDetailResponse {
     func toFDCFoodDetails() -> FDCFoodDetails {
-        // Extract nutrients by searching through available nutrients
-        var calories: Double = 0
-        var protein: Double = 0
-        var fat: Double = 0
-        var carbs: Double = 0
+        var nutrientValues = NutrientValues()
 
-        // Search through all nutrients to find the ones we need
+        // Parse nutrients from foodNutrients array
         if let nutrients = foodNutrients {
             for nutrient in nutrients {
                 guard let nutrientId = nutrient.nutrient?.id,
                       let amount = nutrient.amount else { continue }
-
-                switch nutrientId {
-                case 2047, 2048: // Energy (Atwater General Factors or Specific Factors)
-                    calories = amount
-                case 1002: // Nitrogen - convert to protein (multiply by 6.25)
-                    protein = amount * 6.25
-                case 1003: // Protein (if directly available)
-                    protein = amount
-                case 1004: // Total lipid (fat)
-                    fat = amount
-                case 1005: // Carbohydrate, by difference
-                    carbs = amount
-                default:
-                    break
-                }
+                nutrientValues.parseNutrient(id: nutrientId, amount: amount)
             }
         }
 
@@ -495,10 +488,10 @@ extension ProxyFoodDetailResponse {
             id: fdcId,
             name: description.trimmingCharacters(in: .whitespacesAndNewlines),
             brand: brand.isEmpty ? nil : brand,
-            calories: Int(calories),
-            protein: Int(protein),
-            fat: Int(fat),
-            carbs: Int(carbs)
+            calories: Int(nutrientValues.calories),
+            protein: Int(nutrientValues.protein),
+            fat: Int(nutrientValues.fat),
+            carbs: Int(nutrientValues.carbs)
         )
     }
 }

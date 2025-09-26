@@ -37,9 +37,10 @@ struct FDCProxyClient: FDCClient {
         guard !trimmed.isEmpty, trimmed.count >= 2 else { return [] }
 
         let url = try buildSearchURL(query: trimmed, page: page)
+        let request = buildRequest(for: url)
 
         do {
-            let (data, response) = try await session.data(from: url)
+            let (data, response) = try await session.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw FDCError.invalidResponse
@@ -61,9 +62,10 @@ struct FDCProxyClient: FDCClient {
 
     func fetchFoodDetails(fdcId: Int) async throws -> FDCFoodDetails {
         let url = try buildFoodDetailsURL(fdcId: fdcId)
+        let request = buildRequest(for: url)
 
         do {
-            let (data, response) = try await session.data(from: url)
+            let (data, response) = try await session.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw FDCError.invalidResponse
@@ -85,9 +87,10 @@ struct FDCProxyClient: FDCClient {
 
     func fetchFoodDetailResponse(fdcId: Int) async throws -> ProxyFoodDetailResponse {
         let url = try buildFoodDetailsURL(fdcId: fdcId)
+        let request = buildRequest(for: url)
 
         do {
-            let (data, response) = try await session.data(from: url)
+            let (data, response) = try await session.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw FDCError.invalidResponse
