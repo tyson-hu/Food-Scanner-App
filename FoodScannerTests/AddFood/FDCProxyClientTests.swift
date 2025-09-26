@@ -126,8 +126,6 @@ struct FDCProxyClientTests {
     @Test("Proxy client fetch raw detail response for FDC ID 2503998")
     @MainActor
     func proxy_client_fetch_raw_detail_response_2503998() async throws {
-        let client = FDCClientFactory.makeProxyClient()
-
         // We need to test the raw response to see what data is actually available
         guard let url = URL(string: "https://api.calry.org/food/2503998") else {
             #expect(Bool(false), "Invalid URL")
