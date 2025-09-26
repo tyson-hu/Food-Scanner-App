@@ -13,7 +13,7 @@ import Observation
 final class AddFoodDetailViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FDCFoodDetails)
+        case loaded(ProxyFoodDetailResponse)
         case error(String)
     }
 
@@ -30,8 +30,9 @@ final class AddFoodDetailViewModel {
 
     func load() async {
         do {
-            let details = try await client.fetchFoodDetails(fdcId: fdcId)
-            await MainActor.run { self.phase = .loaded(details) }
+            // Use the new method to fetch the full ProxyFoodDetailResponse
+            let proxyResponse = try await client.fetchFoodDetailResponse(fdcId: fdcId)
+            await MainActor.run { self.phase = .loaded(proxyResponse) }
         } catch {
             await MainActor
                 .run { self.phase = .error(error.localizedDescription) }
@@ -41,5 +42,9 @@ final class AddFoodDetailViewModel {
     // Helpers
     func scaled(_ value: Int) -> Int {
         Int((Double(value) * servingMultiplier).rounded())
+    }
+
+    func scaled(_ value: Double) -> Double {
+        value * servingMultiplier
     }
 }

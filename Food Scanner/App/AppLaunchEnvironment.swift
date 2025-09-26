@@ -11,7 +11,6 @@ struct AppLaunchEnvironment {
     let isRelease: Bool
     let buildDefaultRemote: Bool
     let runtimeOverrideRemote: Bool
-    let apiKey: String?
 
     static let runtimeKey = "feature.fdcRemote" // Debug-only toggle
 
@@ -31,13 +30,10 @@ struct AppLaunchEnvironment {
             let override = false
         #endif
 
-        let apiKey = FDCAPIKeyProvider.make().loadAPIKey()
-
         return .init(
             isRelease: isRelease,
             buildDefaultRemote: builtIn,
-            runtimeOverrideRemote: override,
-            apiKey: apiKey
+            runtimeOverrideRemote: override
         )
     }
 }

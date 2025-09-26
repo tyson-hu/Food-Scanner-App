@@ -20,7 +20,7 @@ struct SettingsView: View {
         Form {
             #if DEBUG
                 Section("Developer") {
-                    Toggle("Use live FDC (remote)", isOn: $useRemote)
+                    Toggle("Use FDC Proxy", isOn: $useRemote)
                         .onChange(of: useRemote) { _, newValue in
                             UserDefaults.standard.set(
                                 newValue,
@@ -63,7 +63,7 @@ struct SettingsView: View {
     }
 
     private var activeClientName: String {
-        (appEnv.fdcClient is FDCRemoteClient) ? "Remote" : "Mock"
+        (appEnv.fdcClient is FDCProxyClient) ? "Proxy" : "Mock"
     }
 }
 

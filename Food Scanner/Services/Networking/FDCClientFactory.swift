@@ -10,25 +10,36 @@ import Foundation
 enum FDCClientFactory {
     static func make(env: AppLaunchEnvironment) -> FDCClient {
         // Precedence: runtime override -> build flag -> configuration default (Release)
-        let wantsRemote = env.runtimeOverrideRemote || env.buildDefaultRemote || env.isRelease
+        let wantsProxy = env.runtimeOverrideRemote || env.buildDefaultRemote || env.isRelease
 
-        if wantsRemote {
-            if let key = env.apiKey, !key.isEmpty {
-                #if DEBUG
-                    debugPrint("FDC DI: Selecting FDCRemoteClient (key present).")
-                #endif
-                return FDCRemoteClient(apiKey: key)
-            } else {
-                #if DEBUG
-                    debugPrint("FDC DI: Remote requested but API key missing - falling back to FDCMock.")
-                #endif
-            }
+        if wantsProxy {
+            #if DEBUG
+                debugPrint("FDC DI: Selecting FDCProxyClient (proxy mode).")
+            #endif
+            return FDCProxyClient()
         } else {
             #if DEBUG
                 debugPrint("FDC DI: Using FDCMock (default).")
             #endif
+            return FDCMock()
         }
+    }
 
-        return FDCMock()
+    // MARK: - Alternative Factory Methods for Testing
+
+    static func makeProxyClient(
+        baseURL: URL? = nil,
+        authHeader: String? = nil,
+        authValue: String? = nil
+    ) -> FDCClient {
+        FDCProxyClient(
+            baseURL: baseURL,
+            authHeader: authHeader,
+            authValue: authValue
+        )
+    }
+
+    static func makeMockClient() -> FDCClient {
+        FDCMock()
     }
 }

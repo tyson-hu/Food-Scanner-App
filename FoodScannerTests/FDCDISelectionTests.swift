@@ -14,47 +14,45 @@ struct FDCDISelectionTests {
     private func makeEnv(
         isRelease: Bool,
         builtIn: Bool,
-        override: Bool,
-        apiKey: String?
+        override: Bool
     ) -> AppLaunchEnvironment {
         .init(
             isRelease: isRelease,
             buildDefaultRemote: builtIn,
-            runtimeOverrideRemote: override,
-            apiKey: apiKey
+            runtimeOverrideRemote: override
         )
     }
 
-    @Test("Release defaults to Remote when API key present")
+    @Test("Release defaults to Proxy")
     @MainActor
-    func release_defaults_remote_with_key() async throws {
-        let env = makeEnv(isRelease: true, builtIn: true, override: false, apiKey: "k")
+    func release_defaults_to_proxy() async throws {
+        let env = makeEnv(isRelease: true, builtIn: true, override: false)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCRemoteClient)
+        #expect(client is FDCProxyClient)
     }
 
-    @Test("Debug defaults to Mock (even if key present)")
+    @Test("Debug defaults to Mock")
     @MainActor
-    func debug_defaults_mock_even_with_key() async throws {
-        let env = makeEnv(isRelease: false, builtIn: false, override: false, apiKey: "k")
+    func debug_defaults_to_mock() async throws {
+        let env = makeEnv(isRelease: false, builtIn: false, override: false)
         let client = FDCClientFactory.make(env: env)
         #expect(client is FDCMock)
     }
 
-    @Test("Debug runtime override → Remote when API key present")
+    @Test("Debug runtime override → Proxy")
     @MainActor
-    func debug_override_forces_remote_with_key() async throws {
-        let env = makeEnv(isRelease: false, builtIn: false, override: true, apiKey: "k")
+    func debug_override_forces_proxy() async throws {
+        let env = makeEnv(isRelease: false, builtIn: false, override: true)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCRemoteClient)
+        #expect(client is FDCProxyClient)
     }
 
-    @Test("Fallback to Mock when Remote wanted but API key missing")
+    @Test("Debug with build flag → Proxy")
     @MainActor
-    func fallback_to_mock_when_key_missing() async throws {
-        let env = makeEnv(isRelease: true, builtIn: true, override: true, apiKey: nil)
+    func debug_with_build_flag_uses_proxy() async throws {
+        let env = makeEnv(isRelease: false, builtIn: true, override: false)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCMock)
+        #expect(client is FDCProxyClient)
     }
 
     // Optional: compact parameterized sweep over a few combos.
@@ -62,36 +60,32 @@ struct FDCDISelectionTests {
         let isRelease: Bool
         let builtIn: Bool
         let override: Bool
-        let apiKey: String?
-        let expectedRemote: Bool
+        let expectedProxy: Bool
     }
 
     @Test(
         "Selection Matrix (parameterized)",
         arguments: [
-            TestCase(isRelease: true, builtIn: true, override: false, apiKey: "k", expectedRemote: true),
-            TestCase(isRelease: false, builtIn: false, override: false, apiKey: "k", expectedRemote: false),
+            TestCase(isRelease: true, builtIn: true, override: false, expectedProxy: true),
+            TestCase(isRelease: false, builtIn: false, override: false, expectedProxy: false),
             TestCase(
                 isRelease: false,
                 builtIn: true,
                 override: false,
-                apiKey: "k",
-                expectedRemote: true
+                expectedProxy: true
             ), // Debug + build flag on
             TestCase(
                 isRelease: false,
-                builtIn: true,
+                builtIn: false,
                 override: true,
-                apiKey: "",
-                expectedRemote: false
-            ), // Override on but empty key → fallback
+                expectedProxy: true
+            ), // Debug + runtime override
             TestCase(
                 isRelease: true,
                 builtIn: false,
                 override: false,
-                apiKey: nil,
-                expectedRemote: false
-            ), // Release wants remote by default, but no key → fallback
+                expectedProxy: true
+            ), // Release defaults to proxy
         ]
     )
     @MainActor
@@ -101,11 +95,10 @@ struct FDCDISelectionTests {
         let env = makeEnv(
             isRelease: testCase.isRelease,
             builtIn: testCase.builtIn,
-            override: testCase.override,
-            apiKey: testCase.apiKey
+            override: testCase.override
         )
         let client = FDCClientFactory.make(env: env)
-        let isRemote = client is FDCRemoteClient
-        #expect(isRemote == testCase.expectedRemote)
+        let isProxy = client is FDCProxyClient
+        #expect(isProxy == testCase.expectedProxy)
     }
 }
