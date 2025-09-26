@@ -112,6 +112,22 @@ struct FDCMock: FDCClient {
         ]
 
         if let hit = Self.catalog.first(where: { $0.id == fdcId }) {
+            // Create label nutrients for testing fallback functionality
+            let labelNutrients = ProxyLabelNutrients(
+                fat: ProxyLabelNutrient(value: Double(hit.fat)),
+                saturatedFat: nil,
+                transFat: nil,
+                cholesterol: nil,
+                sodium: nil,
+                carbohydrates: ProxyLabelNutrient(value: Double(hit.carbs)),
+                fiber: nil,
+                sugars: nil,
+                protein: ProxyLabelNutrient(value: Double(hit.protein)),
+                calcium: nil,
+                iron: nil,
+                calories: ProxyLabelNutrient(value: Double(hit.calories))
+            )
+
             return ProxyFoodDetailResponse(
                 fdcId: hit.id,
                 description: hit.name,
@@ -142,7 +158,7 @@ struct FDCMock: FDCClient {
                 modifiedDate: "2023-01-01",
                 foodPortions: nil,
                 foodUpdateLog: nil,
-                labelNutrients: nil,
+                labelNutrients: labelNutrients,
                 scientificName: nil,
                 footNote: nil,
                 foodCode: nil,

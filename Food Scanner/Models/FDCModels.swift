@@ -419,6 +419,24 @@ private struct NutrientValues {
             break
         }
     }
+
+    mutating func parseLabelNutrients(_ labelNutrients: ProxyLabelNutrients?) {
+        guard let labelNutrients else { return }
+
+        // Only use label nutrients if we don't already have values from foodNutrients
+        if calories == 0, let caloriesValue = labelNutrients.calories?.value {
+            calories = caloriesValue
+        }
+        if protein == 0, let proteinValue = labelNutrients.protein?.value {
+            protein = proteinValue
+        }
+        if fat == 0, let fatValue = labelNutrients.fat?.value {
+            fat = fatValue
+        }
+        if carbs == 0, let carbsValue = labelNutrients.carbohydrates?.value {
+            carbs = carbsValue
+        }
+    }
 }
 
 extension ProxyFoodItem {
@@ -481,6 +499,9 @@ extension ProxyFoodDetailResponse {
                 nutrientValues.parseNutrient(id: nutrientId, amount: amount)
             }
         }
+
+        // Fallback to label nutrients if foodNutrients are missing or incomplete
+        nutrientValues.parseLabelNutrients(labelNutrients)
 
         let brand = brandOwner ?? brandName ?? ""
 
