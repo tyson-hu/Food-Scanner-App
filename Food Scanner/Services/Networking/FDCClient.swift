@@ -67,7 +67,7 @@ enum FDCError: LocalizedError {
             } else {
                 "Network error: \(error.localizedDescription)"
             }
-        case let .decodingError(error):
+        case .decodingError:
             "Unable to process food data. Please try again."
         case .noResults:
             "No foods found matching your search. Try different keywords."

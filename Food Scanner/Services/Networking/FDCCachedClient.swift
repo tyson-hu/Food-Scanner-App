@@ -25,7 +25,7 @@ struct FDCCachedClient: FDCClient {
         }
 
         // Check cache first
-        if let cachedResults = await cacheService.cachedSearchResults(for: query) {
+        if let cachedResults = cacheService.cachedSearchResults(for: query) {
             return cachedResults
         }
 
@@ -33,14 +33,14 @@ struct FDCCachedClient: FDCClient {
         let results = try await underlyingClient.searchFoods(matching: query, page: page)
 
         // Cache the results
-        await cacheService.cacheSearchResults(results, for: query)
+        cacheService.cacheSearchResults(results, for: query)
 
         return results
     }
 
     func fetchFoodDetails(fdcId: Int) async throws -> FDCFoodDetails {
         // Check cache first
-        if let cachedResponse = await cacheService.cachedFoodDetails(for: fdcId) {
+        if let cachedResponse = cacheService.cachedFoodDetails(for: fdcId) {
             return cachedResponse.toFDCFoodDetails()
         }
 
@@ -48,14 +48,14 @@ struct FDCCachedClient: FDCClient {
         let response = try await underlyingClient.fetchFoodDetailResponse(fdcId: fdcId)
 
         // Cache the response
-        await cacheService.cacheFoodDetails(response, for: fdcId)
+        cacheService.cacheFoodDetails(response, for: fdcId)
 
         return response.toFDCFoodDetails()
     }
 
     func fetchFoodDetailResponse(fdcId: Int) async throws -> ProxyFoodDetailResponse {
         // Check cache first
-        if let cachedResponse = await cacheService.cachedFoodDetails(for: fdcId) {
+        if let cachedResponse = cacheService.cachedFoodDetails(for: fdcId) {
             return cachedResponse
         }
 
@@ -63,7 +63,7 @@ struct FDCCachedClient: FDCClient {
         let response = try await underlyingClient.fetchFoodDetailResponse(fdcId: fdcId)
 
         // Cache the response
-        await cacheService.cacheFoodDetails(response, for: fdcId)
+        cacheService.cacheFoodDetails(response, for: fdcId)
 
         return response
     }
