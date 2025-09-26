@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Cache Stats
 
@@ -21,7 +22,7 @@ struct CacheConfiguration {
     let maxAge: TimeInterval
     let maxSize: Int
 
-    static let `default` = CacheConfiguration(
+    static nonisolated let `default` = CacheConfiguration(
         maxAge: 7 * 24 * 60 * 60, // 7 days
         maxSize: 1000 // Maximum number of cached items
     )
@@ -38,6 +39,12 @@ private struct CacheEntry<T: Codable>: Codable {
         self.data = data
         timestamp = Date()
         accessCount = 1
+    }
+    
+    init(data: T, timestamp: Date, accessCount: Int) {
+        self.data = data
+        self.timestamp = timestamp
+        self.accessCount = accessCount
     }
 
     func accessed() -> CacheEntry<T> {
