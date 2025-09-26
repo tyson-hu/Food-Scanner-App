@@ -5,8 +5,8 @@
 //  Created by Tyson Hu on 9/25/25.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Cache Stats
 
@@ -22,7 +22,7 @@ struct CacheConfiguration {
     let maxAge: TimeInterval
     let maxSize: Int
 
-    static nonisolated let `default` = CacheConfiguration(
+    nonisolated static let `default` = CacheConfiguration(
         maxAge: 7 * 24 * 60 * 60, // 7 days
         maxSize: 1000 // Maximum number of cached items
     )
@@ -40,7 +40,7 @@ private struct CacheEntry<T: Codable>: Codable {
         timestamp = Date()
         accessCount = 1
     }
-    
+
     init(data: T, timestamp: Date, accessCount: Int) {
         self.data = data
         self.timestamp = timestamp
