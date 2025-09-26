@@ -44,6 +44,30 @@ struct SettingsView: View {
                 }
             #endif
 
+            Section("Cache") {
+                LabeledContent("Cached Items") {
+                    Text("\(cacheStats.totalSize)")
+                        .foregroundStyle(.secondary)
+                }
+
+                LabeledContent("Search Cache") {
+                    Text("\(cacheStats.searchCount)")
+                        .foregroundStyle(.secondary)
+                }
+
+                LabeledContent("Detail Cache") {
+                    Text("\(cacheStats.detailCount)")
+                        .foregroundStyle(.secondary)
+                }
+
+                Button("Clear Cache") {
+                    Task { @MainActor in
+                        appEnv.cacheService.clearCache()
+                    }
+                }
+                .foregroundStyle(.red)
+            }
+
             Section("Version") {
                 Text(appVersion)
                     .font(.footnote)
@@ -60,6 +84,10 @@ struct SettingsView: View {
         #else
             return (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown") + " (Release Build)"
         #endif
+    }
+
+    private var cacheStats: CacheStats {
+        appEnv.cacheService.cacheStats
     }
 
     private var activeClientName: String {

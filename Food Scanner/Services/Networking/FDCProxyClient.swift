@@ -51,7 +51,14 @@ struct FDCProxyClient: FDCClient {
             }
 
             let proxyResponse = try JSONDecoder().decode(ProxySearchResponse.self, from: data)
-            return proxyResponse.foods.map { $0.toFDCFoodSummary() }
+            let results = proxyResponse.foods.map { $0.toFDCFoodSummary() }
+
+            // Check if we got results
+            if results.isEmpty, !trimmed.isEmpty {
+                throw FDCError.noResults
+            }
+
+            return results
 
         } catch let fdcError as FDCError {
             throw fdcError
@@ -59,6 +66,8 @@ struct FDCProxyClient: FDCClient {
             throw cancellationError
         } catch let urlError as URLError where urlError.code == .cancelled {
             throw urlError
+        } catch let decodingError as DecodingError {
+            throw FDCError.decodingError(decodingError)
         } catch let networkError {
             throw FDCError.networkError(networkError)
         }
@@ -88,6 +97,8 @@ struct FDCProxyClient: FDCClient {
             throw cancellationError
         } catch let urlError as URLError where urlError.code == .cancelled {
             throw urlError
+        } catch let decodingError as DecodingError {
+            throw FDCError.decodingError(decodingError)
         } catch let networkError {
             throw FDCError.networkError(networkError)
         }
@@ -117,6 +128,8 @@ struct FDCProxyClient: FDCClient {
             throw cancellationError
         } catch let urlError as URLError where urlError.code == .cancelled {
             throw urlError
+        } catch let decodingError as DecodingError {
+            throw FDCError.decodingError(decodingError)
         } catch let networkError {
             throw FDCError.networkError(networkError)
         }
