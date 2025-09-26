@@ -48,7 +48,15 @@ struct FDCMock: FDCClient {
         let slice = (start < end) ? filtered[start ..< end] : []
 
         return slice.map {
-            FDCFoodSummary(id: $0.id, name: $0.name, brand: $0.brand, caloriesPerServing: $0.calories)
+            FDCFoodSummary(
+                id: $0.id,
+                name: $0.name,
+                brand: $0.brand,
+                serving: nil,
+                upc: nil,
+                publishedDate: nil,
+                modifiedDate: nil
+            )
         }
     }
 
@@ -59,5 +67,161 @@ struct FDCMock: FDCClient {
         }
         // safe fallback
         return .init(id: fdcId, name: "Brown Rice, cooked", brand: nil, calories: 216, protein: 5, fat: 2, carbs: 45)
+    }
+
+    func fetchFoodDetailResponse(fdcId: Int) async throws -> ProxyFoodDetailResponse {
+        try? await Task.sleep(nanoseconds: 120_000_000)
+
+        // Create a mock ProxyFoodDetailResponse with realistic data
+        let mockNutrients = [
+            ProxyFoodNutrient(
+                nutrient: ProxyNutrient(id: 1008, number: "208", name: "Energy", rank: 300, unitName: "kcal"),
+                amount: 100.0,
+                type: "FoodNutrient",
+                foodNutrientDerivation: ProxyFoodNutrientDerivation(
+                    id: 1,
+                    code: "LCCD",
+                    description: "Calculated from a daily value percentage per serving size measure",
+                    foodNutrientSource: ProxyFoodNutrientSource(
+                        id: 1,
+                        code: "LCCD",
+                        description: "Calculated from a daily value percentage per serving size measure"
+                    )
+                ),
+                id: 1,
+                dataPoints: 1,
+                max: nil,
+                min: nil,
+                median: nil,
+                minYearAcquired: nil,
+                nutrientAnalysisDetails: nil
+            ),
+            ProxyFoodNutrient(
+                nutrient: ProxyNutrient(id: 1003, number: "203", name: "Protein", rank: 600, unitName: "g"),
+                amount: 7.0,
+                type: "FoodNutrient",
+                foodNutrientDerivation: nil,
+                id: 2,
+                dataPoints: 1,
+                max: nil,
+                min: nil,
+                median: nil,
+                minYearAcquired: nil,
+                nutrientAnalysisDetails: nil
+            ),
+        ]
+
+        if let hit = Self.catalog.first(where: { $0.id == fdcId }) {
+            // Create label nutrients for testing fallback functionality
+            let labelNutrients = ProxyLabelNutrients(
+                fat: ProxyLabelNutrient(value: Double(hit.fat)),
+                saturatedFat: nil,
+                transFat: nil,
+                cholesterol: nil,
+                sodium: nil,
+                carbohydrates: ProxyLabelNutrient(value: Double(hit.carbs)),
+                fiber: nil,
+                sugars: nil,
+                protein: ProxyLabelNutrient(value: Double(hit.protein)),
+                calcium: nil,
+                iron: nil,
+                calories: ProxyLabelNutrient(value: Double(hit.calories))
+            )
+
+            return ProxyFoodDetailResponse(
+                fdcId: hit.id,
+                description: hit.name,
+                publicationDate: "2023-01-01",
+                foodNutrients: mockNutrients,
+                dataType: "Branded",
+                foodClass: "Processed",
+                inputFoods: nil,
+                foodComponents: nil,
+                foodAttributes: nil,
+                nutrientConversionFactors: nil,
+                ndbNumber: hit.id,
+                isHistoricalReference: false,
+                foodCategory: ProxyFoodCategory(id: 1, code: "0100", description: "Dairy and Egg Products"),
+                brandOwner: hit.brand,
+                brandName: hit.brand,
+                dataSource: "Mock",
+                gtinUpc: nil,
+                marketCountry: "United States",
+                servingSize: 100.0,
+                servingSizeUnit: "g",
+                householdServingFullText: "1 cup",
+                ingredients: "Brown rice",
+                brandedFoodCategory: "Grains",
+                packageWeight: nil,
+                discontinuedDate: nil,
+                availableDate: "2023-01-01",
+                modifiedDate: "2023-01-01",
+                foodPortions: nil,
+                foodUpdateLog: nil,
+                labelNutrients: labelNutrients,
+                scientificName: nil,
+                footNote: nil,
+                foodCode: nil,
+                endDate: nil,
+                startDate: nil,
+                wweiaFoodCategory: nil,
+                foodMeasures: nil,
+                microbes: nil,
+                tradeChannels: nil,
+                allHighlightFields: nil,
+                score: nil,
+                foodVersionIds: nil,
+                foodAttributeTypes: nil,
+                finalFoodInputFoods: nil
+            )
+        }
+
+        // safe fallback
+        return ProxyFoodDetailResponse(
+            fdcId: fdcId,
+            description: "Brown Rice, cooked",
+            publicationDate: "2023-01-01",
+            foodNutrients: mockNutrients,
+            dataType: "Foundation",
+            foodClass: "Raw",
+            inputFoods: nil,
+            foodComponents: nil,
+            foodAttributes: nil,
+            nutrientConversionFactors: nil,
+            ndbNumber: fdcId,
+            isHistoricalReference: false,
+            foodCategory: ProxyFoodCategory(id: 2, code: "2000", description: "Cereal Grains and Pasta"),
+            brandOwner: nil,
+            brandName: nil,
+            dataSource: "Mock",
+            gtinUpc: nil,
+            marketCountry: "United States",
+            servingSize: 100.0,
+            servingSizeUnit: "g",
+            householdServingFullText: "1 cup",
+            ingredients: "Brown rice",
+            brandedFoodCategory: "Grains",
+            packageWeight: nil,
+            discontinuedDate: nil,
+            availableDate: "2023-01-01",
+            modifiedDate: "2023-01-01",
+            foodPortions: nil,
+            foodUpdateLog: nil,
+            labelNutrients: nil,
+            scientificName: nil,
+            footNote: nil,
+            foodCode: nil,
+            endDate: nil,
+            startDate: nil,
+            wweiaFoodCategory: nil,
+            foodMeasures: nil,
+            microbes: nil,
+            tradeChannels: nil,
+            allHighlightFields: nil,
+            score: nil,
+            foodVersionIds: nil,
+            foodAttributeTypes: nil,
+            finalFoodInputFoods: nil
+        )
     }
 }

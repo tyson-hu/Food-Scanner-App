@@ -145,3 +145,8 @@ Thumbs.db
 # Secrets
 # =========================
 Food Scanner/Config/Secrets.plist
+
+# =========================
+# API Documentation
+# =========================
+FDC API.yaml

@@ -51,9 +51,11 @@ struct AddFoodSearchView: View {
                                     .foregroundStyle(.secondary)
                             }
 
-                            Text("\(item.caloriesPerServing) kcal")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+                            if let serving = item.serving, !serving.isEmpty {
+                                Text(serving)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

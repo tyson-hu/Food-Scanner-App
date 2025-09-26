@@ -20,7 +20,7 @@ struct SettingsView: View {
         Form {
             #if DEBUG
                 Section("Developer") {
-                    Toggle("Use live FDC (remote)", isOn: $useRemote)
+                    Toggle("Use FDC Proxy", isOn: $useRemote)
                         .onChange(of: useRemote) { _, newValue in
                             UserDefaults.standard.set(
                                 newValue,
@@ -44,6 +44,30 @@ struct SettingsView: View {
                 }
             #endif
 
+            Section("Cache") {
+                LabeledContent("Cached Items") {
+                    Text("\(cacheStats.totalSize)")
+                        .foregroundStyle(.secondary)
+                }
+
+                LabeledContent("Search Cache") {
+                    Text("\(cacheStats.searchCount)")
+                        .foregroundStyle(.secondary)
+                }
+
+                LabeledContent("Detail Cache") {
+                    Text("\(cacheStats.detailCount)")
+                        .foregroundStyle(.secondary)
+                }
+
+                Button("Clear Cache") {
+                    Task { @MainActor in
+                        appEnv.cacheService.clearCache()
+                    }
+                }
+                .foregroundStyle(.red)
+            }
+
             Section("Version") {
                 Text(appVersion)
                     .font(.footnote)
@@ -62,8 +86,12 @@ struct SettingsView: View {
         #endif
     }
 
+    private var cacheStats: CacheStats {
+        appEnv.cacheService.cacheStats
+    }
+
     private var activeClientName: String {
-        (appEnv.fdcClient is FDCRemoteClient) ? "Remote" : "Mock"
+        (appEnv.fdcClient is FDCProxyClient) ? "Proxy" : "Mock"
     }
 }
 

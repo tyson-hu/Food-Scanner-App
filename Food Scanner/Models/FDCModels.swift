@@ -3,26 +3,20 @@
 //  Food Scanner
 //
 //  Created by Tyson Hu on 9/19/25.
+//  Refactored: Models split into domain-specific files for better organization
 //
 
 import Foundation
 
-// Keep minimal so it doesn't collide with what already decode.
-// Use later when we align the FDC client fully.
+// MARK: - Re-export all models for backward compatibility
 
-public struct FDCFoodSummary: Sendable, Codable, Equatable, Hashable {
-    public let id: Int
-    public let name: String
-    public let brand: String?
-    public let caloriesPerServing: Int
-}
+// This file now serves as a central import point for all FDC-related models
 
-public struct FDCFoodDetails: Sendable, Codable, Equatable {
-    public let id: Int
-    public let name: String
-    public let brand: String?
-    public let calories: Int
-    public let protein: Int
-    public let fat: Int
-    public let carbs: Int
-}
+// All models are now defined in separate files:
+// - FDCPublicModels.swift: Public API models
+// - FDCProxyModels.swift: Proxy API response models
+// - FDCFoodDetailModels.swift: Detailed food response models
+// - FDCNutrientModels.swift: Nutrient-related models
+// - FDCUtilityModels.swift: Utility models like AnyCodable
+// - FDCLegacyModels.swift: Legacy models for backward compatibility
+// - FDCConversionExtensions.swift: Conversion extensions between model types
