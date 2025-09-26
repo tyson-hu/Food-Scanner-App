@@ -39,9 +39,15 @@ struct AddFoodDetailViewModelTests {
         #expect(response.description == "Brown Rice, cooked")
     }
 
-    // MARK: - Real API Tests for Specific FDC IDs
+    // MARK: - Integration Tests (Live Network)
 
-    @Test @MainActor func load_real_fdc_id_2503998() async throws {
+    @Test @MainActor func integration_load_real_fdc_id_2503998() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
         let client = FDCClientFactory.makeProxyClient()
         let viewModel = AddFoodDetailViewModel(fdcId: 2_503_998, client: client)
         await viewModel.load()
@@ -66,7 +72,13 @@ struct AddFoodDetailViewModelTests {
         }
     }
 
-    @Test @MainActor func load_real_fdc_id_1995469() async throws {
+    @Test @MainActor func integration_load_real_fdc_id_1995469() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
         let client = FDCClientFactory.makeProxyClient()
         let viewModel = AddFoodDetailViewModel(fdcId: 1_995_469, client: client)
         await viewModel.load()
@@ -81,7 +93,13 @@ struct AddFoodDetailViewModelTests {
         #expect(response.description != "N/A")
     }
 
-    @Test @MainActor func load_real_fdc_id_2055229() async throws {
+    @Test @MainActor func integration_load_real_fdc_id_2055229() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
         let client = FDCClientFactory.makeProxyClient()
         let viewModel = AddFoodDetailViewModel(fdcId: 2_055_229, client: client)
         await viewModel.load()
@@ -96,7 +114,13 @@ struct AddFoodDetailViewModelTests {
         #expect(response.description != "N/A")
     }
 
-    @Test @MainActor func load_real_fdc_id_2090362_food_attributes_parsing() async throws {
+    @Test @MainActor func integration_load_real_fdc_id_2090362_food_attributes_parsing() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
         let client = FDCClientFactory.makeProxyClient()
         let viewModel = AddFoodDetailViewModel(fdcId: 2_090_362, client: client)
         await viewModel.load()

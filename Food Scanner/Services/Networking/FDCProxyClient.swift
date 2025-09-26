@@ -53,10 +53,14 @@ struct FDCProxyClient: FDCClient {
             let proxyResponse = try JSONDecoder().decode(ProxySearchResponse.self, from: data)
             return proxyResponse.foods.map { $0.toFDCFoodSummary() }
 
-        } catch let error as FDCError {
-            throw error
-        } catch {
-            throw FDCError.networkError(error)
+        } catch let fdcError as FDCError {
+            throw fdcError
+        } catch let cancellationError as CancellationError {
+            throw cancellationError
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            throw urlError
+        } catch let networkError {
+            throw FDCError.networkError(networkError)
         }
     }
 
@@ -78,10 +82,14 @@ struct FDCProxyClient: FDCClient {
             let foodDetailResponse = try JSONDecoder().decode(ProxyFoodDetailResponse.self, from: data)
             return foodDetailResponse.toFDCFoodDetails()
 
-        } catch let error as FDCError {
-            throw error
-        } catch {
-            throw FDCError.networkError(error)
+        } catch let fdcError as FDCError {
+            throw fdcError
+        } catch let cancellationError as CancellationError {
+            throw cancellationError
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            throw urlError
+        } catch let networkError {
+            throw FDCError.networkError(networkError)
         }
     }
 
@@ -103,10 +111,14 @@ struct FDCProxyClient: FDCClient {
             let foodDetailResponse = try JSONDecoder().decode(ProxyFoodDetailResponse.self, from: data)
             return foodDetailResponse
 
-        } catch let error as FDCError {
-            throw error
-        } catch {
-            throw FDCError.networkError(error)
+        } catch let fdcError as FDCError {
+            throw fdcError
+        } catch let cancellationError as CancellationError {
+            throw cancellationError
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            throw urlError
+        } catch let networkError {
+            throw FDCError.networkError(networkError)
         }
     }
 

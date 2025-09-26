@@ -219,4 +219,84 @@ struct FDCProxyClientTests {
         #expect(details.fat == 15) // From labelNutrients
         #expect(details.carbs == 30) // From labelNutrients
     }
+
+    // MARK: - Integration Tests (Live Network)
+
+    @Test("Integration: Real proxy client search foods")
+    @MainActor
+    func integration_real_proxy_client_search_foods() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
+        let client = FDCClientFactory.makeProxyClient()
+        let results = try await client.searchFoods(matching: "oatmeal", page: 1)
+
+        #expect(!results.isEmpty)
+        #expect(results.first?.name.contains("Oatmeal") == true)
+    }
+
+    @Test("Integration: Real proxy client fetch food details")
+    @MainActor
+    func integration_real_proxy_client_fetch_food_details() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
+        let client = FDCClientFactory.makeProxyClient()
+
+        // First search for a food to get an ID
+        let searchResults = try await client.searchFoods(matching: "oatmeal", page: 1)
+        guard let firstResult = searchResults.first else {
+            #expect(Bool(false), "No search results found")
+            return
+        }
+
+        // Then fetch details for that food
+        let details = try await client.fetchFoodDetails(fdcId: firstResult.id)
+
+        #expect(details.id == firstResult.id)
+        #expect(!details.name.isEmpty)
+        #expect(details.calories >= 0)
+    }
+
+    @Test("Integration: Real proxy client cancellation handling")
+    @MainActor
+    func integration_real_proxy_client_cancellation_handling() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
+        let client = FDCClientFactory.makeProxyClient()
+
+        // Start a search task
+        let searchTask = Task {
+            try await client.searchFoods(matching: "oatmeal", page: 1)
+        }
+
+        // Cancel it immediately
+        searchTask.cancel()
+
+        // Should throw CancellationError, not FDCError.networkError
+        do {
+            _ = try await searchTask.value
+            #expect(Bool(false), "Expected cancellation error")
+        } catch is CancellationError {
+            // This is the expected behavior
+            #expect(Bool(true), "Correctly received CancellationError")
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            // This is also acceptable
+            #expect(Bool(true), "Correctly received URLError.cancelled")
+        } catch let fdcError as FDCError {
+            #expect(Bool(false), "Should not receive FDCError.networkError for cancellation, got: \(fdcError)")
+        } catch {
+            #expect(Bool(false), "Unexpected error type: \(type(of: error))")
+        }
+    }
 }

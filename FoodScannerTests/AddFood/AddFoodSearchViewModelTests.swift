@@ -55,9 +55,15 @@ struct AddFoodSearchViewModelTests {
         #expect(viewModel.results.isEmpty)
     }
 
-    // MARK: - Proxy Client Tests
+    // MARK: - Integration Tests (Live Network)
 
-    @Test @MainActor func proxy_client_search() async throws {
+    @Test @MainActor func integration_proxy_client_search() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
         let client = FDCClientFactory.makeProxyClient()
         let viewModel = AddFoodSearchViewModel(client: client)
         viewModel.query = "oatmeal"
@@ -74,7 +80,13 @@ struct AddFoodSearchViewModelTests {
         }
     }
 
-    @Test @MainActor func proxy_client_handles_network_error() async throws {
+    @Test @MainActor func integration_proxy_client_handles_network_error() async throws {
+        // Skip if integration tests are disabled
+        guard TestConfig.runIntegrationTests else {
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            return
+        }
+
         // Use an invalid URL to simulate network error
         guard let invalidURL = URL(string: "https://invalid-url-for-testing.com") else {
             #expect(Bool(false), "Failed to create invalid URL")
