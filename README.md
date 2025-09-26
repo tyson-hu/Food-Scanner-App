@@ -182,7 +182,7 @@ The app integrates with the Food Data Central (FDC) API through a proxy service:
 - [ ] Accessibility pass (VoiceOver, Dynamic Type)
 - [ ] Performance considered (debounce, caching, main-thread)
 - [ ] Privacy reviewed; no secrets in code
-- [ ] Docs/CHANGELOG updated
+- [ ] docs/CHANGELOG updated
 
 ## License
 
