@@ -60,13 +60,13 @@ check_simulator_health() {
     local udid="$1"
     
     # Check if simulator is booted
-    if ! xcrun simctl list devices 2>/dev/null | grep -q "${udid}) (Booted"; then
+    if ! xcrun simctl list devices 2>/dev/null | grep -q "${udid}.*Booted"; then
         log_warning "Simulator $udid is not booted"
         return 1
     fi
     
     # Test simulator responsiveness
-    if ! xcrun simctl list devices 2>/dev/null | grep -q "${udid}) (Booted"; then
+    if ! xcrun simctl list devices 2>/dev/null | grep -q "${udid}.*Booted"; then
         log_warning "Simulator $udid is not responsive"
         return 1
     fi
@@ -116,7 +116,7 @@ run_tests_with_monitoring() {
     log_info "Starting xcodebuild with ${XCODEBUILD_TIMEOUT}s timeout..."
     
     # Start xcodebuild in background
-    timeout "$XCODEBUILD_TIMEOUT" xcodebuild \
+    xcodebuild \
         -scheme "Food Scanner" \
         -testPlan "FoodScanner-PR" \
         -destination "id=$dest_id" \
@@ -137,7 +137,7 @@ run_tests_with_monitoring() {
     local xcodebuild_pid=$!
     log_info "xcodebuild PID: $xcodebuild_pid"
     
-    # Monitor progress
+    # Monitor progress with timeout
     local last_activity=$start_time
     local last_log_size=0
     local stuck_count=0
@@ -145,12 +145,22 @@ run_tests_with_monitoring() {
     while kill -0 "$xcodebuild_pid" 2>/dev/null; do
         sleep $CHECK_INTERVAL
         local current_time=$(date +%s)
-        local elapsed=$((current_time - last_activity))
+        local elapsed=$((current_time - start_time))
         
         # Check if process is still running
         if ! kill -0 "$xcodebuild_pid" 2>/dev/null; then
             log_info "xcodebuild process ended"
             break
+        fi
+        
+        # Check for overall timeout
+        if [ $elapsed -gt $XCODEBUILD_TIMEOUT ]; then
+            log_error "xcodebuild timeout after ${XCODEBUILD_TIMEOUT} seconds, killing process..."
+            kill -TERM "$xcodebuild_pid" 2>/dev/null || true
+            sleep 5
+            kill -KILL "$xcodebuild_pid" 2>/dev/null || true
+            log_error "xcodebuild killed due to timeout"
+            return 1
         fi
         
         # Check for progress in log file
@@ -170,13 +180,14 @@ run_tests_with_monitoring() {
             fi
         fi
         
-        # Check for stuck condition
-        if [ $elapsed -gt $STUCK_THRESHOLD ]; then
+        # Check for stuck condition (no activity for 5 minutes)
+        local activity_elapsed=$((current_time - last_activity))
+        if [ $activity_elapsed -gt $STUCK_THRESHOLD ]; then
             log_error "xcodebuild appears stuck (no activity for $STUCK_THRESHOLD seconds), killing process..."
             kill -TERM "$xcodebuild_pid" 2>/dev/null || true
             sleep 5
             kill -KILL "$xcodebuild_pid" 2>/dev/null || true
-            log_error "xcodebuild killed due to timeout"
+            log_error "xcodebuild killed due to stuck condition"
             return 1
         fi
     done
@@ -252,10 +263,14 @@ main() {
 }
 
 # Script entry point
-if [ $# -lt 1 ]; then
+if [ $# -lt 1 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: $0 <destination_id> [derived_data_path]"
     echo "Example: $0 2A4C3F08-503C-410A-BF1E-5A5C1B2D0AC4 ./DerivedData"
-    exit 1
+    echo ""
+    echo "Arguments:"
+    echo "  destination_id: iOS Simulator UDID to run tests on"
+    echo "  derived_data_path: Path to DerivedData directory (default: ./DerivedData)"
+    exit 0
 fi
 
 main "$1" "${2:-./DerivedData}"
