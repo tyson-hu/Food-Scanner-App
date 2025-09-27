@@ -7,8 +7,8 @@
 
 import AVFoundation
 import SwiftUI
+import Vision
 import VisionKit
-internal import Vision
 
 struct BarcodeScannerView: View {
     @State private var viewModel = BarcodeScannerViewModel()
