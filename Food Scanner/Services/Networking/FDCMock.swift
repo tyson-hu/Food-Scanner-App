@@ -20,7 +20,7 @@ struct FDCMock: FDCClient {
                 "dsld": "https://api.ods.od.nih.gov/dsld/v9",
                 "dsid": "https://dsid-api-dev.app.cloud.gov/v1",
                 "off": "https://world.openfoodfacts.org",
-            ]
+            ],
         )
     }
 
@@ -51,14 +51,14 @@ struct FDCMock: FDCClient {
                 serving: FoodServing(
                     amount: food.servingSize,
                     unit: food.servingSizeUnit,
-                    household: food.householdServingFullText
+                    household: food.householdServingFullText,
                 ),
                 nutrients: [],
                 provenance: FoodProvenance(
                     source: .fdc,
                     id: "\(food.id)",
-                    fetchedAt: "2025-09-26T21:00:00Z"
-                )
+                    fetchedAt: "2025-09-26T21:00:00Z",
+                ),
             )
         }
 
@@ -72,21 +72,21 @@ struct FDCMock: FDCClient {
                 serving: FoodServing(
                     amount: food.servingSize,
                     unit: food.servingSizeUnit,
-                    household: food.householdServingFullText
+                    household: food.householdServingFullText,
                 ),
                 nutrients: [],
                 provenance: FoodProvenance(
                     source: .fdc,
                     id: "\(food.id)",
-                    fetchedAt: "2025-09-26T21:00:00Z"
-                )
+                    fetchedAt: "2025-09-26T21:00:00Z",
+                ),
             )
         }
 
         return FoodSearchResponse(
             query: query,
             generic: Array(genericCards),
-            branded: Array(brandedCards)
+            branded: Array(brandedCards),
         )
     }
 
@@ -104,14 +104,14 @@ struct FDCMock: FDCClient {
                 serving: FoodServing(
                     amount: food.servingSize,
                     unit: food.servingSizeUnit,
-                    household: food.householdServingFullText
+                    household: food.householdServingFullText,
                 ),
                 nutrients: [],
                 provenance: FoodProvenance(
                     source: .fdc,
                     id: "\(food.id)",
-                    fetchedAt: "2025-09-26T21:00:00Z"
-                )
+                    fetchedAt: "2025-09-26T21:00:00Z",
+                ),
             )
         }
 
@@ -133,14 +133,14 @@ struct FDCMock: FDCClient {
                     serving: FoodServing(
                         amount: food.servingSize,
                         unit: food.servingSizeUnit,
-                        household: food.householdServingFullText
+                        household: food.householdServingFullText,
                     ),
                     nutrients: [],
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
+                        fetchedAt: "2025-09-26T21:00:00Z",
+                    ),
                 )
             }
         }
@@ -159,14 +159,14 @@ struct FDCMock: FDCClient {
                     serving: FoodServing(
                         amount: food.servingSize,
                         unit: food.servingSizeUnit,
-                        household: food.householdServingFullText
+                        household: food.householdServingFullText,
                     ),
                     nutrients: [],
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
+                        fetchedAt: "2025-09-26T21:00:00Z",
+                    ),
                 )
             }
 
@@ -182,14 +182,14 @@ struct FDCMock: FDCClient {
                     serving: FoodServing(
                         amount: food.servingSize,
                         unit: food.servingSizeUnit,
-                        household: food.householdServingFullText
+                        household: food.householdServingFullText,
                     ),
                     nutrients: [],
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
+                        fetchedAt: "2025-09-26T21:00:00Z",
+                    ),
                 )
             }
         }
@@ -210,28 +210,28 @@ struct FDCMock: FDCClient {
                         name: "Energy",
                         unit: "kcal",
                         amount: Double(food.calories),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1003,
                         name: "Protein",
                         unit: "g",
                         amount: Double(food.protein),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1004,
                         name: "Total lipid (fat)",
                         unit: "g",
                         amount: Double(food.fat),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1005,
                         name: "Carbohydrate, by difference",
                         unit: "g",
                         amount: Double(food.carbs),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                 ]
 
@@ -245,7 +245,7 @@ struct FDCMock: FDCClient {
                     serving: FoodServing(
                         amount: food.servingSize ?? 100.0,
                         unit: food.servingSizeUnit ?? "g",
-                        household: food.householdServingFullText ?? "1 serving"
+                        household: food.householdServingFullText ?? "1 serving",
                     ),
                     portions: [],
                     nutrients: mockNutrients,
@@ -253,8 +253,8 @@ struct FDCMock: FDCClient {
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
+                        fetchedAt: "2025-09-26T21:00:00Z",
+                    ),
                 )
             }
         }
@@ -271,28 +271,28 @@ struct FDCMock: FDCClient {
                         name: "Energy",
                         unit: "kcal",
                         amount: Double(food.calories),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1003,
                         name: "Protein",
                         unit: "g",
                         amount: Double(food.protein),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1004,
                         name: "Total lipid (fat)",
                         unit: "g",
                         amount: Double(food.fat),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1005,
                         name: "Carbohydrate, by difference",
                         unit: "g",
                         amount: Double(food.carbs),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                 ]
 
@@ -306,7 +306,7 @@ struct FDCMock: FDCClient {
                     serving: FoodServing(
                         amount: food.servingSize ?? 100.0,
                         unit: food.servingSizeUnit ?? "g",
-                        household: food.householdServingFullText ?? "1 serving"
+                        household: food.householdServingFullText ?? "1 serving",
                     ),
                     portions: [],
                     nutrients: mockNutrients,
@@ -314,8 +314,8 @@ struct FDCMock: FDCClient {
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
+                        fetchedAt: "2025-09-26T21:00:00Z",
+                    ),
                 )
             }
 
@@ -329,28 +329,28 @@ struct FDCMock: FDCClient {
                         name: "Energy",
                         unit: "kcal",
                         amount: Double(food.calories),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1003,
                         name: "Protein",
                         unit: "g",
                         amount: Double(food.protein),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1004,
                         name: "Total lipid (fat)",
                         unit: "g",
                         amount: Double(food.fat),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                     FoodNutrient(
                         id: 1005,
                         name: "Carbohydrate, by difference",
                         unit: "g",
                         amount: Double(food.carbs),
-                        basis: .perServing
+                        basis: .perServing,
                     ),
                 ]
 
@@ -364,7 +364,7 @@ struct FDCMock: FDCClient {
                     serving: FoodServing(
                         amount: food.servingSize ?? 100.0,
                         unit: food.servingSizeUnit ?? "g",
-                        household: food.householdServingFullText ?? "1 serving"
+                        household: food.householdServingFullText ?? "1 serving",
                     ),
                     portions: [],
                     nutrients: mockNutrients,
@@ -372,8 +372,8 @@ struct FDCMock: FDCClient {
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
+                        fetchedAt: "2025-09-26T21:00:00Z",
+                    ),
                 )
             }
         }
@@ -385,28 +385,28 @@ struct FDCMock: FDCClient {
                 name: "Energy",
                 unit: "kcal",
                 amount: 100.0,
-                basis: .perServing
+                basis: .perServing,
             ),
             FoodNutrient(
                 id: 1003,
                 name: "Protein",
                 unit: "g",
                 amount: 2.0,
-                basis: .perServing
+                basis: .perServing,
             ),
             FoodNutrient(
                 id: 1004,
                 name: "Total lipid (fat)",
                 unit: "g",
                 amount: 1.0,
-                basis: .perServing
+                basis: .perServing,
             ),
             FoodNutrient(
                 id: 1005,
                 name: "Carbohydrate, by difference",
                 unit: "g",
                 amount: 22.0,
-                basis: .perServing
+                basis: .perServing,
             ),
         ]
 
@@ -420,7 +420,7 @@ struct FDCMock: FDCClient {
             serving: FoodServing(
                 amount: 100.0,
                 unit: "g",
-                household: "1 serving"
+                household: "1 serving",
             ),
             portions: [],
             nutrients: fallbackNutrients,
@@ -428,8 +428,8 @@ struct FDCMock: FDCClient {
             provenance: FoodProvenance(
                 source: .fdc,
                 id: "999999",
-                fetchedAt: "2025-09-26T21:00:00Z"
-            )
+                fetchedAt: "2025-09-26T21:00:00Z",
+            ),
         )
     }
 
@@ -459,7 +459,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 5678,
@@ -485,7 +485,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 9012,
@@ -511,7 +511,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         // extras for nicer search feel
         .init(
@@ -538,7 +538,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 1002,
@@ -564,7 +564,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 1003,
@@ -590,7 +590,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 1004,
@@ -616,7 +616,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: "031604031121",
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 1005,
@@ -642,7 +642,7 @@ struct FDCMock: FDCClient {
             modifiedDate: "2023-01-01",
             gtinUpc: "049000028911",
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
         .init(
             id: 1006,
@@ -668,7 +668,7 @@ struct FDCMock: FDCClient {
             modifiedDate: "2023-01-01",
             gtinUpc: "028400000000",
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         ),
     ]
 
@@ -738,8 +738,8 @@ struct FDCMock: FDCClient {
                     fat: Double($0.fat),
                     carbohydrates: Double($0.carbs),
                     fiber: nil,
-                    sugars: nil
-                )
+                    sugars: nil,
+                ),
             )
         }
 
@@ -748,7 +748,7 @@ struct FDCMock: FDCClient {
             totalHits: totalHits,
             currentPage: page,
             totalPages: totalPages,
-            pageSize: pageSize
+            pageSize: pageSize,
         )
     }
 
@@ -782,7 +782,7 @@ struct FDCMock: FDCClient {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         )
     }
 
@@ -802,8 +802,8 @@ struct FDCMock: FDCClient {
                     foodNutrientSource: ProxyFoodNutrientSource(
                         id: 1,
                         code: "LCCD",
-                        description: "Calculated from a daily value percentage per serving size measure"
-                    )
+                        description: "Calculated from a daily value percentage per serving size measure",
+                    ),
                 ),
                 id: 1,
                 dataPoints: 1,
@@ -811,7 +811,7 @@ struct FDCMock: FDCClient {
                 min: nil,
                 median: nil,
                 minYearAcquired: nil,
-                nutrientAnalysisDetails: nil
+                nutrientAnalysisDetails: nil,
             ),
             ProxyFoodNutrient(
                 nutrient: ProxyNutrient(id: 1003, number: "203", name: "Protein", rank: 600, unitName: "g"),
@@ -824,7 +824,7 @@ struct FDCMock: FDCClient {
                 min: nil,
                 median: nil,
                 minYearAcquired: nil,
-                nutrientAnalysisDetails: nil
+                nutrientAnalysisDetails: nil,
             ),
         ]
 
@@ -842,7 +842,7 @@ struct FDCMock: FDCClient {
                 protein: ProxyLabelNutrient(value: Double(hit.protein)),
                 calcium: nil,
                 iron: nil,
-                calories: ProxyLabelNutrient(value: Double(hit.calories))
+                calories: ProxyLabelNutrient(value: Double(hit.calories)),
             )
 
             return ProxyFoodDetailResponse(
@@ -889,7 +889,7 @@ struct FDCMock: FDCClient {
                 score: nil,
                 foodVersionIds: nil,
                 foodAttributeTypes: nil,
-                finalFoodInputFoods: nil
+                finalFoodInputFoods: nil,
             )
         }
 
@@ -938,7 +938,7 @@ struct FDCMock: FDCClient {
             score: nil,
             foodVersionIds: nil,
             foodAttributeTypes: nil,
-            finalFoodInputFoods: nil
+            finalFoodInputFoods: nil,
         )
     }
 }

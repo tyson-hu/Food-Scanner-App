@@ -24,7 +24,7 @@ struct CacheConfiguration {
 
     nonisolated static let `default` = CacheConfiguration(
         maxAge: 7 * 24 * 60 * 60, // 7 days
-        maxSize: 1000 // Maximum number of cached items
+        maxSize: 1000, // Maximum number of cached items
     )
 }
 
@@ -51,7 +51,7 @@ private struct CacheEntry<T: Codable>: Codable {
         CacheEntry(
             data: data,
             timestamp: timestamp,
-            accessCount: accessCount + 1
+            accessCount: accessCount + 1,
         )
     }
 
@@ -146,7 +146,7 @@ final class FDCCacheService: ObservableObject {
         CacheStats(
             searchCount: searchCache.count + paginatedSearchCache.count,
             detailCount: detailCache.count,
-            totalSize: searchCache.count + paginatedSearchCache.count + detailCache.count
+            totalSize: searchCache.count + paginatedSearchCache.count + detailCache.count,
         )
     }
 

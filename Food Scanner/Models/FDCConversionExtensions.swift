@@ -106,7 +106,7 @@ extension ProxyFoodItem {
             calcium: labelNutrients.calcium,
             iron: labelNutrients.iron,
             potassium: labelNutrients.potassium,
-            macroSummary: macroSummary
+            macroSummary: macroSummary,
         )
     }
 
@@ -142,7 +142,7 @@ extension ProxyFoodItem {
             sugars: nil,
             calcium: nil,
             iron: nil,
-            potassium: nil
+            potassium: nil,
         )
     }
 
@@ -184,7 +184,7 @@ extension ProxyFoodItem {
             fat: fat,
             carbohydrates: carbohydrates,
             fiber: fiber,
-            sugars: sugars
+            sugars: sugars,
         )
     }
 
@@ -226,7 +226,7 @@ extension ProxyFoodItem {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         )
     }
 }
@@ -280,7 +280,7 @@ extension ProxyFoodDetailResponse {
             modifiedDate: modifiedDate,
             gtinUpc: gtinUpc,
             labelNutrients: convertedLabelNutrients,
-            foodNutrients: convertedFoodNutrients
+            foodNutrients: convertedFoodNutrients,
         )
     }
 
@@ -300,7 +300,7 @@ extension ProxyFoodDetailResponse {
             protein: labelNutrients.protein.map { NutrientValue(value: $0.value ?? 0, unit: nil) },
             calcium: labelNutrients.calcium.map { NutrientValue(value: $0.value ?? 0, unit: nil) },
             iron: labelNutrients.iron.map { NutrientValue(value: $0.value ?? 0, unit: nil) },
-            potassium: nil
+            potassium: nil,
         )
     }
 
@@ -315,7 +315,7 @@ extension ProxyFoodDetailResponse {
                 name: nutrient.name ?? "Unknown",
                 unit: nutrient.unitName ?? "",
                 amount: proxyNutrient.amount,
-                basis: .perServing // Default to per serving for now
+                basis: .perServing, // Default to per serving for now
             )
         }
     }
@@ -357,7 +357,7 @@ extension FDCFoodItem {
             calcium: nil,
             iron: nil,
             potassium: nil,
-            macroSummary: nil
+            macroSummary: nil,
         )
     }
 
@@ -391,7 +391,7 @@ extension FDCFoodItem {
             modifiedDate: nil,
             gtinUpc: nil,
             labelNutrients: nil,
-            foodNutrients: nil
+            foodNutrients: nil,
         )
     }
 }

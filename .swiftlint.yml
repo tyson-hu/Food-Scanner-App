@@ -1,5 +1,7 @@
 # SwiftLint Configuration for Food Scanner App
 
+swift_version: 6.2
+
 included:
   - "Food Scanner"
   - "FoodScannerTests"
@@ -18,7 +20,6 @@ disabled_rules:
   - function_body_length
   - file_length
   - type_body_length
-  # Turn these off so SwiftLint doesn't fight SwiftFormat's wrapping style
   - vertical_parameter_alignment
   - vertical_parameter_alignment_on_call
 
@@ -28,8 +29,6 @@ opt_in_rules:
   - force_unwrapping
   - implicitly_unwrapped_optional
   - todo
-  # DO NOT enable sorted_imports unless you want SwiftLint to reorder imports
-  # (SwiftFormat already does alphabetized grouping).
 
 analyzer_rules:
   - unused_import
@@ -43,5 +42,5 @@ todo:
 
 # Match SwiftFormat's `--trailingcommas always`
 trailing_comma:
-  mandatory_comma: true     # require trailing comma in multiline literals
+  mandatory_comma: true
   severity: warning

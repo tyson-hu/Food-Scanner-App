@@ -21,8 +21,9 @@ struct AddFoodSearchViewModelTests {
         try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 
         #expect(viewModel.phase == .results)
-        #expect(viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
-            .contains(where: { $0.id == "fdc:1234" })
+        #expect(
+            viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
+                .contains(where: { $0.id == "fdc:1234" }),
         )
     }
 
@@ -30,7 +31,7 @@ struct AddFoodSearchViewModelTests {
         let viewModel = AddFoodSearchViewModel(client: FDCMock())
         viewModel.query = "rice"
         viewModel.onQueryChange()
-        
+
         // Wait for search to complete
         try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
         #expect(viewModel.genericResults.isEmpty == false || viewModel.brandedResults.isEmpty == false)

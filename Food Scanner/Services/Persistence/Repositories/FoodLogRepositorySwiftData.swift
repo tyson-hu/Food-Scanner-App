@@ -29,7 +29,7 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
         }
         let descriptor = FetchDescriptor<FoodEntry>(
             predicate: #Predicate { $0.date >= start && $0.date < end },
-            sortBy: [.init(\.date, order: .reverse)]
+            sortBy: [.init(\.date, order: .reverse)],
         )
         return try context.fetch(descriptor)
     }
@@ -41,7 +41,7 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
                 calories: acc.calories + entry.calories,
                 protein: acc.protein + entry.protein,
                 carbs: acc.carbs + entry.carbs,
-                fat: acc.fat + entry.fat
+                fat: acc.fat + entry.fat,
             )
         }
     }

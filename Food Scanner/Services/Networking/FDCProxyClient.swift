@@ -40,7 +40,7 @@ struct FDCProxyClient: FDCClient {
         authHeader: String? = nil,
         authValue: String? = nil,
         maxRetries: Int = 3,
-        baseDelay: TimeInterval = 1.0
+        baseDelay: TimeInterval = 1.0,
     ) {
         self.baseURL = baseURL ?? Self.defaultBaseURL
         self.session = session
@@ -74,7 +74,7 @@ struct FDCProxyClient: FDCClient {
     func searchFoods(query: String, limit: Int? = nil) async throws -> FoodSearchResponse {
         guard var components = URLComponents(
             url: baseURL.appendingPathComponent("/search"),
-            resolvingAgainstBaseURL: false
+            resolvingAgainstBaseURL: false,
         ) else {
             throw FDCError.invalidURL
         }
@@ -205,7 +205,7 @@ struct FDCProxyClient: FDCClient {
                 totalHits: proxyResponse.totalHits,
                 currentPage: proxyResponse.currentPage,
                 totalPages: proxyResponse.totalPages,
-                pageSize: pageSize
+                pageSize: pageSize,
             )
         }
     }
@@ -271,7 +271,7 @@ struct FDCProxyClient: FDCClient {
         throw lastError ?? FDCError.networkError(NSError(
             domain: "FDCProxyClient",
             code: -1,
-            userInfo: [NSLocalizedDescriptionKey: "Unknown error"]
+            userInfo: [NSLocalizedDescriptionKey: "Unknown error"],
         ))
     }
 
@@ -357,7 +357,7 @@ struct FDCProxyClient: FDCClient {
     private func buildSearchURL(query: String, page: Int, pageSize: Int = 25) throws -> URL {
         guard var components = URLComponents(
             url: baseURL.appendingPathComponent("/foods/search"),
-            resolvingAgainstBaseURL: false
+            resolvingAgainstBaseURL: false,
         ) else {
             throw FDCError.invalidURL
         }

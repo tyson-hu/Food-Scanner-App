@@ -55,7 +55,7 @@ struct FDCCachedClient: FDCClient {
         let results = try await underlyingClient.searchFoodsWithPagination(
             matching: query,
             page: page,
-            pageSize: pageSize
+            pageSize: pageSize,
         )
 
         // Cache the results

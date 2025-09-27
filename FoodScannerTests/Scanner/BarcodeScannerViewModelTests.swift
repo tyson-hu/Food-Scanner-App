@@ -53,7 +53,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: ["barcode": testBarcode]
+            userInfo: ["barcode": testBarcode],
         )
 
         // Give a moment for the async processing
@@ -79,7 +79,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: ["barcode": testBarcode]
+            userInfo: ["barcode": testBarcode],
         )
 
         // Wait for barcode to be set
@@ -105,7 +105,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: [:]
+            userInfo: [:],
         )
 
         // Give a moment for processing
@@ -148,7 +148,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: ["barcode": validUPC]
+            userInfo: ["barcode": validUPC],
         )
 
         // Give a moment for the async processing
@@ -173,7 +173,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: ["barcode": validUPC]
+            userInfo: ["barcode": validUPC],
         )
 
         // Wait for barcode to be set
@@ -200,7 +200,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: ["barcode": validUPC]
+            userInfo: ["barcode": validUPC],
         )
 
         // Wait for first barcode to be set
@@ -211,7 +211,7 @@ struct BarcodeScannerViewModelTests {
         NotificationCenter.default.post(
             name: .barcodeScanned,
             object: nil,
-            userInfo: ["barcode": validUPC]
+            userInfo: ["barcode": validUPC],
         )
 
         // Wait a bit and verify the barcode is still set (not cleared by duplicate)

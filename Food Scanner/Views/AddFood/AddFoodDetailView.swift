@@ -56,7 +56,7 @@ struct AddFoodDetailView: View {
     @ViewBuilder
     private func loadedFoodAuthoritativeDetailView(
         foodDetails: FoodAuthoritativeDetail,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        bindableViewModel: Bindable<AddFoodDetailViewModel>,
     ) -> some View {
         List {
             servingMultiplierSection(bindableViewModel: bindableViewModel)
@@ -89,7 +89,7 @@ struct AddFoodDetailView: View {
             Stepper(
                 value: bindableViewModel.servingMultiplier,
                 in: 0.25 ... 10.0,
-                step: 0.25
+                step: 0.25,
             ) {
                 Text("Serving: \(String(format: "%.2f", bindableViewModel.servingMultiplier.wrappedValue))×")
             }
@@ -118,7 +118,7 @@ struct AddFoodDetailView: View {
                 if let amount = serving.amount {
                     InfoRow(
                         label: "Amount",
-                        value: "\(String(format: "%.1f", amount)) \(serving.unit ?? "")"
+                        value: "\(String(format: "%.1f", amount)) \(serving.unit ?? "")",
                     )
                 }
                 if let household = serving.household {
@@ -142,14 +142,14 @@ struct AddFoodDetailView: View {
     @ViewBuilder
     private func nutrientsSection(
         foodDetails: FoodAuthoritativeDetail,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        bindableViewModel: Bindable<AddFoodDetailViewModel>,
     ) -> some View {
         if !foodDetails.nutrients.isEmpty {
             Section("Nutrients") {
                 ForEach(foodDetails.nutrients, id: \.name) { nutrient in
                     NutrientDetailRow(
                         nutrient: nutrient,
-                        multiplier: bindableViewModel.servingMultiplier.wrappedValue
+                        multiplier: bindableViewModel.servingMultiplier.wrappedValue,
                     )
                 }
             }
@@ -179,14 +179,14 @@ struct AddFoodDetailView: View {
     @ViewBuilder
     private func actionSection(
         foodDetails: FoodAuthoritativeDetail,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        bindableViewModel: Bindable<AddFoodDetailViewModel>,
     ) -> some View {
         Section {
             Button("Log Food") {
                 // Convert to FoodEntry for logging
                 let entry = FoodEntry.from(
                     foodDetails: foodDetails,
-                    multiplier: bindableViewModel.servingMultiplier.wrappedValue
+                    multiplier: bindableViewModel.servingMultiplier.wrappedValue,
                 )
                 onLog(entry)
             }
@@ -288,7 +288,7 @@ struct DSIDPredictionRow: View {
                     .foregroundColor(.secondary)
                 Spacer()
                 Text(
-                    "CI: \(String(format: "%.1f", prediction.ci95PredMeanLow))-\(String(format: "%.1f", prediction.ci95PredMeanHigh))"
+                    "CI: \(String(format: "%.1f", prediction.ci95PredMeanLow))-\(String(format: "%.1f", prediction.ci95PredMeanHigh))",
                 )
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -301,7 +301,7 @@ struct DSIDPredictionRow: View {
 #Preview("Sample Food Detail") {
     AddFoodDetailView(
         gid: "fdc:123456",
-        onLog: { _ in }
+        onLog: { _ in },
     )
     .environment(\.appEnv, .preview)
 }
