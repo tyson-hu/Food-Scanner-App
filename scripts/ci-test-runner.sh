@@ -48,16 +48,40 @@ cleanup_simulator() {
     xcrun simctl erase "$udid" 2>/dev/null || true
     sleep 2
     
-    # Boot simulator
-    xcrun simctl boot "$udid" 2>/dev/null || true
-    sleep 5
+    # Boot simulator and wait for completion
+    log_info "Booting simulator $udid..."
+    if ! xcrun simctl boot "$udid" 2>/dev/null; then
+        log_error "Failed to boot simulator $udid"
+        return 1
+    fi
     
-    log_info "Simulator cleanup completed"
+    # Wait for simulator to be fully booted
+    log_info "Waiting for simulator to boot..."
+    local boot_timeout=60
+    local boot_start=$(date +%s)
+    
+    while [ $(($(date +%s) - boot_start)) -lt $boot_timeout ]; do
+        if xcrun simctl list devices 2>/dev/null | grep -q "${udid}.*Booted"; then
+            log_success "Simulator $udid booted successfully"
+            sleep 3  # Additional stability wait
+            log_info "Simulator cleanup completed"
+            return 0
+        fi
+        sleep 2
+    done
+    
+    log_error "Simulator $udid failed to boot within ${boot_timeout} seconds"
+    return 1
 }
 
 # Enhanced simulator health check
 check_simulator_health() {
     local udid="$1"
+    
+    # Debug: Show current simulator status
+    log_info "Checking simulator health for $udid..."
+    local simulator_status=$(xcrun simctl list devices 2>/dev/null | grep "$udid" || echo "Not found")
+    log_info "Simulator status: $simulator_status"
     
     # Check if simulator is booted
     if ! xcrun simctl list devices 2>/dev/null | grep -q "${udid}.*Booted"; then
@@ -65,7 +89,8 @@ check_simulator_health() {
         return 1
     fi
     
-    # Test simulator responsiveness
+    # Test simulator responsiveness with a simple command
+    log_info "Testing simulator responsiveness..."
     if ! xcrun simctl list devices 2>/dev/null | grep -q "${udid}.*Booted"; then
         log_warning "Simulator $udid is not responsive"
         return 1
@@ -102,7 +127,10 @@ run_tests_with_monitoring() {
     # Pre-flight checks
     # Always reset simulator for clean state (CI best practice)
     log_info "Resetting simulator for clean test state..."
-    cleanup_simulator "$dest_id"
+    if ! cleanup_simulator "$dest_id"; then
+        log_error "Simulator cleanup failed"
+        return 1
+    fi
     
     # Check simulator health after reset
     if ! check_simulator_health "$dest_id"; then
