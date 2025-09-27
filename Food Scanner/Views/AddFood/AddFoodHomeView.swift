@@ -8,7 +8,11 @@
 import SwiftUI
 
 enum AddFoodMode: Hashable { case search, barcode, photo }
-enum AddFoodRoute: Hashable { case detail(fdcId: Int) }
+enum AddFoodRoute: Hashable {
+    case summary(gid: String)
+    case detail(gid: String)
+    case barcodeSearch(upc: String)
+}
 
 // Deep-link target, e,g. open Add tab directly to .barcode later.
 struct AddActivation: Equatable {
@@ -36,16 +40,16 @@ struct AddFoodHomeView: View {
                 Group {
                     switch mode {
                     case .search:
-                        AddFoodSearchView { fdcId in
-                            path.append(.detail(fdcId: fdcId))
+                        AddFoodSearchView { gid in
+                            path.append(.summary(gid: gid))
                         }
                     case .barcode:
-                        BarcodeScannerView(onDetect: { fdcId in
-                            path.append(.detail(fdcId: fdcId))
+                        BarcodeScannerView(onDetect: { upc in
+                            path.append(.barcodeSearch(upc: upc))
                         })
                     case .photo:
-                        PhotoIntakeView(onRecognize: { fdcId in
-                            path.append(.detail(fdcId: fdcId))
+                        PhotoIntakeView(onRecognize: { gid in
+                            path.append(.summary(gid: gid))
                         })
                     }
                 }
@@ -54,9 +58,19 @@ struct AddFoodHomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: AddFoodRoute.self) { route in
                 switch route {
-                case let .detail(id):
-                    AddFoodDetailView(fdcId: id) { entry in
+                case let .summary(gid):
+                    AddFoodSummaryView(gid: gid, onLog: { entry in
                         onLogged(entry)
+                    }, onShowDetails: { gid in
+                        path.append(.detail(gid: gid))
+                    })
+                case let .detail(gid):
+                    AddFoodDetailView(gid: gid) { entry in
+                        onLogged(entry)
+                    }
+                case let .barcodeSearch(upc):
+                    BarcodeSearchResultsView(upc: upc) { gid in
+                        path.append(.summary(gid: gid))
                     }
                 }
             }

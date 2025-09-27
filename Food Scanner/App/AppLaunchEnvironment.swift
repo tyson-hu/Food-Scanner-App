@@ -33,7 +33,7 @@ struct AppLaunchEnvironment {
         return .init(
             isRelease: isRelease,
             buildDefaultRemote: builtIn,
-            runtimeOverrideRemote: override
+            runtimeOverrideRemote: override,
         )
     }
 }

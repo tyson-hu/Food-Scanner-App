@@ -1,9 +1,9 @@
 //
-//  AddFoodDetailViewModel.swift
+//  AddFoodSummaryViewModel.swift
 //  Food Scanner
 //
-//  Created by Tyson Hu on 9/26/25.
-//  New view model for full food details using the new API
+//  Created by Tyson Hu on 9/19/25.
+//  Renamed from AddFoodDetailViewModel to AddFoodSummaryViewModel for clarity
 //
 
 import Foundation
@@ -11,10 +11,10 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodDetailViewModel {
+final class AddFoodSummaryViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FoodAuthoritativeDetail)
+        case loaded(FoodMinimalCard)
         case error(String)
     }
 
@@ -31,8 +31,8 @@ final class AddFoodDetailViewModel {
 
     func load() async {
         do {
-            let foodDetails = try await client.getFoodDetails(gid: gid)
-            await MainActor.run { self.phase = .loaded(foodDetails) }
+            let foodCard = try await client.getFood(gid: gid)
+            await MainActor.run { self.phase = .loaded(foodCard) }
         } catch {
             await MainActor
                 .run { self.phase = .error(error.localizedDescription) }

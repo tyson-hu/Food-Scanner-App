@@ -150,3 +150,5 @@ Food Scanner/Config/Secrets.plist
 # API Documentation
 # =========================
 FDC API.yaml
+/AdditionalDocumentation
+Agent.md

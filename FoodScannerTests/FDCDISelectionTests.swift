@@ -14,12 +14,12 @@ struct FDCDISelectionTests {
     private func makeEnv(
         isRelease: Bool,
         builtIn: Bool,
-        override: Bool
+        override: Bool,
     ) -> AppLaunchEnvironment {
         .init(
             isRelease: isRelease,
             buildDefaultRemote: builtIn,
-            runtimeOverrideRemote: override
+            runtimeOverrideRemote: override,
         )
     }
 
@@ -72,30 +72,30 @@ struct FDCDISelectionTests {
                 isRelease: false,
                 builtIn: true,
                 override: false,
-                expectedProxy: true
+                expectedProxy: true,
             ), // Debug + build flag on
             TestCase(
                 isRelease: false,
                 builtIn: false,
                 override: true,
-                expectedProxy: true
+                expectedProxy: true,
             ), // Debug + runtime override
             TestCase(
                 isRelease: true,
                 builtIn: false,
                 override: false,
-                expectedProxy: true
+                expectedProxy: true,
             ), // Release defaults to proxy
-        ]
+        ],
     )
     @MainActor
     private func selection_matrix(
-        _ testCase: TestCase
+        _ testCase: TestCase,
     ) async throws {
         let env = makeEnv(
             isRelease: testCase.isRelease,
             builtIn: testCase.builtIn,
-            override: testCase.override
+            override: testCase.override,
         )
         let client = FDCClientFactory.make(env: env)
         let isProxy = client is FDCProxyClient

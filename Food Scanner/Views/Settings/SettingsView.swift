@@ -12,7 +12,7 @@ struct SettingsView: View {
 
     #if DEBUG
         @State private var useRemote = UserDefaults.standard.bool(
-            forKey: AppLaunchEnvironment.runtimeKey
+            forKey: AppLaunchEnvironment.runtimeKey,
         )
     #endif
 
@@ -24,7 +24,7 @@ struct SettingsView: View {
                         .onChange(of: useRemote) { _, newValue in
                             UserDefaults.standard.set(
                                 newValue,
-                                forKey: AppLaunchEnvironment.runtimeKey
+                                forKey: AppLaunchEnvironment.runtimeKey,
                             )
                         }
 

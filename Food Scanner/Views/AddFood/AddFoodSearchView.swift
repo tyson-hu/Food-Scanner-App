@@ -10,12 +10,12 @@ import SwiftUI
 
 struct AddFoodSearchView: View {
     /// Parent provides selection handler (push to detail).
-    var onSelect: (Int) -> Void
+    var onSelect: (String) -> Void
 
     @Environment(\.appEnv) private var appEnv
     @State private var viewModel: AddFoodSearchViewModel?
 
-    init(onSelect: @escaping (Int) -> Void) {
+    init(onSelect: @escaping (String) -> Void) {
         self.onSelect = onSelect
     }
 
@@ -37,28 +37,21 @@ struct AddFoodSearchView: View {
         @Bindable var bindableViewModel = viewModel
 
         List {
-            ForEach(bindableViewModel.results, id: \.id) { item in
-                Button {
-                    onSelect(item.id)
-                } label: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(item.name).font(.body)
-
-                        HStack(spacing: 8) {
-                            if let brand = item.brand, !brand.isEmpty {
-                                Text(brand)
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            if let serving = item.serving, !serving.isEmpty {
-                                Text(serving)
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+            // Generic Foods Section
+            if !bindableViewModel.genericResults.isEmpty {
+                Section("Generic Foods") {
+                    ForEach(bindableViewModel.genericResults, id: \.id) { item in
+                        foodItemRow(item)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+
+            // Branded Foods Section
+            if !bindableViewModel.brandedResults.isEmpty {
+                Section("Branded Foods") {
+                    ForEach(bindableViewModel.brandedResults, id: \.id) { item in
+                        foodItemRow(item)
+                    }
                 }
             }
         }
@@ -68,28 +61,100 @@ struct AddFoodSearchView: View {
                 ContentUnavailableView(
                     "Search foods",
                     systemImage: "magnifyingglass",
-                    description: Text("Try \"yogurt\", \"rice\", or a brand name.")
+                    description: Text("Try \"yogurt\", \"rice\", or a brand name."),
                 )
             case .searching:
                 ProgressView().controlSize(.large)
             case .results:
-                if bindableViewModel.results.isEmpty {
+                if bindableViewModel.genericResults.isEmpty, bindableViewModel.brandedResults.isEmpty {
                     ContentUnavailableView(
                         "No matches",
                         systemImage: "exclamationmark.magnifyingglass",
-                        description: Text("Refine your terms.")
+                        description: Text("Refine your terms."),
                     )
                 }
             case let .error(msg):
                 ContentUnavailableView(
                     "Search failed",
                     systemImage: "exclamationmark.triangle",
-                    description: Text(msg)
+                    description: Text(msg),
                 )
             }
         }
         .searchable(text: $bindableViewModel.query, placement: .automatic)
         .onChange(of: bindableViewModel.query) { _, _ in bindableViewModel.onQueryChange() }
+    }
+
+    @ViewBuilder
+    private func foodItemRow(_ item: FoodMinimalCard) -> some View {
+        Button {
+            // Pass the full GID directly - supports all ID types (fdc:, gtin:, dsld:)
+            onSelect(item.id)
+        } label: {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.description ?? "Unknown Food")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+
+                HStack(spacing: 8) {
+                    if let brand = item.brand, !brand.isEmpty {
+                        Text(brand)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let serving = item.serving {
+                        let servingText = formatServingText(serving)
+                        if !servingText.isEmpty {
+                            Text(servingText)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                // Source information
+                HStack {
+                    Text("Source:")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+
+                    Text(sourceDisplayName(item.provenance.source))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color(.systemGray5))
+                        .cornerRadius(4)
+
+                    Spacer()
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    private func sourceDisplayName(_ source: SourceTag) -> String {
+        switch source {
+        case .fdc:
+            "FDC"
+        case .dsld:
+            "DSLD"
+        case .dsid:
+            "DSID"
+        case .off:
+            "Open Food Facts"
+        }
+    }
+
+    private func formatServingText(_ serving: FoodServing) -> String {
+        if let amount = serving.amount, let unit = serving.unit {
+            return "\(String(format: "%.1f", amount)) \(unit)"
+        } else if let household = serving.household {
+            return household
+        }
+        return ""
     }
 }
 

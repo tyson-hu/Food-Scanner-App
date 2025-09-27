@@ -8,14 +8,56 @@
 import Foundation
 
 public protocol FDCClient: Sendable {
-    /// Search branded/generic foods by text.
+    // MARK: - New API Methods (v1 Worker API)
+
+    /// Get service health status
+    func getHealth() async throws -> FoodHealthResponse
+
+    /// Search foods by text query (returns both generic and branded)
+    func searchFoods(query: String, limit: Int?) async throws -> FoodSearchResponse
+
+    /// Get minimal food card by barcode
+    func getFoodByBarcode(code: String) async throws -> FoodMinimalCard
+
+    /// Get minimal food card by GID
+    func getFood(gid: String) async throws -> FoodMinimalCard
+
+    /// Get authoritative food details by GID
+    func getFoodDetails(gid: String) async throws -> FoodAuthoritativeDetail
+
+    // MARK: - Legacy Methods (for backward compatibility)
+
+    /// Search branded/generic foods by text with pagination.
     func searchFoods(matching query: String, page: Int) async throws -> [FDCFoodSummary]
+
+    /// Search branded/generic foods by text with full pagination info.
+    func searchFoodsWithPagination(matching query: String, page: Int, pageSize: Int) async throws -> FDCSearchResult
 
     /// Fetch full nutrition for a specific FDC id.
     func fetchFoodDetails(fdcId: Int) async throws -> FDCFoodDetails
 
     /// Fetch full detailed response for a specific FDC id (includes all metadata).
     func fetchFoodDetailResponse(fdcId: Int) async throws -> ProxyFoodDetailResponse
+}
+
+// MARK: - Search Result Model
+
+public struct FDCSearchResult: Sendable, Codable, Equatable {
+    public let foods: [FDCFoodSummary]
+    public let totalHits: Int
+    public let currentPage: Int
+    public let totalPages: Int
+    public let pageSize: Int
+    public let hasMore: Bool
+
+    public init(foods: [FDCFoodSummary], totalHits: Int, currentPage: Int, totalPages: Int, pageSize: Int) {
+        self.foods = foods
+        self.totalHits = totalHits
+        self.currentPage = currentPage
+        self.totalPages = totalPages
+        self.pageSize = pageSize
+        hasMore = currentPage < totalPages
+    }
 }
 
 // MARK: - Error Types
@@ -28,6 +70,7 @@ enum FDCError: LocalizedError {
     case decodingError(Error)
     case noResults
     case serverUnavailable
+    case rateLimited(TimeInterval?)
 
     var errorDescription: String? {
         switch self {
@@ -73,6 +116,12 @@ enum FDCError: LocalizedError {
             "No foods found matching your search. Try different keywords."
         case .serverUnavailable:
             "Food database is temporarily unavailable. Please try again later."
+        case let .rateLimited(retryAfter):
+            if let retryAfter {
+                "Too many requests. Please wait \(Int(retryAfter)) seconds and try again."
+            } else {
+                "Too many requests. Please wait a moment and try again."
+            }
         }
     }
 
@@ -114,6 +163,8 @@ enum FDCError: LocalizedError {
             "Try using broader search terms or check spelling."
         case .serverUnavailable:
             "Please try again in a few minutes."
+        case .rateLimited:
+            "Reduce the frequency of your requests or wait before trying again."
         }
     }
 }

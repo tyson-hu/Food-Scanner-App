@@ -19,7 +19,7 @@ struct TodayView: View {
         _entries = Query(
             filter: #Predicate<FoodEntry> { $0.date >= start && $0.date < end },
             sort: [SortDescriptor(\.date, order: .reverse)],
-            animation: .default
+            animation: .default,
         )
     }
 
@@ -42,7 +42,7 @@ struct TodayView: View {
             calories: Int(aggregated.0.rounded()),
             protein: Int(aggregated.1.rounded()),
             fat: Int(aggregated.2.rounded()),
-            carbs: Int(aggregated.3.rounded())
+            carbs: Int(aggregated.3.rounded()),
         )
     }
 
@@ -75,7 +75,7 @@ struct TodayView: View {
                     ContentUnavailableView(
                         "No entries yet",
                         systemImage: "tray",
-                        description: Text("Add something on the Add tab.")
+                        description: Text("Add something on the Add tab."),
                     )
                 }
             }
