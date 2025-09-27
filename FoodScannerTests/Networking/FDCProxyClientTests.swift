@@ -135,7 +135,7 @@ struct FDCProxyClientTests {
         #expect(result.totalPages == 0)
     }
 
-    @Test
+    @Test @MainActor
     func searchFoodsWithHTTPError() async throws {
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
@@ -158,7 +158,7 @@ struct FDCProxyClientTests {
         }
     }
 
-    @Test
+    @Test @MainActor
     func searchFoodsWithNetworkError() async throws {
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
@@ -241,7 +241,7 @@ struct FDCProxyClientTests {
         }
     }
 
-    @Test
+    @Test @MainActor
     func retryLogicWithNonRetryableError() async throws {
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
@@ -415,7 +415,7 @@ struct FDCProxyClientTests {
         #expect(result.hasMore == false)
     }
 
-    @Test
+    @Test @MainActor
     func searchFoodsWithUPCNetworkError() async throws {
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
