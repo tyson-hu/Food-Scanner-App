@@ -96,9 +96,9 @@ struct FDCMock: FDCClient {
         // Mock barcode lookup - return first branded food with UPC
         if let food = Self.catalog.first(where: { $0.gtinUpc == code && $0.brand != nil }) {
             return FoodMinimalCard(
-                id: "gtin:\(code.padding(toLength: 14, withPad: "0", startingAt: 0))",
+                id: "gtin:\(food.gtinUpc ?? "")",
                 kind: .brandedFood,
-                code: code,
+                code: food.gtinUpc,
                 description: food.name,
                 brand: food.brand,
                 serving: FoodServing(
@@ -127,6 +127,55 @@ struct FDCMock: FDCClient {
                 return FoodMinimalCard(
                     id: gid,
                     kind: food.brand != nil ? .brandedFood : .genericFood,
+                    code: food.gtinUpc,
+                    description: food.name,
+                    brand: food.brand,
+                    serving: FoodServing(
+                        amount: food.servingSize,
+                        unit: food.servingSizeUnit,
+                        household: food.householdServingFullText
+                    ),
+                    nutrients: [],
+                    provenance: FoodProvenance(
+                        source: .fdc,
+                        id: "\(food.id)",
+                        fetchedAt: "2025-09-26T21:00:00Z"
+                    )
+                )
+            }
+        }
+
+        // Handle GTIN GID from barcode lookup
+        if gid.hasPrefix("gtin:") {
+            let gtinCode = String(gid.dropFirst(5))
+            // Try to find food by exact GTIN match first
+            if let food = Self.catalog.first(where: { $0.gtinUpc == gtinCode && $0.brand != nil }) {
+                return FoodMinimalCard(
+                    id: gid,
+                    kind: .brandedFood,
+                    code: food.gtinUpc,
+                    description: food.name,
+                    brand: food.brand,
+                    serving: FoodServing(
+                        amount: food.servingSize,
+                        unit: food.servingSizeUnit,
+                        household: food.householdServingFullText
+                    ),
+                    nutrients: [],
+                    provenance: FoodProvenance(
+                        source: .fdc,
+                        id: "\(food.id)",
+                        fetchedAt: "2025-09-26T21:00:00Z"
+                    )
+                )
+            }
+
+            // If no exact match, try removing leading zeros
+            let originalBarcode = gtinCode.replacingOccurrences(of: "^0+", with: "", options: .regularExpression)
+            if let food = Self.catalog.first(where: { $0.gtinUpc == originalBarcode && $0.brand != nil }) {
+                return FoodMinimalCard(
+                    id: gid,
+                    kind: .brandedFood,
                     code: food.gtinUpc,
                     description: food.name,
                     brand: food.brand,
@@ -189,6 +238,125 @@ struct FDCMock: FDCClient {
                 return FoodAuthoritativeDetail(
                     id: gid,
                     kind: food.brand != nil ? .brandedFood : .genericFood,
+                    code: food.gtinUpc,
+                    description: food.name,
+                    brand: food.brand,
+                    ingredientsText: food.ingredients,
+                    serving: FoodServing(
+                        amount: food.servingSize ?? 100.0,
+                        unit: food.servingSizeUnit ?? "g",
+                        household: food.householdServingFullText ?? "1 serving"
+                    ),
+                    portions: [],
+                    nutrients: mockNutrients,
+                    dsidPredictions: nil,
+                    provenance: FoodProvenance(
+                        source: .fdc,
+                        id: "\(food.id)",
+                        fetchedAt: "2025-09-26T21:00:00Z"
+                    )
+                )
+            }
+        }
+
+        // Handle GTIN GID from barcode lookup
+        if gid.hasPrefix("gtin:") {
+            let gtinCode = String(gid.dropFirst(5))
+            // Try to find food by exact GTIN match first
+            if let food = Self.catalog.first(where: { $0.gtinUpc == gtinCode && $0.brand != nil }) {
+                // Create mock nutrients based on the food data
+                let mockNutrients = [
+                    FoodNutrient(
+                        id: 1008,
+                        name: "Energy",
+                        unit: "kcal",
+                        amount: Double(food.calories),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1003,
+                        name: "Protein",
+                        unit: "g",
+                        amount: Double(food.protein),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1004,
+                        name: "Total lipid (fat)",
+                        unit: "g",
+                        amount: Double(food.fat),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1005,
+                        name: "Carbohydrate, by difference",
+                        unit: "g",
+                        amount: Double(food.carbs),
+                        basis: .perServing
+                    ),
+                ]
+
+                return FoodAuthoritativeDetail(
+                    id: gid,
+                    kind: .brandedFood,
+                    code: food.gtinUpc,
+                    description: food.name,
+                    brand: food.brand,
+                    ingredientsText: food.ingredients,
+                    serving: FoodServing(
+                        amount: food.servingSize ?? 100.0,
+                        unit: food.servingSizeUnit ?? "g",
+                        household: food.householdServingFullText ?? "1 serving"
+                    ),
+                    portions: [],
+                    nutrients: mockNutrients,
+                    dsidPredictions: nil,
+                    provenance: FoodProvenance(
+                        source: .fdc,
+                        id: "\(food.id)",
+                        fetchedAt: "2025-09-26T21:00:00Z"
+                    )
+                )
+            }
+
+            // If no exact match, try removing leading zeros
+            let originalBarcode = gtinCode.replacingOccurrences(of: "^0+", with: "", options: .regularExpression)
+            if let food = Self.catalog.first(where: { $0.gtinUpc == originalBarcode && $0.brand != nil }) {
+                // Create mock nutrients based on the food data
+                let mockNutrients = [
+                    FoodNutrient(
+                        id: 1008,
+                        name: "Energy",
+                        unit: "kcal",
+                        amount: Double(food.calories),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1003,
+                        name: "Protein",
+                        unit: "g",
+                        amount: Double(food.protein),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1004,
+                        name: "Total lipid (fat)",
+                        unit: "g",
+                        amount: Double(food.fat),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1005,
+                        name: "Carbohydrate, by difference",
+                        unit: "g",
+                        amount: Double(food.carbs),
+                        basis: .perServing
+                    ),
+                ]
+
+                return FoodAuthoritativeDetail(
+                    id: gid,
+                    kind: .brandedFood,
                     code: food.gtinUpc,
                     description: food.name,
                     brand: food.brand,
@@ -446,7 +614,59 @@ struct FDCMock: FDCClient {
             tradeChannels: nil,
             publishedDate: nil,
             modifiedDate: nil,
-            gtinUpc: nil,
+            gtinUpc: "031604031121",
+            labelNutrients: nil,
+            foodNutrients: nil
+        ),
+        .init(
+            id: 1005,
+            name: "Coca-Cola Classic",
+            brand: "Coca-Cola",
+            calories: 140,
+            protein: 0,
+            fat: 0,
+            carbs: 39,
+            dataType: "Branded",
+            brandOwner: "Coca-Cola Company",
+            brandName: "Coca-Cola",
+            servingSize: 355.0,
+            servingSizeUnit: "ml",
+            householdServingFullText: "1 can",
+            packageWeight: "355ml",
+            foodCategory: "Beverages",
+            foodCategoryId: 9,
+            ingredients: "Carbonated water, high fructose corn syrup, caramel color, phosphoric acid, natural flavors, caffeine",
+            marketCountry: "US",
+            tradeChannels: ["Grocery"],
+            publishedDate: "2023-01-01",
+            modifiedDate: "2023-01-01",
+            gtinUpc: "049000028911",
+            labelNutrients: nil,
+            foodNutrients: nil
+        ),
+        .init(
+            id: 1006,
+            name: "Lay's Classic Potato Chips",
+            brand: "Lay's",
+            calories: 160,
+            protein: 2,
+            fat: 10,
+            carbs: 15,
+            dataType: "Branded",
+            brandOwner: "Frito-Lay",
+            brandName: "Lay's",
+            servingSize: 28.0,
+            servingSizeUnit: "g",
+            householdServingFullText: "1 oz",
+            packageWeight: "28g",
+            foodCategory: "Snacks",
+            foodCategoryId: 10,
+            ingredients: "Potatoes, vegetable oil, salt",
+            marketCountry: "US",
+            tradeChannels: ["Grocery", "Convenience"],
+            publishedDate: "2023-01-01",
+            modifiedDate: "2023-01-01",
+            gtinUpc: "028400000000",
             labelNutrients: nil,
             foodNutrients: nil
         ),
