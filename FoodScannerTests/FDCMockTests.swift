@@ -53,4 +53,53 @@ struct FDCMockTests {
         #expect(details.name == "Brown Rice, cooked")
         #expect(details.calories == 216)
     }
+
+    // MARK: - Barcode GID Tests
+
+    // Test that barcode search returns GTIN GID
+    @Test @MainActor func barcode_search_returns_gtin_gid() async throws {
+        let result = try await client.getFoodByBarcode(code: "031604031121")
+        #expect(result.id.hasPrefix("gtin:"))
+        #expect(result.description == "Greek Yogurt, Strawberry")
+        #expect(result.brand == "Chobani")
+    }
+
+    // Test that GTIN GID can be resolved back to food details
+    @Test @MainActor func gtin_gid_resolves_to_food_details() async throws {
+        // First get a barcode result
+        let barcodeResult = try await client.getFoodByBarcode(code: "031604031121")
+        let gtinGid = barcodeResult.id
+
+        // Then resolve the GTIN GID
+        let foodResult = try await client.getFood(gid: gtinGid)
+        #expect(foodResult.id == gtinGid)
+        #expect(foodResult.description == "Greek Yogurt, Strawberry")
+        #expect(foodResult.brand == "Chobani")
+    }
+
+    // Test that GTIN GID can be resolved to detailed food information
+    @Test @MainActor func gtin_gid_resolves_to_detailed_food() async throws {
+        // First get a barcode result
+        let barcodeResult = try await client.getFoodByBarcode(code: "031604031121")
+        let gtinGid = barcodeResult.id
+
+        // Then get detailed food information
+        let detailedResult = try await client.getFoodDetails(gid: gtinGid)
+        #expect(detailedResult.id == gtinGid)
+        #expect(detailedResult.description == "Greek Yogurt, Strawberry")
+        #expect(detailedResult.brand == "Chobani")
+        #expect(!detailedResult.nutrients.isEmpty)
+    }
+
+    // Test that unknown barcode returns no results
+    @Test @MainActor func unknown_barcode_returns_no_results() async throws {
+        do {
+            _ = try await client.getFoodByBarcode(code: "9999999999999")
+            Issue.record("Expected no results for unknown barcode")
+        } catch FDCError.noResults {
+            // Expected behavior
+        } catch {
+            Issue.record("Expected FDCError.noResults, got \(error)")
+        }
+    }
 }

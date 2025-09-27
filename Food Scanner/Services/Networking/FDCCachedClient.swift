@@ -18,22 +18,48 @@ struct FDCCachedClient: FDCClient {
         self.cacheService = cacheService
     }
 
-    func searchFoods(matching query: String, page: Int) async throws -> [FDCFoodSummary] {
-        // For now, only cache page 1 results to avoid complexity
-        guard page == 1 else {
-            return try await underlyingClient.searchFoods(matching: query, page: page)
-        }
+    // MARK: - New API Methods (v1 Worker API)
 
+    func getHealth() async throws -> FoodHealthResponse {
+        try await underlyingClient.getHealth()
+    }
+
+    func searchFoods(query: String, limit: Int?) async throws -> FoodSearchResponse {
+        try await underlyingClient.searchFoods(query: query, limit: limit)
+    }
+
+    func getFoodByBarcode(code: String) async throws -> FoodMinimalCard {
+        try await underlyingClient.getFoodByBarcode(code: code)
+    }
+
+    func getFood(gid: String) async throws -> FoodMinimalCard {
+        try await underlyingClient.getFood(gid: gid)
+    }
+
+    func getFoodDetails(gid: String) async throws -> FoodAuthoritativeDetail {
+        try await underlyingClient.getFoodDetails(gid: gid)
+    }
+
+    func searchFoods(matching query: String, page: Int) async throws -> [FDCFoodSummary] {
+        let result = try await searchFoodsWithPagination(matching: query, page: page, pageSize: 25)
+        return result.foods
+    }
+
+    func searchFoodsWithPagination(matching query: String, page: Int, pageSize: Int) async throws -> FDCSearchResult {
         // Check cache first
-        if let cachedResults = cacheService.cachedSearchResults(for: query) {
+        if let cachedResults = cacheService.cachedPaginatedSearchResults(for: query, page: page, pageSize: pageSize) {
             return cachedResults
         }
 
         // Fetch from network
-        let results = try await underlyingClient.searchFoods(matching: query, page: page)
+        let results = try await underlyingClient.searchFoodsWithPagination(
+            matching: query,
+            page: page,
+            pageSize: pageSize,
+        )
 
         // Cache the results
-        cacheService.cacheSearchResults(results, for: query)
+        cacheService.cachePaginatedSearchResults(results, for: query, page: page, pageSize: pageSize)
 
         return results
     }

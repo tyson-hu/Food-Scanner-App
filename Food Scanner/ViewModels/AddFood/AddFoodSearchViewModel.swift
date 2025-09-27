@@ -23,7 +23,8 @@ final class AddFoodSearchViewModel {
 
     var query: String = ""
     var phase: Phase = .idle
-    var results: [FDCFoodSummary] = []
+    var genericResults: [FoodMinimalCard] = []
+    var brandedResults: [FoodMinimalCard] = []
 
     // MARK: - Non-observed Dependencies & Internals
 
@@ -75,7 +76,8 @@ final class AddFoodSearchViewModel {
     }
 
     private func resetToIdleState() {
-        results = []
+        genericResults = []
+        brandedResults = []
         phase = .idle
         lastSearchQuery = ""
     }
@@ -99,7 +101,7 @@ final class AddFoodSearchViewModel {
 
                 try Task.checkCancellation()
 
-                if results.isEmpty {
+                if genericResults.isEmpty, brandedResults.isEmpty {
                     phase = .searching
                 }
 
@@ -124,19 +126,20 @@ final class AddFoodSearchViewModel {
     /// Performs the actual search. Runs under MainActor (class-isolated).
     /// Awaiting the network call does not block the main thread.
     private func performSearch(_ searchQuery: String, searchId: Int) async throws {
-        // Verify we’re still the current search
+        // Verify we're still the current search
         guard searchId == currentSearchId else { return }
 
         // Network call (await suspends MainActor while URLSession works off-main)
-        let page1 = try await client.searchFoods(matching: searchQuery, page: 1)
+        let searchResponse = try await client.searchFoods(query: searchQuery, limit: 25)
 
         // Still current after the call?
         guard searchId == currentSearchId else { return }
 
         try Task.checkCancellation()
 
-        // Update UI state
-        results = page1
+        // Update UI state with separated results
+        genericResults = searchResponse.generic
+        brandedResults = searchResponse.branded
         phase = .results
         lastSearchQuery = searchQuery
         searchTask = nil

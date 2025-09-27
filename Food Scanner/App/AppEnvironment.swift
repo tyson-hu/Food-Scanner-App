@@ -28,7 +28,7 @@ struct AppEnvironment: Sendable {
     static let preview = AppEnvironment(
         fdcClient: FDCMock(),
         cacheService: FDCCacheService(),
-        dateProvider: { Date(timeIntervalSince1970: 0) }
+        dateProvider: { Date(timeIntervalSince1970: 0) },
     )
 }
 

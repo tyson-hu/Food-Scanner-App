@@ -63,6 +63,9 @@
          <TestPlanReference
             reference = "container:FoodScanner-Full.xctestplan">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:FoodScanner-CI-Offline.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference

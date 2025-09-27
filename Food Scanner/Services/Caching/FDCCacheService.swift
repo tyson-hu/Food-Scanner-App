@@ -24,7 +24,7 @@ struct CacheConfiguration {
 
     nonisolated static let `default` = CacheConfiguration(
         maxAge: 7 * 24 * 60 * 60, // 7 days
-        maxSize: 1000 // Maximum number of cached items
+        maxSize: 1000, // Maximum number of cached items
     )
 }
 
@@ -51,7 +51,7 @@ private struct CacheEntry<T: Codable>: Codable {
         CacheEntry(
             data: data,
             timestamp: timestamp,
-            accessCount: accessCount + 1
+            accessCount: accessCount + 1,
         )
     }
 
@@ -65,6 +65,7 @@ private struct CacheEntry<T: Codable>: Codable {
 @MainActor
 final class FDCCacheService: ObservableObject {
     private var searchCache: [String: CacheEntry<[FDCFoodSummary]>] = [:]
+    private var paginatedSearchCache: [String: CacheEntry<FDCSearchResult>] = [:]
     private var detailCache: [Int: CacheEntry<ProxyFoodDetailResponse>] = [:]
     private let configuration: CacheConfiguration
 
@@ -91,6 +92,25 @@ final class FDCCacheService: ObservableObject {
         cleanupIfNeeded()
     }
 
+    // MARK: - Paginated Search Cache
+
+    func cachedPaginatedSearchResults(for query: String, page: Int, pageSize: Int) -> FDCSearchResult? {
+        let key = normalizedPaginatedQuery(query, page: page, pageSize: pageSize)
+        guard let entry = paginatedSearchCache[key], !entry.isExpired else {
+            paginatedSearchCache.removeValue(forKey: key)
+            return nil
+        }
+
+        paginatedSearchCache[key] = entry.accessed()
+        return entry.data
+    }
+
+    func cachePaginatedSearchResults(_ results: FDCSearchResult, for query: String, page: Int, pageSize: Int) {
+        let key = normalizedPaginatedQuery(query, page: page, pageSize: pageSize)
+        paginatedSearchCache[key] = CacheEntry(data: results)
+        cleanupIfNeeded()
+    }
+
     // MARK: - Detail Cache
 
     func cachedFoodDetails(for fdcId: Int) -> ProxyFoodDetailResponse? {
@@ -112,19 +132,21 @@ final class FDCCacheService: ObservableObject {
 
     func clearCache() {
         searchCache.removeAll()
+        paginatedSearchCache.removeAll()
         detailCache.removeAll()
     }
 
     func clearExpiredEntries() {
         searchCache = searchCache.filter { !$0.value.isExpired }
+        paginatedSearchCache = paginatedSearchCache.filter { !$0.value.isExpired }
         detailCache = detailCache.filter { !$0.value.isExpired }
     }
 
     var cacheStats: CacheStats {
         CacheStats(
-            searchCount: searchCache.count,
+            searchCount: searchCache.count + paginatedSearchCache.count,
             detailCount: detailCache.count,
-            totalSize: searchCache.count + detailCache.count
+            totalSize: searchCache.count + paginatedSearchCache.count + detailCache.count,
         )
     }
 
@@ -134,20 +156,30 @@ final class FDCCacheService: ObservableObject {
         query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
+    private func normalizedPaginatedQuery(_ query: String, page: Int, pageSize: Int) -> String {
+        "\(normalizedQuery(query))_p\(page)_s\(pageSize)"
+    }
+
     private func cleanupIfNeeded() {
-        let totalSize = searchCache.count + detailCache.count
+        let totalSize = searchCache.count + paginatedSearchCache.count + detailCache.count
         guard totalSize > configuration.maxSize else { return }
 
         // Remove least recently accessed entries
         let searchEntries = searchCache.sorted { $0.value.accessCount < $1.value.accessCount }
+        let paginatedSearchEntries = paginatedSearchCache.sorted { $0.value.accessCount < $1.value.accessCount }
         let detailEntries = detailCache.sorted { $0.value.accessCount < $1.value.accessCount }
 
         let entriesToRemove = totalSize - configuration.maxSize
-        let searchToRemove = min(entriesToRemove / 2, searchEntries.count)
-        let detailToRemove = min(entriesToRemove - searchToRemove, detailEntries.count)
+        let searchToRemove = min(entriesToRemove / 3, searchEntries.count)
+        let paginatedSearchToRemove = min(entriesToRemove / 3, paginatedSearchEntries.count)
+        let detailToRemove = min(entriesToRemove - searchToRemove - paginatedSearchToRemove, detailEntries.count)
 
         for index in 0 ..< searchToRemove {
             searchCache.removeValue(forKey: searchEntries[index].key)
+        }
+
+        for index in 0 ..< paginatedSearchToRemove {
+            paginatedSearchCache.removeValue(forKey: paginatedSearchEntries[index].key)
         }
 
         for index in 0 ..< detailToRemove {

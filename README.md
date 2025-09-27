@@ -6,12 +6,18 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI and 
 
 ### 🍎 Core Functionality
 - **Food Search**: Search for foods using text queries with real-time results
+- **Barcode Scanning**: Scan product barcodes using VisionKit for instant food lookup
+- **Photo Recognition**: AI-powered food recognition from photos (coming soon)
 - **Nutrition Tracking**: Log daily food intake with detailed nutrition information
 - **Today View**: View daily nutrition totals and food entries
 - **Smart Caching**: Intelligent caching system for improved performance and offline support
 
 ### 🔧 Technical Features
 - **Proxy Architecture**: Routes requests through `https://api.calry.org` for reliable food data
+- **Comprehensive Schema**: Full FDC API field coverage with proper normalization
+- **Advanced Pagination**: Efficient pagination with "Load More" functionality
+- **Retry Logic**: Exponential backoff for network failures and rate limits
+- **Data Normalization**: Smart unit conversion and energy standardization
 - **Offline Support**: Cached data available when network is unavailable
 - **Error Handling**: Comprehensive error handling with user-friendly messages
 - **Performance**: Optimized for speed with debounced search and intelligent caching
@@ -19,10 +25,11 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI and 
 ## Architecture
 
 ### Networking Layer
-- **FDCProxyClient**: Routes requests through calry.org proxy
+- **FDCProxyClient**: Routes requests through calry.org proxy with retry logic
 - **FDCCachedClient**: Transparent caching wrapper for improved performance
 - **FDCMock**: Mock client for development and testing
 - **FDCClientFactory**: Environment-based client selection
+- **DataNormalization**: Utility for unit conversion and data standardization
 
 ### Data Layer
 - **SwiftData**: Modern data persistence with automatic sync
@@ -31,6 +38,7 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI and 
 
 ### UI Layer
 - **SwiftUI**: Modern declarative UI framework
+- **VisionKit**: Barcode scanning with DataScannerViewController
 - **Observation**: Reactive state management
 - **NavigationStack**: Modern navigation patterns
 
@@ -81,14 +89,21 @@ RUN_INTEGRATION_TESTS=1 xcodebuild test -scheme "Food Scanner"
 The app integrates with the Food Data Central (FDC) API through a proxy service:
 
 - **Base URL**: `https://api.calry.org`
-- **Search Endpoint**: `/foods/search`
+- **Search Endpoint**: `/foods/search` (Branded foods only)
 - **Details Endpoint**: `/food/{fdcId}`
 - **Authentication**: Optional headers for production use
 
+### M2-03 Enhancements
+- **Comprehensive Schema**: Full field coverage including label nutrients, serving info, and metadata
+- **Data Normalization**: Smart unit conversion (kJ→kcal, μg/mcg aliases, etc.)
+- **Advanced Pagination**: Proper page handling with `hasMore` computation
+- **Retry Logic**: Exponential backoff for 429/5xx errors with configurable retry attempts
+- **Enhanced Caching**: Separate caches for paginated vs. simple search results
+
 ### Response Handling
-- **Field Mapping**: Robust fallbacks for missing data
+- **Field Mapping**: Robust fallbacks for missing data with comprehensive schema coverage
 - **Error Recovery**: User-friendly error messages with actionable guidance
-- **Pagination**: Support for large result sets
+- **Pagination**: Support for large result sets with stable "Load More" behavior
 
 ## Caching
 
@@ -112,9 +127,27 @@ The app integrates with the Food Data Central (FDC) API through a proxy service:
 - **User Errors**: Empty searches, invalid inputs
 
 ### Recovery
-- **Retry Logic**: Automatic retry for transient failures
+- **Retry Logic**: Automatic retry for transient failures with exponential backoff
 - **User Guidance**: Clear error messages with actionable advice
 - **Fallback**: Graceful degradation when services unavailable
+
+## Barcode Scanning
+
+### VisionKit Integration
+- **DataScannerViewController**: Modern barcode scanning with iOS 16+ support
+- **Real-time Detection**: Instant barcode recognition with visual feedback
+- **Permission Handling**: Graceful camera permission management
+- **Haptic Feedback**: Tactile confirmation on successful scans
+
+### Supported Formats
+- **UPC/EAN**: Standard product barcodes
+- **Code128**: Extended barcode support
+- **QR Codes**: Additional format support
+
+### User Experience
+- **Camera Overlay**: Clear scanning instructions and guidance
+- **Error Handling**: User-friendly messages for permission issues
+- **Settings Integration**: Direct link to camera settings when needed
 
 ## Performance
 

@@ -17,24 +17,29 @@ struct AddFoodSearchViewModelTests {
         viewModel.query = "yogurt"
         viewModel.onQueryChange()
 
-        // debounce(250ms) + mock latency(~150ms) headroom
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        // Wait for debounce (250ms) + mock latency (200ms) + extra headroom
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 
         #expect(viewModel.phase == .results)
-        #expect(viewModel.results.contains(where: { $0.id == 1234 }))
+        #expect(
+            viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
+                .contains(where: { $0.id == "fdc:1234" }),
+        )
     }
 
     @Test @MainActor func clearing_query_resets_to_idle() async throws {
         let viewModel = AddFoodSearchViewModel(client: FDCMock())
         viewModel.query = "rice"
         viewModel.onQueryChange()
-        try? await Task.sleep(nanoseconds: 500_000_000)
-        #expect(viewModel.results.isEmpty == false)
+
+        // Wait for search to complete
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+        #expect(viewModel.genericResults.isEmpty == false || viewModel.brandedResults.isEmpty == false)
 
         viewModel.query = ""
         viewModel.onQueryChange()
         #expect(viewModel.phase == .idle)
-        #expect(viewModel.results.isEmpty)
+        #expect(viewModel.genericResults.isEmpty && viewModel.brandedResults.isEmpty)
     }
 
     @Test @MainActor func mock_client_handles_empty_query() async throws {
@@ -43,7 +48,7 @@ struct AddFoodSearchViewModelTests {
         viewModel.onQueryChange()
 
         #expect(viewModel.phase == .idle)
-        #expect(viewModel.results.isEmpty)
+        #expect(viewModel.genericResults.isEmpty && viewModel.brandedResults.isEmpty)
     }
 
     @Test @MainActor func mock_client_handles_short_query() async throws {
@@ -52,7 +57,7 @@ struct AddFoodSearchViewModelTests {
         viewModel.onQueryChange()
 
         #expect(viewModel.phase == .idle)
-        #expect(viewModel.results.isEmpty)
+        #expect(viewModel.genericResults.isEmpty && viewModel.brandedResults.isEmpty)
     }
 
     // MARK: - Integration Tests (Live Network)
@@ -60,7 +65,6 @@ struct AddFoodSearchViewModelTests {
     @Test @MainActor func integration_proxy_client_search() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
@@ -75,15 +79,15 @@ struct AddFoodSearchViewModelTests {
         // Should either have results or be in error state
         #expect(viewModel.phase == .results || viewModel.phase == .error(""))
         if case .results = viewModel.phase {
-            #expect(!viewModel.results.isEmpty)
-            #expect(viewModel.results.first?.name.contains("OATMEAL") == true)
+            #expect(!viewModel.genericResults.isEmpty || !viewModel.brandedResults.isEmpty)
+            let allResults = viewModel.genericResults + viewModel.brandedResults
+            #expect(allResults.first?.description?.contains("OATMEAL") == true)
         }
     }
 
     @Test @MainActor func integration_proxy_client_handles_network_error() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
