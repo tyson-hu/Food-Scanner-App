@@ -6,10 +6,10 @@ set -euo pipefail
 
 # Configuration
 MAX_ATTEMPTS=5
-XCODEBUILD_TIMEOUT=720  # 12 minutes
-STUCK_THRESHOLD=300     # 5 minutes
-CHECK_INTERVAL=30       # 30 seconds
-PROGRESS_TIMEOUT=60     # 1 minute for progress detection
+XCODEBUILD_TIMEOUT=600  # 10 minutes (reduced from 12)
+STUCK_THRESHOLD=180     # 3 minutes (reduced from 5)
+CHECK_INTERVAL=20       # 20 seconds (more frequent)
+PROGRESS_TIMEOUT=40     # 40 seconds for progress detection (reduced from 60)
 
 # Colors for output
 RED='\033[0;31m'
@@ -100,13 +100,14 @@ run_tests_with_monitoring() {
     log_info "Starting test attempt $attempt/$MAX_ATTEMPTS"
     
     # Pre-flight checks
+    # Always reset simulator for clean state (CI best practice)
+    log_info "Resetting simulator for clean test state..."
+    cleanup_simulator "$dest_id"
+    
+    # Check simulator health after reset
     if ! check_simulator_health "$dest_id"; then
-        log_warning "Simulator health check failed, cleaning up..."
-        cleanup_simulator "$dest_id"
-        if ! check_simulator_health "$dest_id"; then
-            log_error "Simulator still unhealthy after cleanup"
-            return 1
-        fi
+        log_error "Simulator still unhealthy after reset"
+        return 1
     fi
     
     # Create log file for monitoring
@@ -118,14 +119,16 @@ run_tests_with_monitoring() {
     # Start xcodebuild in background
     xcodebuild \
         -scheme "Food Scanner" \
-        -testPlan "FoodScanner-PR" \
+        -testPlan "FoodScanner-CI-Offline" \
         -destination "id=$dest_id" \
-        -destination-timeout 180 \
+        -destination-timeout 60 \
         -derivedDataPath "$derived_data_path" \
         CODE_SIGNING_ALLOWED=NO \
         ENABLE_PREVIEWS=NO \
         SWIFT_STRICT_CONCURRENCY=complete \
         OTHER_SWIFT_FLAGS='-warnings-as-errors' \
+        CI_OFFLINE_MODE=YES \
+        NETWORK_TESTING_DISABLED=YES \
         -skipPackagePluginValidation \
         -skipMacroValidation \
         -disableAutomaticPackageResolution \

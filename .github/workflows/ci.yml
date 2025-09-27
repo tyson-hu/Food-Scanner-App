@@ -198,13 +198,13 @@ jobs:
           echo "DEST_ID=${UDID}" >> "$GITHUB_ENV"
           echo "UDID=${UDID}" >> "$GITHUB_OUTPUT"
 
-      - name: Build & Unit Tests (PR plan, no coverage)
-        timeout-minutes: 20
+      - name: Build & Unit Tests (Offline CI plan, no coverage)
+        timeout-minutes: 15
         shell: bash
         run: |
           set -eo pipefail
           
-          # Use the enhanced CI test runner script
+          # Use the enhanced CI test runner script with offline configuration
           ./scripts/ci-test-runner.sh "$DEST_ID" "./DerivedData"
 
       - name: Cleanup Simulators

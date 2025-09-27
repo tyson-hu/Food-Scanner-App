@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "15D8CF0B-4956-4B75-A655-2A8C2A6778C6",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Food Scanner.xcodeproj",
+        "identifier" : "842FD0C02E7E072C00CD2A5F",
+        "name" : "FoodScannerTests"
+      },
+      "skippedTests" : [
+        {
+          "identifier" : "FoodScannerTests.FDCProxyClientTests.searchFoodsWithNetworkError",
+          "name" : "searchFoodsWithNetworkError"
+        },
+        {
+          "identifier" : "FoodScannerTests.FDCProxyClientTests.searchFoodsWithUPCNetworkError", 
+          "name" : "searchFoodsWithUPCNetworkError"
+        },
+        {
+          "identifier" : "FoodScannerTests.FDCProxyClientTests.retryLogicWithNetworkTimeoutError",
+          "name" : "retryLogicWithNetworkTimeoutError"
+        }
+      ]
+    }
+  ],
+  "version" : 1
+}
