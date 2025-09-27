@@ -203,7 +203,6 @@ struct BarcodeSearchResultsViewModelTests {
                 print("   Error: \(error)")
                 Issue.record("Food lookup should succeed for valid GID from barcode search")
             }
-
         } catch {
             print("❌ Barcode search failed for 074854374969")
             print("   Error: \(error)")

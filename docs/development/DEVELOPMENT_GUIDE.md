@@ -22,9 +22,9 @@ This guide provides comprehensive information for developers working on the Food
    open "Food Scanner.xcodeproj"
    ```
 
-3. **Configure API Key**:
-   - Copy `Config/Secrets.example` to `Config/Secrets.plist`
-   - Add your FDC API key to the plist file
+3. **No API Key Required**:
+   - The app uses the calry.org proxy service without authentication
+   - No additional configuration needed
 
 4. **Run the app**:
    - Select iPhone simulator or device
@@ -70,8 +70,8 @@ Food Scanner/
 │   ├── Assets.xcassets       # Images and colors
 │   └── Samples/              # Sample data
 ├── Config/                    # Configuration files
-│   ├── Secrets.plist         # API keys and secrets
-│   └── Config.Debug.xcconfig # Debug configuration
+│   ├── Config.Debug.xcconfig # Debug configuration
+│   └── Config.Release.xcconfig # Release configuration
 └── Utilities/                 # Utility functions
     └── DataNormalization.swift # Data processing
 ```
@@ -96,7 +96,7 @@ FoodScannerTests/
 ./scripts/test-local-network.sh
 
 # Or run specific test plan
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner" -destination "platform=iOS Simulator,name=iPhone 16"
 ```
 
 #### CI Environment (Offline Mode)
@@ -106,7 +106,7 @@ xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "
 ```
 
 ### Test Plans
-- **FoodScanner-PR.xctestplan**: Full test coverage including network tests
+- **FoodScanner.xctestplan**: Full test coverage including network tests
 - **FoodScanner-CI-Offline.xctestplan**: CI-optimized offline test plan
 
 ### Test Categories
@@ -221,8 +221,8 @@ xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "
 - **Debug**: Run tests individually to isolate issues
 
 #### API Issues
-- **Check**: API key configuration and network connectivity
-- **Solution**: Verify authentication and rate limiting
+- **Check**: Network connectivity and proxy service availability
+- **Solution**: Verify proxy service connectivity and rate limiting
 - **Debug**: Use mock data and check error logs
 
 #### Simulator Issues
@@ -266,14 +266,14 @@ xcodebuild -showBuildSettings -scheme "Food Scanner"
 ## 🔒 Security
 
 ### Best Practices
-1. **API Keys**: Store in secure configuration files
+1. **Configuration**: No sensitive data required - uses proxy service
 2. **Data Validation**: Validate all user inputs
 3. **Network Security**: Use HTTPS for all API calls
 4. **Error Handling**: Don't expose sensitive information in errors
 5. **Code Review**: Security-focused code reviews
 
 ### Configuration
-- **Secrets**: Use `Config/Secrets.plist` for sensitive data
+- **Configuration**: No sensitive data required - app uses proxy service without authentication
 - **Environment**: Separate configurations for debug/release
 - **Validation**: Implement proper input validation
 - **Sanitization**: Sanitize user inputs before processing

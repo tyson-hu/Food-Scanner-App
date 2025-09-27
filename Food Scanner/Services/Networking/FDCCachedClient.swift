@@ -47,7 +47,11 @@ struct FDCCachedClient: FDCClient {
 
     func searchFoodsWithPagination(matching query: String, page: Int, pageSize: Int) async throws -> FDCSearchResult {
         // Check cache first
-        if let cachedResults = cacheService.cachedPaginatedSearchResults(for: query, page: page, pageSize: pageSize) {
+        if let cachedResults = await cacheService.cachedPaginatedSearchResults(
+            for: query,
+            page: page,
+            pageSize: pageSize,
+        ) {
             return cachedResults
         }
 
@@ -59,14 +63,14 @@ struct FDCCachedClient: FDCClient {
         )
 
         // Cache the results
-        cacheService.cachePaginatedSearchResults(results, for: query, page: page, pageSize: pageSize)
+        await cacheService.cachePaginatedSearchResults(results, for: query, page: page, pageSize: pageSize)
 
         return results
     }
 
     func fetchFoodDetails(fdcId: Int) async throws -> FDCFoodDetails {
         // Check cache first
-        if let cachedResponse = cacheService.cachedFoodDetails(for: fdcId) {
+        if let cachedResponse = await cacheService.cachedFoodDetails(for: fdcId) {
             return cachedResponse.toFDCFoodDetails()
         }
 
@@ -74,14 +78,14 @@ struct FDCCachedClient: FDCClient {
         let response = try await underlyingClient.fetchFoodDetailResponse(fdcId: fdcId)
 
         // Cache the response
-        cacheService.cacheFoodDetails(response, for: fdcId)
+        await cacheService.cacheFoodDetails(response, for: fdcId)
 
         return response.toFDCFoodDetails()
     }
 
     func fetchFoodDetailResponse(fdcId: Int) async throws -> ProxyFoodDetailResponse {
         // Check cache first
-        if let cachedResponse = cacheService.cachedFoodDetails(for: fdcId) {
+        if let cachedResponse = await cacheService.cachedFoodDetails(for: fdcId) {
             return cachedResponse
         }
 
@@ -89,7 +93,7 @@ struct FDCCachedClient: FDCClient {
         let response = try await underlyingClient.fetchFoodDetailResponse(fdcId: fdcId)
 
         // Cache the response
-        cacheService.cacheFoodDetails(response, for: fdcId)
+        await cacheService.cacheFoodDetails(response, for: fdcId)
 
         return response
     }

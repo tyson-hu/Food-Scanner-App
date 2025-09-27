@@ -61,12 +61,12 @@ Detailed guide to the 100% offline CI configuration:
 OpenAPI 3.0 specification for the Food Data Central API:
 - **Endpoints**: Search, food details, and nutrient information
 - **Models**: Request/response schemas
-- **Authentication**: API key requirements
+- **Proxy Service**: No authentication required
 - **Rate Limits**: Usage guidelines and restrictions
 
 #### [API Integration Guide](api/M2-03_API_DOCUMENTATION.md)
 Comprehensive guide to FDC API integration:
-- **Authentication**: API key setup and management
+- **Proxy Integration**: Uses calry.org proxy service without authentication
 - **Client Implementation**: FDCProxyClient usage
 - **Error Handling**: Comprehensive error management
 - **Caching**: Performance optimization strategies
@@ -155,8 +155,8 @@ Complete guide to integration testing:
 - **Debug**: Review CI logs and simulator status
 
 #### API Integration Issues
-- **Check**: API key configuration and network connectivity
-- **Solution**: Verify authentication and rate limiting
+- **Check**: Network connectivity and proxy service availability
+- **Solution**: Verify proxy service connectivity and rate limiting
 - **Debug**: Use mock data and check error logs
 
 #### Test Failures
@@ -177,7 +177,7 @@ grep -r "CI_OFFLINE_MODE" FoodScannerTests/
 xcrun simctl list devices
 
 # Run specific test plan
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR"
+xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner"
 
 # Check API connectivity
 curl -I https://api.calry.org

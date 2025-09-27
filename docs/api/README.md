@@ -18,7 +18,7 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 ### API Overview
 - **Provider**: USDA Food Data Central
 - **Base URL**: `https://api.calry.org` (proxy service)
-- **Authentication**: API key required
+- **Authentication**: No authentication required (proxy service)
 - **Rate Limits**: 1000 requests/hour
 - **Data Coverage**: 300,000+ food items with detailed nutrition information
 
@@ -35,7 +35,7 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 **OpenAPI 3.0 specification** for the FDC API:
 - **Complete API schema** with all endpoints
 - **Request/response models** with detailed field descriptions
-- **Authentication requirements** and API key setup
+- **Proxy service integration** without authentication
 - **Rate limiting information** and usage guidelines
 - **Error response schemas** and status codes
 
@@ -46,7 +46,7 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 
 ### [API Integration Guide](M2-03_API_DOCUMENTATION.md)
 **Comprehensive integration guide** for developers:
-- **Authentication setup** and API key management
+- **Proxy service setup** without authentication
 - **Client implementation** using FDCProxyClient
 - **Error handling** strategies and best practices
 - **Caching implementation** for performance optimization
@@ -54,11 +54,10 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 
 ## 🚀 Quick Start
 
-### 1. API Key Setup
+### 1. Basic Setup
 ```swift
-// Configure API key in your app
-let apiKey = "your-fdc-api-key"
-let client = FDCProxyClient(apiKey: apiKey)
+// No API key required - uses proxy service
+let client = FDCProxyClient()
 ```
 
 ### 2. Basic Usage
@@ -138,10 +137,10 @@ do {
 
 ### Common Issues
 
-#### API Key Problems
-- **Invalid Key**: Check API key format and validity
+#### Proxy Service Issues
+- **Service Availability**: Check calry.org proxy service status
 - **Rate Limiting**: Monitor request frequency and implement backoff
-- **Authentication**: Verify API key is properly configured
+- **Network Connectivity**: Verify proxy service accessibility
 
 #### Network Issues
 - **Connectivity**: Check network connection and firewall settings
@@ -159,8 +158,8 @@ do {
 # Test API connectivity
 curl -I https://api.calry.org
 
-# Check API key validity
-curl -H "Authorization: Bearer YOUR_API_KEY" https://api.calry.org/foods/search?query=apple
+# Test proxy service
+curl https://api.calry.org/v1/health
 
 # Monitor cache performance
 # Check app logs for cache hit/miss ratios
@@ -214,7 +213,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" https://api.calry.org/foods/search?
 
 ### API Resources
 - **FDC API Documentation**: [USDA Food Data Central](https://fdc.nal.usda.gov/api-guide.html)
-- **Rate Limiting**: 1000 requests/hour per API key
+- **Rate Limiting**: 1000 requests/hour through proxy service
 - **Support**: Check API status and maintenance windows
 - **Updates**: Monitor for API changes and new features
 

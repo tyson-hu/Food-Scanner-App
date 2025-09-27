@@ -148,7 +148,7 @@ OTHER_SWIFT_FLAGS='-warnings-as-errors -DCI_OFFLINE_MODE'
 - **Stability**: 100% offline, no external dependencies
 
 ### Local Development
-- **File**: `FoodScanner-PR.xctestplan`
+- **File**: `FoodScanner.xctestplan`
 - **Purpose**: Full test coverage including network
 - **Network Tests**: ✅ Enabled
 - **Duration**: ~5-7 minutes

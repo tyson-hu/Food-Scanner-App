@@ -11,8 +11,8 @@ import SwiftData
 @Model
 final class FoodEntry {
     // Persistent fields
-    var id: UUID = UUID()
-    var date: Date = Date()
+    var id = UUID()
+    var date = Date()
     var name: String
     var brand: String?
     var fdcId: Int?

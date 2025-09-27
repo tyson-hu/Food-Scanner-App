@@ -38,7 +38,7 @@ The CI pipeline has been configured to run in **100% offline mode** for maximum 
 - **Duration**: ~2-3 minutes
 
 ### Local Development
-- **File**: `FoodScanner-PR.xctestplan` 
+- **File**: `FoodScanner.xctestplan` 
 - **Purpose**: Full test coverage including network
 - **Network Tests**: ✅ Enabled
 - **Duration**: ~5-7 minutes
@@ -58,7 +58,7 @@ The CI pipeline has been configured to run in **100% offline mode** for maximum 
 ./scripts/test-local-network.sh
 
 # Or run specific test plan
-xcodebuild -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "id=<simulator_id>" test
+xcodebuild -scheme "Food Scanner" -testPlan "FoodScanner" -destination "id=<simulator_id>" test
 ```
 
 ## Environment Variables
