@@ -21,7 +21,9 @@ struct AddFoodSearchViewModelTests {
         try? await Task.sleep(nanoseconds: 500_000_000)
 
         #expect(viewModel.phase == .results)
-        #expect(viewModel.results.contains(where: { $0.id == 1234 }))
+        #expect(viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
+            .contains(where: { $0.id == "fdc:1234" })
+        )
     }
 
     @Test @MainActor func clearing_query_resets_to_idle() async throws {
@@ -29,12 +31,12 @@ struct AddFoodSearchViewModelTests {
         viewModel.query = "rice"
         viewModel.onQueryChange()
         try? await Task.sleep(nanoseconds: 500_000_000)
-        #expect(viewModel.results.isEmpty == false)
+        #expect(viewModel.genericResults.isEmpty == false || viewModel.brandedResults.isEmpty == false)
 
         viewModel.query = ""
         viewModel.onQueryChange()
         #expect(viewModel.phase == .idle)
-        #expect(viewModel.results.isEmpty)
+        #expect(viewModel.genericResults.isEmpty && viewModel.brandedResults.isEmpty)
     }
 
     @Test @MainActor func mock_client_handles_empty_query() async throws {
@@ -43,7 +45,7 @@ struct AddFoodSearchViewModelTests {
         viewModel.onQueryChange()
 
         #expect(viewModel.phase == .idle)
-        #expect(viewModel.results.isEmpty)
+        #expect(viewModel.genericResults.isEmpty && viewModel.brandedResults.isEmpty)
     }
 
     @Test @MainActor func mock_client_handles_short_query() async throws {
@@ -52,7 +54,7 @@ struct AddFoodSearchViewModelTests {
         viewModel.onQueryChange()
 
         #expect(viewModel.phase == .idle)
-        #expect(viewModel.results.isEmpty)
+        #expect(viewModel.genericResults.isEmpty && viewModel.brandedResults.isEmpty)
     }
 
     // MARK: - Integration Tests (Live Network)
@@ -75,8 +77,9 @@ struct AddFoodSearchViewModelTests {
         // Should either have results or be in error state
         #expect(viewModel.phase == .results || viewModel.phase == .error(""))
         if case .results = viewModel.phase {
-            #expect(!viewModel.results.isEmpty)
-            #expect(viewModel.results.first?.name.contains("OATMEAL") == true)
+            #expect(!viewModel.genericResults.isEmpty || !viewModel.brandedResults.isEmpty)
+            let allResults = viewModel.genericResults + viewModel.brandedResults
+            #expect(allResults.first?.description?.contains("OATMEAL") == true)
         }
     }
 

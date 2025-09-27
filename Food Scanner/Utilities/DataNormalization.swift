@@ -14,7 +14,7 @@ enum DataNormalization {
 
     /// Convert energy from kJ to kcal
     /// 1 kcal = 4.184 kJ
-    static func convertEnergyToKcal(_ value: Double, fromUnit unit: String) -> Double {
+    nonisolated static func convertEnergyToKcal(_ value: Double, fromUnit unit: String) -> Double {
         let normalizedUnit = normalizeUnit(unit)
 
         switch normalizedUnit {
@@ -29,7 +29,7 @@ enum DataNormalization {
     }
 
     /// Convert energy from kcal to kJ
-    static func convertEnergyToKj(_ value: Double, fromUnit unit: String) -> Double {
+    nonisolated static func convertEnergyToKj(_ value: Double, fromUnit unit: String) -> Double {
         let normalizedUnit = normalizeUnit(unit)
 
         switch normalizedUnit {
@@ -46,7 +46,7 @@ enum DataNormalization {
     // MARK: - Unit Normalization
 
     /// Normalize unit strings for consistent comparison
-    static func normalizeUnit(_ unit: String?) -> String {
+    nonisolated static func normalizeUnit(_ unit: String?) -> String {
         guard let unit else { return "" }
 
         return unit
@@ -56,7 +56,7 @@ enum DataNormalization {
     }
 
     /// Normalize unit aliases (μg/mcg, etc.)
-    static func normalizeUnitAlias(_ unit: String?) -> String {
+    nonisolated static func normalizeUnitAlias(_ unit: String?) -> String {
         guard let unit else { return "" }
 
         let normalized = normalizeUnit(unit)
@@ -64,7 +64,7 @@ enum DataNormalization {
     }
 
     /// Normalize unit by category to reduce complexity
-    private static func normalizeUnitByCategory(_ unit: String) -> String {
+    private nonisolated static func normalizeUnitByCategory(_ unit: String) -> String {
         if let weightUnit = normalizeWeightUnit(unit) {
             return weightUnit
         }
@@ -78,7 +78,7 @@ enum DataNormalization {
     }
 
     /// Normalize weight units
-    private static func normalizeWeightUnit(_ unit: String) -> String? {
+    private nonisolated static func normalizeWeightUnit(_ unit: String) -> String? {
         switch unit {
         case "μg", "mcg", "microgram", "micrograms":
             "μg"
@@ -98,7 +98,7 @@ enum DataNormalization {
     }
 
     /// Normalize volume units
-    private static func normalizeVolumeUnit(_ unit: String) -> String? {
+    private nonisolated static func normalizeVolumeUnit(_ unit: String) -> String? {
         switch unit {
         case "ml", "milliliter", "milliliters":
             "ml"
@@ -110,7 +110,7 @@ enum DataNormalization {
     }
 
     /// Normalize cooking units
-    private static func normalizeCookingUnit(_ unit: String) -> String? {
+    private nonisolated static func normalizeCookingUnit(_ unit: String) -> String? {
         switch unit {
         case "cup", "cups":
             "cup"
@@ -126,7 +126,7 @@ enum DataNormalization {
     // MARK: - String Hygiene
 
     /// Clean and normalize text strings
-    static func normalizeText(_ text: String?) -> String? {
+    nonisolated static func normalizeText(_ text: String?) -> String? {
         guard let text else { return nil }
 
         let cleaned = text
@@ -137,7 +137,7 @@ enum DataNormalization {
     }
 
     /// Provide fallback text for missing values
-    static func fallbackText(_ text: String?, fallback: String = "—") -> String {
+    nonisolated static func fallbackText(_ text: String?, fallback: String = "—") -> String {
         guard let text, !text.isEmpty else { return fallback }
         return text
     }
@@ -145,7 +145,7 @@ enum DataNormalization {
     // MARK: - Serving Size Normalization
 
     /// Normalize serving size display
-    static func normalizeServingSize(size: Double?, unit: String?) -> String? {
+    nonisolated static func normalizeServingSize(size: Double?, unit: String?) -> String? {
         guard let size else { return nil }
 
         let normalizedUnit = normalizeUnitAlias(unit)
@@ -155,7 +155,7 @@ enum DataNormalization {
     }
 
     /// Format numbers for display (remove unnecessary decimals)
-    static func formatNumber(_ number: Double) -> String {
+    nonisolated static func formatNumber(_ number: Double) -> String {
         if number.truncatingRemainder(dividingBy: 1) == 0 {
             String(format: "%.0f", number)
         } else {
@@ -166,7 +166,7 @@ enum DataNormalization {
     // MARK: - Nutrient Value Normalization
 
     /// Normalize nutrient values with proper units
-    static func normalizeNutrientValue(_ value: Double?, unit: String?) -> (value: Double, unit: String)? {
+    nonisolated static func normalizeNutrientValue(_ value: Double?, unit: String?) -> (value: Double, unit: String)? {
         guard let value else { return nil }
 
         let normalizedUnit = normalizeUnitAlias(unit)
@@ -178,7 +178,7 @@ enum DataNormalization {
     // MARK: - Brand Name Normalization
 
     /// Normalize brand names for consistent display
-    static func normalizeBrandName(_ brand: String?) -> String? {
+    nonisolated static func normalizeBrandName(_ brand: String?) -> String? {
         guard let brand else { return nil }
 
         let cleaned = normalizeText(brand)
@@ -186,7 +186,7 @@ enum DataNormalization {
     }
 
     /// Combine brand owner and brand name intelligently
-    static func combineBrandNames(owner: String?, name: String?) -> String? {
+    nonisolated static func combineBrandNames(owner: String?, name: String?) -> String? {
         let normalizedOwner = normalizeBrandName(owner)
         let normalizedName = normalizeBrandName(name)
 
@@ -197,6 +197,8 @@ enum DataNormalization {
             return owner
         case (nil, let name?):
             return name
+        case let (owner?, name?) where owner == name:
+            return name
         default:
             return nil
         }
@@ -205,7 +207,7 @@ enum DataNormalization {
     // MARK: - Date Normalization
 
     /// Normalize date strings from FDC API
-    static func normalizeDate(_ dateString: String?) -> String? {
+    nonisolated static func normalizeDate(_ dateString: String?) -> String? {
         guard let dateString else { return nil }
 
         // FDC dates are typically in ISO format, but let's clean them up
@@ -225,7 +227,7 @@ enum DataNormalization {
     // MARK: - UPC/Barcode Normalization
 
     /// Normalize UPC/GTIN codes
-    static func normalizeUPC(_ upc: String?) -> String? {
+    nonisolated static func normalizeUPC(_ upc: String?) -> String? {
         guard let upc else { return nil }
 
         let cleaned = upc.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -235,7 +237,7 @@ enum DataNormalization {
     // MARK: - Food Category Normalization
 
     /// Normalize food category names
-    static func normalizeFoodCategory(_ category: String?) -> String? {
+    nonisolated static func normalizeFoodCategory(_ category: String?) -> String? {
         guard let category else { return nil }
 
         let cleaned = normalizeText(category)
@@ -245,7 +247,7 @@ enum DataNormalization {
     // MARK: - Ingredients Normalization
 
     /// Normalize ingredients list
-    static func normalizeIngredients(_ ingredients: String?) -> String? {
+    nonisolated static func normalizeIngredients(_ ingredients: String?) -> String? {
         guard let ingredients else { return nil }
 
         let cleaned = normalizeText(ingredients)

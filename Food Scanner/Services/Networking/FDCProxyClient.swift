@@ -7,9 +7,19 @@
 
 import Foundation
 
+// MARK: - URLSession Protocol
+
+protocol URLSessionProtocol: Sendable {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse)
+}
+
+extension URLSession: URLSessionProtocol {}
+
+// MARK: - FDCProxyClient
+
 struct FDCProxyClient: FDCClient {
     let baseURL: URL
-    let session: URLSession
+    let session: URLSessionProtocol
     let authHeader: String?
     let authValue: String?
 
@@ -26,7 +36,7 @@ struct FDCProxyClient: FDCClient {
 
     init(
         baseURL: URL? = nil,
-        session: URLSession = .shared,
+        session: URLSessionProtocol = URLSession.shared,
         authHeader: String? = nil,
         authValue: String? = nil,
         maxRetries: Int = 3,
@@ -189,11 +199,6 @@ struct FDCProxyClient: FDCClient {
 
             let proxyResponse = try JSONDecoder().decode(ProxySearchResponse.self, from: data)
             let results = proxyResponse.foods.map { $0.toFDCFoodSummary() }
-
-            // Check if we got results
-            if results.isEmpty, !trimmed.isEmpty {
-                throw FDCError.noResults
-            }
 
             return FDCSearchResult(
                 foods: results,

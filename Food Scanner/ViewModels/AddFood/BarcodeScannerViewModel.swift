@@ -5,7 +5,7 @@
 //  Created by Tyson Hu on 9/19/25.
 //
 
-import AVFoundation
+@preconcurrency import AVFoundation
 import Foundation
 import Observation
 import UIKit
@@ -26,7 +26,7 @@ final class BarcodeScannerViewModel {
     // MARK: - Private Properties
 
     // These properties are not part of the observable state and need to be accessed from Sendable closures
-    @ObservationIgnored private var notificationObserver: NSObjectProtocol?
+    @ObservationIgnored private nonisolated(unsafe) var notificationObserver: NSObjectProtocol?
     @ObservationIgnored private nonisolated(unsafe) var lastScannedBarcode: String?
     @ObservationIgnored private nonisolated(unsafe) var lastScanTime: Date?
 

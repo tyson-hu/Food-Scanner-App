@@ -6,160 +6,175 @@
 //
 
 @testable import Food_Scanner
-import XCTest
+import Testing
 
-final class DataNormalizationTests: XCTestCase {
+@Suite("DataNormalization")
+struct DataNormalizationTests {
     // MARK: - Energy Conversion Tests
 
-    func testConvertEnergyToKcal() {
+    @Test
+    func testConvertEnergyToKcal() async throws {
         // Test kJ to kcal conversion
-        XCTAssertEqual(DataNormalization.convertEnergyToKcal(418.4, fromUnit: "kJ"), 100.0, accuracy: 0.1)
-        XCTAssertEqual(DataNormalization.convertEnergyToKcal(418.4, fromUnit: "kilojoule"), 100.0, accuracy: 0.1)
+        #expect(abs(DataNormalization.convertEnergyToKcal(418.4, fromUnit: "kJ") - 100.0) < 0.1)
+        #expect(abs(DataNormalization.convertEnergyToKcal(418.4, fromUnit: "kilojoule") - 100.0) < 0.1)
 
         // Test kcal stays kcal
-        XCTAssertEqual(DataNormalization.convertEnergyToKcal(100.0, fromUnit: "kcal"), 100.0)
-        XCTAssertEqual(DataNormalization.convertEnergyToKcal(100.0, fromUnit: "calorie"), 100.0)
+        #expect(DataNormalization.convertEnergyToKcal(100.0, fromUnit: "kcal") == 100.0)
+        #expect(DataNormalization.convertEnergyToKcal(100.0, fromUnit: "calorie") == 100.0)
 
         // Test unknown unit defaults to kcal
-        XCTAssertEqual(DataNormalization.convertEnergyToKcal(100.0, fromUnit: "unknown"), 100.0)
+        #expect(DataNormalization.convertEnergyToKcal(100.0, fromUnit: "unknown") == 100.0)
     }
 
-    func testConvertEnergyToKj() {
+    @Test
+    func testConvertEnergyToKj() async throws {
         // Test kcal to kJ conversion
-        XCTAssertEqual(DataNormalization.convertEnergyToKj(100.0, fromUnit: "kcal"), 418.4, accuracy: 0.1)
-        XCTAssertEqual(DataNormalization.convertEnergyToKj(100.0, fromUnit: "calorie"), 418.4, accuracy: 0.1)
+        #expect(abs(DataNormalization.convertEnergyToKj(100.0, fromUnit: "kcal") - 418.4) < 0.1)
+        #expect(abs(DataNormalization.convertEnergyToKj(100.0, fromUnit: "calorie") - 418.4) < 0.1)
 
         // Test kJ stays kJ
-        XCTAssertEqual(DataNormalization.convertEnergyToKj(418.4, fromUnit: "kJ"), 418.4)
+        #expect(DataNormalization.convertEnergyToKj(418.4, fromUnit: "kJ") == 418.4)
 
         // Test unknown unit defaults to kcal conversion
-        XCTAssertEqual(DataNormalization.convertEnergyToKj(100.0, fromUnit: "unknown"), 418.4, accuracy: 0.1)
+        #expect(abs(DataNormalization.convertEnergyToKj(100.0, fromUnit: "unknown") - 418.4) < 0.1)
     }
 
     // MARK: - Unit Normalization Tests
 
-    func testNormalizeUnit() {
-        XCTAssertEqual(DataNormalization.normalizeUnit("g"), "g")
-        XCTAssertEqual(DataNormalization.normalizeUnit(" G "), "g")
-        XCTAssertEqual(DataNormalization.normalizeUnit("Gram"), "gram")
-        XCTAssertEqual(DataNormalization.normalizeUnit("mg"), "mg")
-        XCTAssertEqual(DataNormalization.normalizeUnit(nil), "")
+    @Test
+    func testNormalizeUnit() async throws {
+        #expect(DataNormalization.normalizeUnit("g") == "g")
+        #expect(DataNormalization.normalizeUnit(" G ") == "g")
+        #expect(DataNormalization.normalizeUnit("Gram") == "gram")
+        #expect(DataNormalization.normalizeUnit("mg") == "mg")
+        #expect(DataNormalization.normalizeUnit(nil).isEmpty)
     }
 
-    func testNormalizeUnitAlias() {
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("μg"), "μg")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("mcg"), "μg")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("microgram"), "μg")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("mg"), "mg")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("milligram"), "mg")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("g"), "g")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("gram"), "g")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("kg"), "kg")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("ml"), "ml")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("l"), "L")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("liter"), "L")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("oz"), "oz")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("cup"), "cup")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("tbsp"), "tbsp")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("tsp"), "tsp")
-        XCTAssertEqual(DataNormalization.normalizeUnitAlias("unknown"), "unknown")
+    @Test
+    func testNormalizeUnitAlias() async throws {
+        #expect(DataNormalization.normalizeUnitAlias("μg") == "μg")
+        #expect(DataNormalization.normalizeUnitAlias("mcg") == "μg")
+        #expect(DataNormalization.normalizeUnitAlias("microgram") == "μg")
+        #expect(DataNormalization.normalizeUnitAlias("mg") == "mg")
+        #expect(DataNormalization.normalizeUnitAlias("milligram") == "mg")
+        #expect(DataNormalization.normalizeUnitAlias("g") == "g")
+        #expect(DataNormalization.normalizeUnitAlias("gram") == "g")
+        #expect(DataNormalization.normalizeUnitAlias("kg") == "kg")
+        #expect(DataNormalization.normalizeUnitAlias("ml") == "ml")
+        #expect(DataNormalization.normalizeUnitAlias("l") == "L")
+        #expect(DataNormalization.normalizeUnitAlias("liter") == "L")
+        #expect(DataNormalization.normalizeUnitAlias("oz") == "oz")
+        #expect(DataNormalization.normalizeUnitAlias("cup") == "cup")
+        #expect(DataNormalization.normalizeUnitAlias("tbsp") == "tbsp")
+        #expect(DataNormalization.normalizeUnitAlias("tsp") == "tsp")
+        #expect(DataNormalization.normalizeUnitAlias("unknown") == "unknown")
     }
 
     // MARK: - String Hygiene Tests
 
-    func testNormalizeText() {
-        XCTAssertEqual(DataNormalization.normalizeText("  hello  "), "hello")
-        XCTAssertEqual(DataNormalization.normalizeText("hello   world"), "hello world")
-        XCTAssertEqual(DataNormalization.normalizeText(""), nil)
-        XCTAssertEqual(DataNormalization.normalizeText("   "), nil)
-        XCTAssertEqual(DataNormalization.normalizeText(nil), nil)
+    @Test
+    func testNormalizeText() async throws {
+        #expect(DataNormalization.normalizeText("  hello  ") == "hello")
+        #expect(DataNormalization.normalizeText("hello   world") == "hello world")
+        #expect(DataNormalization.normalizeText("") == nil)
+        #expect(DataNormalization.normalizeText("   ") == nil)
+        #expect(DataNormalization.normalizeText(nil) == nil)
     }
 
-    func testFallbackText() {
-        XCTAssertEqual(DataNormalization.fallbackText("hello"), "hello")
-        XCTAssertEqual(DataNormalization.fallbackText(""), "—")
-        XCTAssertEqual(DataNormalization.fallbackText(nil), "—")
-        XCTAssertEqual(DataNormalization.fallbackText("hello", fallback: "N/A"), "hello")
-        XCTAssertEqual(DataNormalization.fallbackText("", fallback: "N/A"), "N/A")
+    @Test
+    func testFallbackText() async throws {
+        #expect(DataNormalization.fallbackText("hello") == "hello")
+        #expect(DataNormalization.fallbackText("") == "—")
+        #expect(DataNormalization.fallbackText(nil) == "—")
+        #expect(DataNormalization.fallbackText("hello", fallback: "N/A") == "hello")
+        #expect(DataNormalization.fallbackText("", fallback: "N/A") == "N/A")
     }
 
     // MARK: - Serving Size Tests
 
-    func testNormalizeServingSize() {
-        XCTAssertEqual(DataNormalization.normalizeServingSize(size: 100.0, unit: "g"), "100 g")
-        XCTAssertEqual(DataNormalization.normalizeServingSize(size: 100.5, unit: "g"), "100.5 g")
-        XCTAssertEqual(DataNormalization.normalizeServingSize(size: 100.0, unit: "ml"), "100 ml")
-        XCTAssertEqual(DataNormalization.normalizeServingSize(size: nil, unit: "g"), nil)
-        XCTAssertEqual(DataNormalization.normalizeServingSize(size: 100.0, unit: nil), "100 ")
+    @Test
+    func testNormalizeServingSize() async throws {
+        #expect(DataNormalization.normalizeServingSize(size: 100.0, unit: "g") == "100 g")
+        #expect(DataNormalization.normalizeServingSize(size: 100.5, unit: "g") == "100.5 g")
+        #expect(DataNormalization.normalizeServingSize(size: 100.0, unit: "ml") == "100 ml")
+        #expect(DataNormalization.normalizeServingSize(size: nil, unit: "g") == nil)
+        #expect(DataNormalization.normalizeServingSize(size: 100.0, unit: nil) == "100 ")
     }
 
-    func testFormatNumber() {
-        XCTAssertEqual(DataNormalization.formatNumber(100.0), "100")
-        XCTAssertEqual(DataNormalization.formatNumber(100.5), "100.5")
-        XCTAssertEqual(DataNormalization.formatNumber(100.0), "100")
+    @Test
+    func testFormatNumber() async throws {
+        #expect(DataNormalization.formatNumber(100.0) == "100")
+        #expect(DataNormalization.formatNumber(100.5) == "100.5")
+        #expect(DataNormalization.formatNumber(100.0) == "100")
     }
 
     // MARK: - Nutrient Value Tests
 
-    func testNormalizeNutrientValue() {
+    @Test
+    func testNormalizeNutrientValue() async throws {
         let result1 = DataNormalization.normalizeNutrientValue(100.0, unit: "g")
-        XCTAssertNotNil(result1)
-        XCTAssertEqual(result1?.value, 100.0)
-        XCTAssertEqual(result1?.unit, "g")
+        #expect(result1 != nil)
+        #expect(result1?.value == 100.0)
+        #expect(result1?.unit == "g")
 
         let result2 = DataNormalization.normalizeNutrientValue(100.5, unit: "mg")
-        XCTAssertNotNil(result2)
-        XCTAssertEqual(result2?.value, 100.5)
-        XCTAssertEqual(result2?.unit, "mg")
+        #expect(result2 != nil)
+        #expect(result2?.value == 100.5)
+        #expect(result2?.unit == "mg")
 
         let result3 = DataNormalization.normalizeNutrientValue(nil, unit: "g")
-        XCTAssertNil(result3)
+        #expect(result3 == nil)
     }
 
     // MARK: - Brand Name Tests
 
-    func testNormalizeBrandName() {
-        XCTAssertEqual(DataNormalization.normalizeBrandName("  Coca-Cola  "), "Coca-Cola")
-        XCTAssertEqual(DataNormalization.normalizeBrandName(""), nil)
-        XCTAssertEqual(DataNormalization.normalizeBrandName("   "), nil)
-        XCTAssertEqual(DataNormalization.normalizeBrandName(nil), nil)
+    @Test
+    func testNormalizeBrandName() async throws {
+        #expect(DataNormalization.normalizeBrandName("  Coca-Cola  ") == "Coca-Cola")
+        #expect(DataNormalization.normalizeBrandName("") == nil)
+        #expect(DataNormalization.normalizeBrandName("   ") == nil)
+        #expect(DataNormalization.normalizeBrandName(nil) == nil)
     }
 
-    func testCombineBrandNames() {
-        XCTAssertEqual(
-            DataNormalization.combineBrandNames(owner: "Coca-Cola Company", name: "Coca-Cola"),
-            "Coca-Cola (Coca-Cola Company)"
+    @Test
+    func testCombineBrandNames() async throws {
+        #expect(
+            DataNormalization.combineBrandNames(owner: "Coca-Cola Company", name: "Coca-Cola") ==
+                "Coca-Cola (Coca-Cola Company)"
         )
-        XCTAssertEqual(DataNormalization.combineBrandNames(owner: "Coca-Cola Company", name: nil), "Coca-Cola Company")
-        XCTAssertEqual(DataNormalization.combineBrandNames(owner: nil, name: "Coca-Cola"), "Coca-Cola")
-        XCTAssertEqual(DataNormalization.combineBrandNames(owner: "Coca-Cola", name: "Coca-Cola"), "Coca-Cola")
-        XCTAssertEqual(DataNormalization.combineBrandNames(owner: nil, name: nil), nil)
+        #expect(DataNormalization.combineBrandNames(owner: "Coca-Cola Company", name: nil) == "Coca-Cola Company")
+        #expect(DataNormalization.combineBrandNames(owner: nil, name: "Coca-Cola") == "Coca-Cola")
+        #expect(DataNormalization.combineBrandNames(owner: "Coca-Cola", name: "Coca-Cola") == "Coca-Cola")
+        #expect(DataNormalization.combineBrandNames(owner: nil, name: nil) == nil)
     }
 
     // MARK: - UPC Tests
 
-    func testNormalizeUPC() {
-        XCTAssertEqual(DataNormalization.normalizeUPC("  1234567890123  "), "1234567890123")
-        XCTAssertEqual(DataNormalization.normalizeUPC(""), nil)
-        XCTAssertEqual(DataNormalization.normalizeUPC(nil), nil)
+    @Test
+    func testNormalizeUPC() async throws {
+        #expect(DataNormalization.normalizeUPC("  1234567890123  ") == "1234567890123")
+        #expect(DataNormalization.normalizeUPC("") == nil)
+        #expect(DataNormalization.normalizeUPC(nil) == nil)
     }
 
     // MARK: - Food Category Tests
 
-    func testNormalizeFoodCategory() {
-        XCTAssertEqual(DataNormalization.normalizeFoodCategory("  Beverages  "), "Beverages")
-        XCTAssertEqual(DataNormalization.normalizeFoodCategory(""), nil)
-        XCTAssertEqual(DataNormalization.normalizeFoodCategory(nil), nil)
+    @Test
+    func testNormalizeFoodCategory() async throws {
+        #expect(DataNormalization.normalizeFoodCategory("  Beverages  ") == "Beverages")
+        #expect(DataNormalization.normalizeFoodCategory("") == nil)
+        #expect(DataNormalization.normalizeFoodCategory(nil) == nil)
     }
 
     // MARK: - Ingredients Tests
 
-    func testNormalizeIngredients() {
-        XCTAssertEqual(
-            DataNormalization.normalizeIngredients("  Water, Sugar, Natural Flavors  "),
-            "Water, Sugar, Natural Flavors"
+    @Test
+    func testNormalizeIngredients() async throws {
+        #expect(
+            DataNormalization.normalizeIngredients("  Water, Sugar, Natural Flavors  ") ==
+                "Water, Sugar, Natural Flavors"
         )
-        XCTAssertEqual(DataNormalization.normalizeIngredients(""), nil)
-        XCTAssertEqual(DataNormalization.normalizeIngredients(nil), nil)
+        #expect(DataNormalization.normalizeIngredients("") == nil)
+        #expect(DataNormalization.normalizeIngredients(nil) == nil)
     }
 }

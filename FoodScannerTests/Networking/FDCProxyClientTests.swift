@@ -6,38 +6,17 @@
 //
 
 @testable import Food_Scanner
-import XCTest
+import Foundation
+import Testing
 
-final class FDCProxyClientTests: XCTestCase {
-    // Temporarily disabled due to URLSession mocking issues
-    var client: FDCProxyClient?
-    var mockSession: MockURLSession?
-
-    override func setUp() {
-        super.setUp()
-        mockSession = MockURLSession()
-        guard let mockSession else {
-            XCTFail("Failed to create mock session")
-            return
-        }
-        client = FDCProxyClient(session: mockSession)
-    }
-
-    override func tearDown() {
-        client = nil
-        mockSession = nil
-        super.tearDown()
-    }
-
+@Suite("FDCProxyClient")
+struct FDCProxyClientTests {
     // MARK: - Search Tests
 
-    // Temporarily disabled
-    func testSearchFoodsWithValidResponse() async throws {
-        XCTSkip("Temporarily disabled due to URLSession mocking issues")
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test @MainActor
+    func searchFoodsWithValidResponse() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given
         let mockResponse = ProxySearchResponse(
@@ -91,11 +70,11 @@ final class FDCProxyClientTests: XCTestCase {
         do {
             mockSession.mockData = try JSONEncoder().encode(mockResponse)
         } catch {
-            XCTFail("Failed to encode mock response: \(error)")
+            Issue.record("Failed to encode mock response: \(error)")
             return
         }
         guard let url = URL(string: "https://api.calry.org/foods/search") else {
-            XCTFail("Failed to create URL")
+            Issue.record("Failed to create URL")
             return
         }
         mockSession.mockResponse = HTTPURLResponse(
@@ -109,62 +88,57 @@ final class FDCProxyClientTests: XCTestCase {
         let result = try await client.searchFoodsWithPagination(matching: "apple", page: 1, pageSize: 25)
 
         // Then
-        XCTAssertEqual(result.foods.count, 1)
-        XCTAssertEqual(result.totalHits, 10)
-        XCTAssertEqual(result.currentPage, 1)
-        XCTAssertEqual(result.totalPages, 1)
-        XCTAssertEqual(result.pageSize, 25)
-        XCTAssertTrue(result.hasMore == false)
+        #expect(result.foods.count == 1)
+        #expect(result.totalHits == 10)
+        #expect(result.currentPage == 1)
+        #expect(result.totalPages == 1)
+        #expect(result.pageSize == 25)
+        #expect(result.hasMore == false)
 
         guard let food = result.foods.first else {
-            XCTFail("Expected at least one food item")
+            Issue.record("Expected at least one food item")
             return
         }
-        XCTAssertEqual(food.id, 12345)
-        XCTAssertEqual(food.name, "Apple, raw")
-        XCTAssertEqual(food.brand, "Test Brand")
-        XCTAssertEqual(food.upc, "1234567890123")
+        #expect(food.id == 12345)
+        #expect(food.name == "Apple, raw")
+        #expect(food.brand == "Test Brand")
+        #expect(food.upc == "1234567890123")
     }
 
-    func testSearchFoodsWithEmptyQuery() async throws {
-        XCTSkip("Temporarily disabled due to URLSession mocking issues")
-        guard let client else {
-            XCTFail("Client not initialized")
-            return
-        }
+    @Test @MainActor
+    func searchFoodsWithEmptyQuery() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // When
         let result = try await client.searchFoodsWithPagination(matching: "", page: 1, pageSize: 25)
 
         // Then
-        XCTAssertEqual(result.foods.count, 0)
-        XCTAssertEqual(result.totalHits, 0)
-        XCTAssertEqual(result.currentPage, 1)
-        XCTAssertEqual(result.totalPages, 0)
+        #expect(result.foods.isEmpty)
+        #expect(result.totalHits == 0)
+        #expect(result.currentPage == 1)
+        #expect(result.totalPages == 0)
     }
 
-    func testSearchFoodsWithShortQuery() async throws {
-        XCTSkip("Temporarily disabled due to URLSession mocking issues")
-        guard let client else {
-            XCTFail("Client not initialized")
-            return
-        }
+    @Test @MainActor
+    func searchFoodsWithShortQuery() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // When
         let result = try await client.searchFoodsWithPagination(matching: "a", page: 1, pageSize: 25)
 
         // Then
-        XCTAssertEqual(result.foods.count, 0)
-        XCTAssertEqual(result.totalHits, 0)
-        XCTAssertEqual(result.currentPage, 1)
-        XCTAssertEqual(result.totalPages, 0)
+        #expect(result.foods.isEmpty)
+        #expect(result.totalHits == 0)
+        #expect(result.currentPage == 1)
+        #expect(result.totalPages == 0)
     }
 
-    func testSearchFoodsWithHTTPError() async {
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test
+    func searchFoodsWithHTTPError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given
         mockSession.mockError = FDCError.httpError(404)
@@ -172,23 +146,22 @@ final class FDCProxyClientTests: XCTestCase {
         // When/Then
         do {
             _ = try await client.searchFoodsWithPagination(matching: "nonexistent", page: 1, pageSize: 25)
-            XCTFail("Expected error to be thrown")
+            Issue.record("Expected error to be thrown")
         } catch let error as FDCError {
             if case .httpError(404) = error {
                 // Expected error
             } else {
-                XCTFail("Expected HTTP 404 error")
+                Issue.record("Expected HTTP 404 error")
             }
         } catch {
-            XCTFail("Expected FDCError")
+            Issue.record("Expected FDCError")
         }
     }
 
-    func testSearchFoodsWithNetworkError() async {
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test
+    func searchFoodsWithNetworkError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given
         mockSession.mockError = URLError(.notConnectedToInternet)
@@ -196,25 +169,24 @@ final class FDCProxyClientTests: XCTestCase {
         // When/Then
         do {
             _ = try await client.searchFoodsWithPagination(matching: "apple", page: 1, pageSize: 25)
-            XCTFail("Expected error to be thrown")
+            Issue.record("Expected error to be thrown")
         } catch let error as FDCError {
             if case .networkError = error {
                 // Expected error
             } else {
-                XCTFail("Expected network error")
+                Issue.record("Expected network error")
             }
         } catch {
-            XCTFail("Expected FDCError")
+            Issue.record("Expected FDCError")
         }
     }
 
     // MARK: - Retry Logic Tests
 
-    func testRetryLogicWithTransientError() async {
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test @MainActor
+    func retryLogicWithTransientError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given - First request fails, second succeeds
         let mockResponse = ProxySearchResponse(
@@ -239,11 +211,11 @@ final class FDCProxyClientTests: XCTestCase {
         do {
             mockSession.mockData = try JSONEncoder().encode(mockResponse)
         } catch {
-            XCTFail("Failed to encode mock response: \(error)")
+            Issue.record("Failed to encode mock response: \(error)")
             return
         }
         guard let url = URL(string: "https://api.calry.org/foods/search") else {
-            XCTFail("Failed to create URL")
+            Issue.record("Failed to create URL")
             return
         }
         mockSession.mockResponse = HTTPURLResponse(
@@ -258,18 +230,21 @@ final class FDCProxyClientTests: XCTestCase {
         mockSession.mockFirstError = URLError(.timedOut)
 
         // When
-        let result = try await client.searchFoodsWithPagination(matching: "test", page: 1, pageSize: 25)
+        do {
+            let result = try await client.searchFoodsWithPagination(matching: "test", page: 1, pageSize: 25)
 
-        // Then
-        XCTAssertEqual(result.foods.count, 0)
-        XCTAssertEqual(mockSession.requestCount, 2) // Should have retried
+            // Then
+            #expect(result.foods.isEmpty)
+            #expect(mockSession.requestCount == 2) // Should have retried
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
     }
 
-    func testRetryLogicWithNonRetryableError() async {
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test
+    func retryLogicWithNonRetryableError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given
         mockSession.mockError = FDCError.invalidURL
@@ -277,28 +252,26 @@ final class FDCProxyClientTests: XCTestCase {
         // When/Then
         do {
             _ = try await client.searchFoodsWithPagination(matching: "test", page: 1, pageSize: 25)
-            XCTFail("Expected error to be thrown")
+            Issue.record("Expected error to be thrown")
         } catch let error as FDCError {
             if case .invalidURL = error {
                 // Expected error
             } else {
-                XCTFail("Expected invalid URL error")
+                Issue.record("Expected invalid URL error")
             }
         } catch {
-            XCTFail("Expected FDCError")
+            Issue.record("Expected FDCError")
         }
 
-        XCTAssertEqual(mockSession.requestCount, 1) // Should not retry
+        #expect(mockSession.requestCount == 1) // Should not retry
     }
 
     // MARK: - UPC Barcode Search Tests
 
-    func testSearchFoodsWithValidUPC() async throws {
-        XCTSkip("Temporarily disabled due to URLSession mocking issues")
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test @MainActor
+    func searchFoodsWithValidUPC() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given - Mock response for UPC search
         let testUPC = "0031604031121"
@@ -353,11 +326,11 @@ final class FDCProxyClientTests: XCTestCase {
         do {
             mockSession.mockData = try JSONEncoder().encode(mockResponse)
         } catch {
-            XCTFail("Failed to encode mock response: \(error)")
+            Issue.record("Failed to encode mock response: \(error)")
             return
         }
         guard let url = URL(string: "https://api.calry.org/foods/search") else {
-            XCTFail("Failed to create URL")
+            Issue.record("Failed to create URL")
             return
         }
         mockSession.mockResponse = HTTPURLResponse(
@@ -371,29 +344,27 @@ final class FDCProxyClientTests: XCTestCase {
         let result = try await client.searchFoodsWithPagination(matching: testUPC, page: 1, pageSize: 25)
 
         // Then
-        XCTAssertEqual(result.foods.count, 1)
-        XCTAssertEqual(result.totalHits, 1)
-        XCTAssertEqual(result.currentPage, 1)
-        XCTAssertEqual(result.totalPages, 1)
-        XCTAssertEqual(result.pageSize, 25)
-        XCTAssertFalse(result.hasMore)
+        #expect(result.foods.count == 1)
+        #expect(result.totalHits == 1)
+        #expect(result.currentPage == 1)
+        #expect(result.totalPages == 1)
+        #expect(result.pageSize == 25)
+        #expect(result.hasMore == false)
 
         guard let food = result.foods.first else {
-            XCTFail("Expected at least one food item")
+            Issue.record("Expected at least one food item")
             return
         }
-        XCTAssertEqual(food.id, 123_456)
-        XCTAssertEqual(food.name, "Test Product, UPC: \(testUPC)")
-        XCTAssertEqual(food.brand, "Test Brand")
-        XCTAssertEqual(food.upc, testUPC)
+        #expect(food.id == 123_456)
+        #expect(food.name == "Test Product, UPC: \(testUPC)")
+        #expect(food.brand == "Test Brand")
+        #expect(food.upc == testUPC)
     }
 
-    func testSearchFoodsWithUPCNotFound() async throws {
-        XCTSkip("Temporarily disabled due to URLSession mocking issues")
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test @MainActor
+    func searchFoodsWithUPCNotFound() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given - Mock response for UPC that doesn't exist
         let testUPC = "0031604031121"
@@ -419,11 +390,11 @@ final class FDCProxyClientTests: XCTestCase {
         do {
             mockSession.mockData = try JSONEncoder().encode(mockResponse)
         } catch {
-            XCTFail("Failed to encode mock response: \(error)")
+            Issue.record("Failed to encode mock response: \(error)")
             return
         }
         guard let url = URL(string: "https://api.calry.org/foods/search") else {
-            XCTFail("Failed to create URL")
+            Issue.record("Failed to create URL")
             return
         }
         mockSession.mockResponse = HTTPURLResponse(
@@ -437,18 +408,17 @@ final class FDCProxyClientTests: XCTestCase {
         let result = try await client.searchFoodsWithPagination(matching: testUPC, page: 1, pageSize: 25)
 
         // Then
-        XCTAssertEqual(result.foods.count, 0)
-        XCTAssertEqual(result.totalHits, 0)
-        XCTAssertEqual(result.currentPage, 1)
-        XCTAssertEqual(result.totalPages, 0)
-        XCTAssertFalse(result.hasMore)
+        #expect(result.foods.isEmpty)
+        #expect(result.totalHits == 0)
+        #expect(result.currentPage == 1)
+        #expect(result.totalPages == 0)
+        #expect(result.hasMore == false)
     }
 
-    func testSearchFoodsWithUPCNetworkError() async {
-        guard let client, let mockSession else {
-            XCTFail("Client or mockSession not initialized")
-            return
-        }
+    @Test
+    func searchFoodsWithUPCNetworkError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
 
         // Given
         let testUPC = "0031604031121"
@@ -457,26 +427,20 @@ final class FDCProxyClientTests: XCTestCase {
         // When/Then
         do {
             _ = try await client.searchFoodsWithPagination(matching: testUPC, page: 1, pageSize: 25)
-            XCTFail("Expected error to be thrown")
+            Issue.record("Expected error to be thrown")
         } catch let error as FDCError {
             if case .networkError = error {
                 // Expected error
             } else {
-                XCTFail("Expected network error")
+                Issue.record("Expected network error")
             }
         } catch {
-            XCTFail("Expected FDCError")
+            Issue.record("Expected FDCError")
         }
     }
 }
 
 // MARK: - Mock URLSession
-
-protocol URLSessionProtocol {
-    func data(for request: URLRequest) async throws -> (Data, URLResponse)
-}
-
-extension URLSession: URLSessionProtocol {}
 
 class MockURLSession: URLSessionProtocol, @unchecked Sendable {
     var mockData: Data?

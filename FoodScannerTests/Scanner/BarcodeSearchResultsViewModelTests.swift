@@ -6,48 +6,28 @@
 //
 
 @testable import Food_Scanner
-import XCTest
+import Foundation
+import Testing
 
-@MainActor
-final class BarcodeSearchResultsViewModelTests: XCTestCase {
-    var viewModel: BarcodeSearchResultsViewModel?
-    var mockClient: MockFDCClient?
-
-    override func setUp() {
-        super.setUp()
-        mockClient = MockFDCClient()
-        guard let mockClient else {
-            XCTFail("Failed to create mock client")
-            return
-        }
-        viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
-    }
-
-    override func tearDown() {
-        viewModel = nil
-        mockClient = nil
-        super.tearDown()
-    }
-
+@Suite("BarcodeSearchResultsViewModel")
+struct BarcodeSearchResultsViewModelTests {
     // MARK: - Initialization Tests
 
-    func testInitialState() {
-        guard let viewModel else {
-            XCTFail("ViewModel not initialized")
-            return
-        }
+    @Test @MainActor
+    func initialState() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
-        XCTAssertEqual(viewModel.upc, "0031604031121")
-        XCTAssertEqual(viewModel.phase, .loading)
+        #expect(viewModel.upc == "0031604031121")
+        #expect(viewModel.phase == .loading)
     }
 
     // MARK: - Successful Search Tests
 
-    func testSuccessfulUPCSearch() async {
-        guard let viewModel, let mockClient else {
-            XCTFail("ViewModel or mockClient not initialized")
-            return
-        }
+    @Test @MainActor
+    func successfulUPCSearch() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
         // Given - Mock successful barcode search response
         let mockFood = FoodMinimalCard(
@@ -68,23 +48,22 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
         // Then
         switch viewModel.phase {
         case let .loaded(result):
-            XCTAssertNotNil(result)
-            XCTAssertEqual(result?.id, "gtin:0031604031121")
-            XCTAssertEqual(result?.description, "Test Product, UPC: 0031604031121")
-            XCTAssertEqual(result?.code, "0031604031121")
-            XCTAssertEqual(result?.brand, "Test Brand")
+            #expect(result != nil)
+            #expect(result?.id == "gtin:0031604031121")
+            #expect(result?.description == "Test Product, UPC: 0031604031121")
+            #expect(result?.code == "0031604031121")
+            #expect(result?.brand == "Test Brand")
         case .loading:
-            XCTFail("Expected loaded state, got loading")
+            Issue.record("Expected loaded state, got loading")
         case let .error(message):
-            XCTFail("Expected loaded state, got error: \(message)")
+            Issue.record("Expected loaded state, got error: \(message)")
         }
     }
 
-    func testUPCSearchWithNoResults() async {
-        guard let viewModel, let mockClient else {
-            XCTFail("ViewModel or mockClient not initialized")
-            return
-        }
+    @Test @MainActor
+    func uPCSearchWithNoResults() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
         // Given - Mock no results response
         mockClient.mockBarcodeResult = nil
@@ -96,21 +75,20 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
         // Then
         switch viewModel.phase {
         case let .loaded(result):
-            XCTAssertNil(result)
+            #expect(result == nil)
         case .loading:
-            XCTFail("Expected loaded state, got loading")
+            Issue.record("Expected loaded state, got loading")
         case let .error(message):
-            XCTFail("Expected loaded state, got error: \(message)")
+            Issue.record("Expected loaded state, got error: \(message)")
         }
     }
 
     // MARK: - Error Handling Tests
 
-    func testUPCSearchWithNetworkError() async {
-        guard let viewModel, let mockClient else {
-            XCTFail("ViewModel or mockClient not initialized")
-            return
-        }
+    @Test @MainActor
+    func uPCSearchWithNetworkError() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
         // Given - Mock network error
         mockClient.mockError = FDCError.networkError(URLError(.notConnectedToInternet))
@@ -121,19 +99,18 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
         // Then
         switch viewModel.phase {
         case .loaded:
-            XCTFail("Expected error state, got loaded")
+            Issue.record("Expected error state, got loaded")
         case .loading:
-            XCTFail("Expected error state, got loading")
+            Issue.record("Expected error state, got loading")
         case let .error(message):
-            XCTAssertTrue(message.contains("No internet connection"))
+            #expect(message.contains("No internet connection"))
         }
     }
 
-    func testUPCSearchWithNoResultsError() async {
-        guard let viewModel, let mockClient else {
-            XCTFail("ViewModel or mockClient not initialized")
-            return
-        }
+    @Test @MainActor
+    func uPCSearchWithNoResultsError() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
         // Given - Mock no results error
         mockClient.mockError = FDCError.noResults
@@ -144,19 +121,18 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
         // Then - Should treat no results as successful search with nil result
         switch viewModel.phase {
         case let .loaded(result):
-            XCTAssertNil(result)
+            #expect(result == nil)
         case .loading:
-            XCTFail("Expected loaded state, got loading")
+            Issue.record("Expected loaded state, got loading")
         case let .error(message):
-            XCTFail("Expected loaded state, got error: \(message)")
+            Issue.record("Expected loaded state, got error: \(message)")
         }
     }
 
-    func testUPCSearchWithCancellationError() async {
-        guard let viewModel, let mockClient else {
-            XCTFail("ViewModel or mockClient not initialized")
-            return
-        }
+    @Test @MainActor
+    func uPCSearchWithCancellationError() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
         // Given - Mock cancellation error
         mockClient.mockError = CancellationError()
@@ -167,19 +143,18 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
         // Then
         switch viewModel.phase {
         case .loaded:
-            XCTFail("Expected error state, got loaded")
+            Issue.record("Expected error state, got loaded")
         case .loading:
-            XCTFail("Expected error state, got loading")
+            Issue.record("Expected error state, got loading")
         case let .error(message):
-            XCTAssertTrue(message.contains("cancelled"))
+            #expect(message.contains("cancelled"))
         }
     }
 
-    func testUPCSearchWithGenericError() async {
-        guard let viewModel, let mockClient else {
-            XCTFail("ViewModel or mockClient not initialized")
-            return
-        }
+    @Test @MainActor
+    func uPCSearchWithGenericError() async throws {
+        let mockClient = MockFDCClient()
+        let viewModel = BarcodeSearchResultsViewModel(upc: "0031604031121", client: mockClient)
 
         // Given - Mock generic error
         mockClient.mockError = FDCError.httpError(500)
@@ -190,24 +165,21 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
         // Then
         switch viewModel.phase {
         case .loaded:
-            XCTFail("Expected error state, got loaded")
+            Issue.record("Expected error state, got loaded")
         case .loading:
-            XCTFail("Expected error state, got loading")
+            Issue.record("Expected error state, got loading")
         case let .error(message):
-            XCTAssertTrue(message.contains("500"))
+            #expect(message.contains("500"))
         }
     }
 
-    // MARK: - Multiple Search Results Tests
-
-    // Note: The new barcode API only returns a single result, so multiple results tests are not applicable
-
     // MARK: - Integration Tests for Specific Issue
 
-    func testSpecificBarcodeIssue_2503998_074854374969() async {
+    @Test @MainActor
+    func specificBarcodeIssue_2503998_074854374969() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            XCTAssertTrue(true, "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
+            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
@@ -230,13 +202,13 @@ final class BarcodeSearchResultsViewModelTests: XCTestCase {
             } catch {
                 print("❌ Food lookup failed for GID: \(barcodeResult.id)")
                 print("   Error: \(error)")
-                XCTFail("Food lookup should succeed for valid GID from barcode search")
+                Issue.record("Food lookup should succeed for valid GID from barcode search")
             }
 
         } catch {
             print("❌ Barcode search failed for 074854374969")
             print("   Error: \(error)")
-            XCTFail("Barcode search should succeed for valid UPC")
+            Issue.record("Barcode search should succeed for valid UPC")
         }
     }
 }

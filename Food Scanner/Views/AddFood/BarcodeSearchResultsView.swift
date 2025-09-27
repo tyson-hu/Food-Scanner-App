@@ -124,8 +124,7 @@ struct BarcodeSearchResultsView: View {
                         .foregroundColor(.secondary)
 
                     if message.contains("cancelled") {
-                        Text("The search was interrupted. This usually happens when scanning multiple barcodes quickly."
-                        )
+                        Text("The search was interrupted. This usually happens when scanning multiple barcodes quickly.")
                         .font(.caption)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
@@ -175,12 +174,16 @@ final class BarcodeSearchResultsViewModel {
 
             // Handle different types of errors
             let errorMessage: String
-            if error.localizedDescription.contains("cancelled") {
+            if error is CancellationError || error.localizedDescription.contains("cancelled") {
                 errorMessage = "Search was cancelled. Please try again."
-            } else if error.localizedDescription.contains("noResults") {
+            } else if let fdcError = error as? FDCError, case .noResults = fdcError {
                 // Treat no results as a successful search with no result
                 await MainActor.run { self.phase = .loaded(nil) }
                 return
+            } else if let fdcError = error as? FDCError, case .networkError = fdcError {
+                errorMessage = "No internet connection. Please check your network and try again."
+            } else if let fdcError = error as? FDCError, case let .httpError(code) = fdcError {
+                errorMessage = "Server error (\(code)). Please try again later."
             } else {
                 errorMessage = error.localizedDescription
             }

@@ -154,6 +154,38 @@ struct FDCMock: FDCClient {
         // Extract FDC ID from GID
         if gid.hasPrefix("fdc:"), let fdcId = Int(gid.dropFirst(4)) {
             if let food = Self.catalog.first(where: { $0.id == fdcId }) {
+                // Create mock nutrients based on the food data
+                let mockNutrients = [
+                    FoodNutrient(
+                        id: 1008,
+                        name: "Energy",
+                        unit: "kcal",
+                        amount: Double(food.calories),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1003,
+                        name: "Protein",
+                        unit: "g",
+                        amount: Double(food.protein),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1004,
+                        name: "Total lipid (fat)",
+                        unit: "g",
+                        amount: Double(food.fat),
+                        basis: .perServing
+                    ),
+                    FoodNutrient(
+                        id: 1005,
+                        name: "Carbohydrate, by difference",
+                        unit: "g",
+                        amount: Double(food.carbs),
+                        basis: .perServing
+                    ),
+                ]
+
                 return FoodAuthoritativeDetail(
                     id: gid,
                     kind: food.brand != nil ? .brandedFood : .genericFood,
@@ -162,12 +194,12 @@ struct FDCMock: FDCClient {
                     brand: food.brand,
                     ingredientsText: food.ingredients,
                     serving: FoodServing(
-                        amount: food.servingSize,
-                        unit: food.servingSizeUnit,
-                        household: food.householdServingFullText
+                        amount: food.servingSize ?? 100.0,
+                        unit: food.servingSizeUnit ?? "g",
+                        household: food.householdServingFullText ?? "1 serving"
                     ),
                     portions: [],
-                    nutrients: [],
+                    nutrients: mockNutrients,
                     dsidPredictions: nil,
                     provenance: FoodProvenance(
                         source: .fdc,
@@ -178,7 +210,59 @@ struct FDCMock: FDCClient {
             }
         }
 
-        throw FDCError.noResults
+        // Provide fallback response for unknown FDC IDs
+        let fallbackNutrients = [
+            FoodNutrient(
+                id: 1008,
+                name: "Energy",
+                unit: "kcal",
+                amount: 100.0,
+                basis: .perServing
+            ),
+            FoodNutrient(
+                id: 1003,
+                name: "Protein",
+                unit: "g",
+                amount: 2.0,
+                basis: .perServing
+            ),
+            FoodNutrient(
+                id: 1004,
+                name: "Total lipid (fat)",
+                unit: "g",
+                amount: 1.0,
+                basis: .perServing
+            ),
+            FoodNutrient(
+                id: 1005,
+                name: "Carbohydrate, by difference",
+                unit: "g",
+                amount: 22.0,
+                basis: .perServing
+            ),
+        ]
+
+        return FoodAuthoritativeDetail(
+            id: gid,
+            kind: .genericFood,
+            code: nil,
+            description: "Brown Rice, cooked",
+            brand: nil,
+            ingredientsText: "Brown rice",
+            serving: FoodServing(
+                amount: 100.0,
+                unit: "g",
+                household: "1 serving"
+            ),
+            portions: [],
+            nutrients: fallbackNutrients,
+            dsidPredictions: nil,
+            provenance: FoodProvenance(
+                source: .fdc,
+                id: "999999",
+                fetchedAt: "2025-09-26T21:00:00Z"
+            )
+        )
     }
 
     // Canonical mock catalog (details first; summaries derived from this)
