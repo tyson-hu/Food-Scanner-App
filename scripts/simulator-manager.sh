@@ -38,20 +38,31 @@ cleanup_all_simulators() {
     log_info "Cleaning up all existing simulators..."
     
     # Shutdown all simulators
-    xcrun simctl shutdown all 2>/dev/null || true
+    if ! xcrun simctl shutdown all 2>/dev/null; then
+        log_warning "Some simulators may not have been shut down properly"
+    fi
     sleep 2
     
     # Delete unavailable simulators
-    xcrun simctl delete unavailable 2>/dev/null || true
+    if ! xcrun simctl delete unavailable 2>/dev/null; then
+        log_warning "Some unavailable simulators may not have been deleted"
+    fi
     sleep 2
     
     # Delete any CI simulators that might be left over
-    xcrun simctl list devices | grep "CI-" | awk -F'[()]' '{print $2}' | while read -r udid; do
-        if [ -n "$udid" ]; then
-            log_info "Deleting leftover CI simulator: $udid"
-            xcrun simctl delete "$udid" 2>/dev/null || true
-        fi
-    done
+    local ci_simulators
+    ci_simulators=$(xcrun simctl list devices 2>/dev/null | grep "CI-" | awk -F'[()]' '{print $2}' || true)
+    
+    if [ -n "$ci_simulators" ]; then
+        echo "$ci_simulators" | while read -r udid; do
+            if [ -n "$udid" ]; then
+                log_info "Deleting leftover CI simulator: $udid"
+                if ! xcrun simctl delete "$udid" 2>/dev/null; then
+                    log_warning "Failed to delete simulator: $udid"
+                fi
+            fi
+        done
+    fi
     
     log_success "Simulator cleanup completed"
 }
@@ -79,15 +90,23 @@ except:
     sys.exit(1)
 " 2>/dev/null)
     
-    # Fallback to text parsing
+    # Fallback to text parsing - try both "26" and "26.0" patterns
     if [ -z "${runtime:-}" ]; then
         log_warning "JSON parsing failed, trying text parsing..."
+        # Try exact version match first (e.g., "26.0")
         runtime=$(xcrun simctl list runtimes | \
             awk -v version="$target_version" '/iOS ' version '[.]0/ {for(i=1;i<=NF;i++){if($i ~ /com\.apple\.CoreSimulator\.SimRuntime\.iOS-' version '/){print $i; exit}}}')
+        
+        # If still not found, try just the major version
+        if [ -z "${runtime:-}" ]; then
+            runtime=$(xcrun simctl list runtimes | \
+                awk -v version="$target_version" '/iOS ' version '/ {for(i=1;i<=NF;i++){if($i ~ /com\.apple\.CoreSimulator\.SimRuntime\.iOS-' version '/){print $i; exit}}}')
+        fi
     fi
     
     if [ -z "${runtime:-}" ]; then
         log_error "Could not find iOS $target_version runtime"
+        log_info "Available runtimes:"
         xcrun simctl list runtimes
         return 1
     fi
@@ -142,10 +161,13 @@ create_simulator() {
     local name="${name_prefix}-$(date +%s)"
     log_info "Creating simulator: $name"
     
-    local udid=$(xcrun simctl create "$name" "$device_type" "$runtime")
+    local udid
+    udid=$(xcrun simctl create "$name" "$device_type" "$runtime" 2>/dev/null)
     
     if [ -z "$udid" ]; then
         log_error "Failed to create simulator"
+        log_info "Device type: $device_type"
+        log_info "Runtime: $runtime"
         return 1
     fi
     
@@ -259,11 +281,27 @@ create_fresh_simulator() {
     cleanup_all_simulators
     
     # Find runtime and device type
-    local runtime=$(find_ios_runtime "$ios_version")
-    local device_type=$(find_device_type "$device_name")
+    local runtime
+    runtime=$(find_ios_runtime "$ios_version")
+    if [ $? -ne 0 ] || [ -z "$runtime" ]; then
+        log_error "Failed to find iOS runtime"
+        return 1
+    fi
+    
+    local device_type
+    device_type=$(find_device_type "$device_name")
+    if [ $? -ne 0 ] || [ -z "$device_type" ]; then
+        log_error "Failed to find device type"
+        return 1
+    fi
     
     # Create simulator
-    local udid=$(create_simulator "$device_type" "$runtime" "$name_prefix")
+    local udid
+    udid=$(create_simulator "$device_type" "$runtime" "$name_prefix")
+    if [ $? -ne 0 ] || [ -z "$udid" ]; then
+        log_error "Failed to create simulator"
+        return 1
+    fi
     
     # Boot simulator with retries
     local attempt=1

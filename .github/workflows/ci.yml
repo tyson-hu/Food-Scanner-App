@@ -119,11 +119,79 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Use the enhanced simulator manager
-          UDID=$(./scripts/simulator-manager.sh create 26 "iPhone 16" "CI-iPhone-16")
+          # Clean up existing simulators
+          echo "Cleaning up existing simulators..."
+          xcrun simctl shutdown all || true
+          xcrun simctl delete unavailable || true
+          sleep 2
           
-          if [ -z "${UDID:-}" ]; then
+          # Find iOS 26 runtime
+          echo "Finding iOS 26 runtime..."
+          RUNTIME=$(xcrun simctl list -j runtimes | python3 -c "import sys, json; data = json.load(sys.stdin); [print(r['identifier']) for r in data.get('runtimes', []) if r.get('platform') == 'iOS' and str(r.get('version', '')).startswith('26') and r.get('identifier') and r.get('isAvailable', True)]")
+          
+          if [ -z "$RUNTIME" ]; then
+            echo "::error::Could not find iOS 26 runtime"
+            xcrun simctl list runtimes
+            exit 1
+          fi
+          echo "Using runtime: $RUNTIME"
+          
+          # Find iPhone 16 device type
+          echo "Finding iPhone 16 device type..."
+          DEVTYPE=$(xcrun simctl list -j devicetypes | python3 -c "import sys, json; data = json.load(sys.stdin); [print(d['identifier']) for d in data.get('devicetypes', []) if d.get('name') == 'iPhone 16' and d.get('identifier')]")
+          
+          if [ -z "$DEVTYPE" ]; then
+            echo "::error::Device type 'iPhone 16' not found"
+            xcrun simctl list devicetypes | grep iPhone
+            exit 1
+          fi
+          echo "Using device type: $DEVTYPE"
+          
+          # Create simulator
+          echo "Creating simulator..."
+          NAME="CI-iPhone-16-$(date +%s)"
+          UDID=$(xcrun simctl create "$NAME" "$DEVTYPE" "$RUNTIME")
+          
+          if [ -z "$UDID" ]; then
             echo "::error::Failed to create simulator"
+            exit 1
+          fi
+          echo "Created simulator: $UDID"
+          
+          # Boot simulator
+          echo "Booting simulator..."
+          xcrun simctl boot "$UDID"
+          
+          # Wait for boot
+          echo "Waiting for simulator to boot..."
+          for i in $(seq 1 120); do
+            if xcrun simctl list devices | grep -q "${UDID}) (Booted"; then
+              echo "Simulator booted successfully after ${i} seconds"
+              break
+            fi
+            if [ $i -eq 120 ]; then
+              echo "::error::Simulator boot timeout after 120 seconds"
+              xcrun simctl list devices
+              exit 1
+            fi
+            sleep 1
+          done
+          
+          # Verify boot status
+          if ! xcrun simctl list devices | grep -q "${UDID}) (Booted"; then
+            echo "::error::Simulator verification failed"
+            xcrun simctl list devices
+            exit 1
+          fi
+          
+          # Additional stability check
+          echo "Waiting for simulator to be fully ready..."
+          sleep 10
+          
+          # Test simulator responsiveness
+          if ! xcrun simctl list devices | grep -q "${UDID}) (Booted"; then
+            echo "::error::Simulator became unresponsive after boot"
+            xcrun simctl list devices
             exit 1
           fi
           
@@ -143,8 +211,10 @@ jobs:
         if: always()
         shell: bash
         run: |
-          # Use the enhanced simulator manager for cleanup
-          ./scripts/simulator-manager.sh cleanup-all
+          echo "Cleaning up simulators..."
+          xcrun simctl shutdown all || true
+          xcrun simctl delete all || true
+          echo "Simulator cleanup completed"
 
   lint:
     name: Lint (SwiftFormat + SwiftLint)
