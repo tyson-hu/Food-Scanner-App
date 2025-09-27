@@ -73,7 +73,7 @@ struct FDCProxyClientTests {
             Issue.record("Failed to encode mock response: \(error)")
             return
         }
-        guard let url = URL(string: "https://api.calry.org/foods/search") else {
+        guard let url = URL(string: "https://api.calry.org/v1/foods/search") else {
             Issue.record("Failed to create URL")
             return
         }
@@ -214,7 +214,7 @@ struct FDCProxyClientTests {
             Issue.record("Failed to encode mock response: \(error)")
             return
         }
-        guard let url = URL(string: "https://api.calry.org/foods/search") else {
+        guard let url = URL(string: "https://api.calry.org/v1/foods/search") else {
             Issue.record("Failed to create URL")
             return
         }
@@ -264,6 +264,91 @@ struct FDCProxyClientTests {
         }
 
         #expect(mockSession.requestCount == 1) // Should not retry
+    }
+
+    @Test @MainActor
+    func retryLogicWithDecodingError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
+
+        // Given - Invalid JSON that will cause decoding error
+        mockSession.mockData = Data("invalid json".utf8)
+        guard let url = URL(string: "https://api.calry.org/v1/foods/search") else {
+            Issue.record("Failed to create URL")
+            return
+        }
+        mockSession.mockResponse = HTTPURLResponse(
+            url: url,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: nil
+        )
+
+        // When/Then
+        do {
+            _ = try await client.searchFoodsWithPagination(matching: "test", page: 1, pageSize: 25)
+            Issue.record("Expected error to be thrown")
+        } catch let error as FDCError {
+            if case .decodingError = error {
+                // Expected error type
+            } else {
+                Issue.record("Expected decoding error, got: \(error)")
+            }
+        } catch {
+            Issue.record("Expected FDCError, got: \(error)")
+        }
+
+        #expect(mockSession.requestCount == 1) // Should not retry decoding errors
+    }
+
+    @Test @MainActor
+    func retryLogicWithBadURLError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
+
+        // Given - Bad URL error (non-retryable)
+        mockSession.mockError = URLError(.badURL)
+
+        // When/Then
+        do {
+            _ = try await client.searchFoodsWithPagination(matching: "test", page: 1, pageSize: 25)
+            Issue.record("Expected error to be thrown")
+        } catch let error as FDCError {
+            if case .invalidURL = error {
+                // Expected error type
+            } else {
+                Issue.record("Expected invalid URL error, got: \(error)")
+            }
+        } catch {
+            Issue.record("Expected FDCError, got: \(error)")
+        }
+
+        #expect(mockSession.requestCount == 1) // Should not retry bad URL errors
+    }
+
+    @Test @MainActor
+    func retryLogicWithNetworkTimeoutError() async throws {
+        let mockSession = MockURLSession()
+        let client = FDCProxyClient(session: mockSession)
+
+        // Given - Network timeout error (retryable)
+        mockSession.mockError = URLError(.timedOut)
+
+        // When/Then
+        do {
+            _ = try await client.searchFoodsWithPagination(matching: "test", page: 1, pageSize: 25)
+            Issue.record("Expected error to be thrown")
+        } catch let error as FDCError {
+            if case .networkError = error {
+                // Expected error type
+            } else {
+                Issue.record("Expected network error, got: \(error)")
+            }
+        } catch {
+            Issue.record("Expected FDCError, got: \(error)")
+        }
+
+        #expect(mockSession.requestCount > 1) // Should retry network timeout errors
     }
 
     // MARK: - UPC Barcode Search Tests
@@ -329,7 +414,7 @@ struct FDCProxyClientTests {
             Issue.record("Failed to encode mock response: \(error)")
             return
         }
-        guard let url = URL(string: "https://api.calry.org/foods/search") else {
+        guard let url = URL(string: "https://api.calry.org/v1/foods/search") else {
             Issue.record("Failed to create URL")
             return
         }
@@ -393,7 +478,7 @@ struct FDCProxyClientTests {
             Issue.record("Failed to encode mock response: \(error)")
             return
         }
-        guard let url = URL(string: "https://api.calry.org/foods/search") else {
+        guard let url = URL(string: "https://api.calry.org/v1/foods/search") else {
             Issue.record("Failed to create URL")
             return
         }

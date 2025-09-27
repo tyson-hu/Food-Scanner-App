@@ -257,10 +257,14 @@ struct FDCProxyClient: FDCClient {
                 throw urlError
             } catch {
                 lastError = error
-                if attempt == maxRetries {
-                    throw FDCError.networkError(error)
+
+                // Classify non-FDC errors before retrying
+                if shouldRetryNonFDCError(error, attempt: attempt) {
+                    try await performRetryDelay(attempt: attempt)
+                } else {
+                    // Map deterministic failures to appropriate FDCError types
+                    throw mapNonFDCErrorToFDCError(error)
                 }
-                try await performRetryDelay(attempt: attempt)
             }
         }
 
@@ -295,6 +299,59 @@ struct FDCProxyClient: FDCClient {
     private func performRetryDelay(attempt: Int) async throws {
         let delay = baseDelay * pow(2.0, Double(attempt))
         try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+    }
+
+    /// Determine if a non-FDC error should be retried
+    private func shouldRetryNonFDCError(_ error: Error, attempt: Int) -> Bool {
+        // If this was the last attempt, don't retry
+        if attempt == maxRetries {
+            return false
+        }
+
+        // Don't retry deterministic failures that won't succeed on retry
+        switch error {
+        case is DecodingError:
+            // Decoding errors are deterministic - malformed JSON won't become valid
+            return false
+        case let urlError as URLError:
+            // Don't retry client-side errors that won't succeed on retry
+            switch urlError.code {
+            case .badURL, .unsupportedURL, .cannotFindHost, .cannotConnectToHost:
+                return false
+            case .timedOut, .notConnectedToInternet, .networkConnectionLost:
+                return true
+            case .cancelled:
+                return false
+            default:
+                return true
+            }
+        default:
+            // For unknown errors, be conservative and retry once
+            return attempt < 1
+        }
+    }
+
+    /// Map non-FDC errors to appropriate FDCError types
+    private func mapNonFDCErrorToFDCError(_ error: Error) -> FDCError {
+        switch error {
+        case let decodingError as DecodingError:
+            .decodingError(decodingError)
+        case let urlError as URLError:
+            switch urlError.code {
+            case .badURL, .unsupportedURL:
+                .invalidURL
+            case .cannotFindHost, .cannotConnectToHost:
+                .serverUnavailable
+            case .timedOut, .notConnectedToInternet, .networkConnectionLost:
+                .networkError(urlError)
+            case .cancelled:
+                .networkError(urlError)
+            default:
+                .networkError(urlError)
+            }
+        default:
+            .networkError(error)
+        }
     }
 
     private func buildSearchURL(query: String, page: Int, pageSize: Int = 25) throws -> URL {
