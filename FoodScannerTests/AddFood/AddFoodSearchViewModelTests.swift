@@ -17,8 +17,8 @@ struct AddFoodSearchViewModelTests {
         viewModel.query = "yogurt"
         viewModel.onQueryChange()
 
-        // debounce(250ms) + mock latency(~150ms) headroom
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        // Wait for debounce (250ms) + mock latency (200ms) + extra headroom
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 
         #expect(viewModel.phase == .results)
         #expect(viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
@@ -30,7 +30,9 @@ struct AddFoodSearchViewModelTests {
         let viewModel = AddFoodSearchViewModel(client: FDCMock())
         viewModel.query = "rice"
         viewModel.onQueryChange()
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        
+        // Wait for search to complete
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
         #expect(viewModel.genericResults.isEmpty == false || viewModel.brandedResults.isEmpty == false)
 
         viewModel.query = ""
@@ -62,7 +64,6 @@ struct AddFoodSearchViewModelTests {
     @Test @MainActor func integration_proxy_client_search() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
@@ -86,7 +87,6 @@ struct AddFoodSearchViewModelTests {
     @Test @MainActor func integration_proxy_client_handles_network_error() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 

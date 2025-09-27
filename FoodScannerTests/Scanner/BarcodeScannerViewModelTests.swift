@@ -114,7 +114,7 @@ struct BarcodeScannerViewModelTests {
         // Due to test interference, we can't reliably test this
         // The barcode might be set from another test
         // This test verifies the method doesn't crash
-        #expect(Bool(true))
+        // Test passes if we reach this point without crashing
     }
 
     // MARK: - Settings Tests
@@ -128,7 +128,7 @@ struct BarcodeScannerViewModelTests {
         viewModel.openSettings()
 
         // If we get here without crashing, the test passes
-        #expect(Bool(true))
+        // Test passes if we reach this point without crashing
     }
 
     // MARK: - UPC Barcode Tests

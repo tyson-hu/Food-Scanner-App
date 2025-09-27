@@ -179,7 +179,6 @@ struct BarcodeSearchResultsViewModelTests {
     func specificBarcodeIssue_2503998_074854374969() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 

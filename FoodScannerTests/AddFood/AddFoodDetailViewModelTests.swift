@@ -41,7 +41,6 @@ struct AddFoodDetailViewModelTests {
     @Test @MainActor func integration_load_real_fdc_id_2503998() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
@@ -68,7 +67,6 @@ struct AddFoodDetailViewModelTests {
     @Test @MainActor func integration_load_real_fdc_id_1995469() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
@@ -89,7 +87,6 @@ struct AddFoodDetailViewModelTests {
     @Test @MainActor func integration_load_real_fdc_id_2055229() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
@@ -110,7 +107,6 @@ struct AddFoodDetailViewModelTests {
     @Test @MainActor func integration_load_real_fdc_id_2090362_food_attributes_parsing() async throws {
         // Skip if integration tests are disabled
         guard TestConfig.runIntegrationTests else {
-            #expect(Bool(true), "Integration tests disabled - set RUN_INTEGRATION_TESTS=1 to enable")
             return
         }
 
