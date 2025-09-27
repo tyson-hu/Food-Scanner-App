@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PhotoIntakeView: View {
-    var onRecognize: (Int) -> Void = { _ in }
+    var onRecognize: (String) -> Void = { _ in }
 
     var body: some View {
         ContentUnavailableView(
@@ -17,7 +17,7 @@ struct PhotoIntakeView: View {
             description: Text("Stub for M1. We'll add Vision/CoreML later.")
         )
         .safeAreaInset(edge: .bottom) {
-            Button("Simulate Match (fdcId 67890)") { onRecognize(67890) }
+            Button("Simulate Match (fdcId 67890)") { onRecognize("fdc:67890") }
                 .buttonStyle(.borderedProminent)
                 .padding()
         }
