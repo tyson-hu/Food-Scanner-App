@@ -124,12 +124,11 @@ struct BarcodeSearchResultsView: View {
                         .foregroundColor(.secondary)
 
                     if message.contains("cancelled") {
-                        Text("The search was interrupted. This usually happens when scanning multiple barcodes quickly."
-                        )
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.secondary)
-                        .padding(.horizontal)
+                        Text("The search was interrupted. This usually happens when scanning multiple barcode quickly.")
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
                     }
 
                     Button("Retry") {
