@@ -162,7 +162,7 @@ struct FDCProxyClientTests {
     func searchFoodsWithNetworkError() async throws {
         // Skip network tests in CI for stability
         #if CI_OFFLINE_MODE
-        throw XCTSkip("Network tests disabled in CI offline mode")
+            throw XCTSkip("Network tests disabled in CI offline mode")
         #endif
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
@@ -334,7 +334,7 @@ struct FDCProxyClientTests {
     func retryLogicWithNetworkTimeoutError() async throws {
         // Skip network tests in CI for stability
         #if CI_OFFLINE_MODE
-        throw XCTSkip("Network tests disabled in CI offline mode")
+            throw XCTSkip("Network tests disabled in CI offline mode")
         #endif
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
@@ -512,7 +512,7 @@ struct FDCProxyClientTests {
     func searchFoodsWithUPCNetworkError() async throws {
         // Skip network tests in CI for stability
         #if CI_OFFLINE_MODE
-        throw XCTSkip("Network tests disabled in CI offline mode")
+            throw XCTSkip("Network tests disabled in CI offline mode")
         #endif
         let mockSession = MockURLSession()
         let client = FDCProxyClient(session: mockSession)
