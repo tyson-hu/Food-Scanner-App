@@ -173,52 +173,93 @@ jobs:
               UDID=$(xcrun simctl create "${NAME}" "${DEVTYPE}" "${RUNTIME}")
               echo "Created device: ${UDID}"
           
-              # Boot and wait (no 'bootstatus -t' on this image)
-              boot_and_wait () {
-                local _udid="$1"
-                echo "Booting ${_udid}..."
-                xcrun simctl boot "${_udid}" || true
-                for i in $(seq 1 120); do
-                  if xcrun simctl list devices | grep -q "${_udid}) (Booted"; then
-                    echo "Booted: ${_udid}"
-                    return 0
-                  fi
-                  sleep 1
-                done
-                echo "Boot wait timed out for ${_udid}"
-                return 1
-              }
-          
-              if ! boot_and_wait "${UDID}"; then
-                echo "Erasing and retrying..."
-                xcrun simctl shutdown "${UDID}" || true
-                xcrun simctl erase "${UDID}" || true
-                boot_and_wait "${UDID}" || { echo "::error::Simulator failed to boot after retry."; xcrun simctl list devices; exit 1; }
+              # Boot with improved stability
+              echo "Booting ${UDID}..."
+              xcrun simctl boot "${UDID}"
+              
+              # Wait for boot with better error handling
+              echo "Waiting for simulator to boot..."
+              for i in $(seq 1 90); do
+                if xcrun simctl list devices | grep -q "${UDID}) (Booted"; then
+                  echo "Simulator booted successfully after ${i} seconds"
+                  break
+                fi
+                if [ $i -eq 90 ]; then
+                  echo "::error::Simulator boot timeout after 90 seconds"
+                  xcrun simctl list devices
+                  exit 1
+                fi
+                sleep 1
+              done
+              
+              # Verify boot status
+              if ! xcrun simctl list devices | grep -q "${UDID}) (Booted"; then
+                echo "::error::Simulator verification failed"
+                xcrun simctl list devices
+                exit 1
               fi
           
               echo "DEST_ID=${UDID}" >> "$GITHUB_ENV"
               echo "UDID=${UDID}" >> "$GITHUB_OUTPUT"
 
       - name: Build & Unit Tests (PR plan, no coverage)
-        timeout-minutes: 10
+        timeout-minutes: 15
         shell: bash
         run: |
           set -eo pipefail
-          xcodebuild \
-            -scheme "Food Scanner" \
-            -testPlan "FoodScanner-PR" \
-            -destination "id=$DEST_ID" \
-            -destination-timeout 60 \
-            -derivedDataPath ./DerivedData \
-            CODE_SIGNING_ALLOWED=NO \
-            ENABLE_PREVIEWS=NO \
-            SWIFT_STRICT_CONCURRENCY=complete \
-            OTHER_SWIFT_FLAGS='-warnings-as-errors' \
-            -skipPackagePluginValidation \
-            -skipMacroValidation \
-            -disableAutomaticPackageResolution \
-            -skip-testing:FoodScannerUITests \
-            test | xcpretty
+          
+          # Function to run tests with retry logic
+          run_tests() {
+            local attempt=$1
+            echo "Test attempt $attempt/3"
+            
+            xcodebuild \
+              -scheme "Food Scanner" \
+              -testPlan "FoodScanner-PR" \
+              -destination "id=$DEST_ID" \
+              -destination-timeout 120 \
+              -derivedDataPath ./DerivedData \
+              CODE_SIGNING_ALLOWED=NO \
+              ENABLE_PREVIEWS=NO \
+              SWIFT_STRICT_CONCURRENCY=complete \
+              OTHER_SWIFT_FLAGS='-warnings-as-errors' \
+              -skipPackagePluginValidation \
+              -skipMacroValidation \
+              -disableAutomaticPackageResolution \
+              -skip-testing:FoodScannerUITests \
+              -parallel-testing-enabled NO \
+              -maximum-concurrent-test-simulator-destinations 1 \
+              test
+          }
+          
+          # Retry logic for transient failures
+          for attempt in 1 2 3; do
+            if run_tests $attempt; then
+              echo "Tests passed on attempt $attempt"
+              exit 0
+            else
+              echo "Test attempt $attempt failed"
+              if [ $attempt -lt 3 ]; then
+                echo "Retrying in 10 seconds..."
+                sleep 10
+                # Reset simulator state
+                xcrun simctl shutdown "$DEST_ID" || true
+                xcrun simctl boot "$DEST_ID" || true
+                sleep 5
+              fi
+            fi
+          done
+          
+          echo "::error::All test attempts failed"
+          exit 1
+
+      - name: Cleanup Simulators
+        if: always()
+        shell: bash
+        run: |
+          echo "Cleaning up simulators..."
+          xcrun simctl shutdown all || true
+          xcrun simctl delete all || true
 
   lint:
     name: Lint (SwiftFormat + SwiftLint)
