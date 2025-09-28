@@ -5,11 +5,11 @@
 set -euo pipefail
 
 # Configuration
-MAX_ATTEMPTS=5
-XCODEBUILD_TIMEOUT=600  # 10 minutes (reduced from 12)
-STUCK_THRESHOLD=180     # 3 minutes (reduced from 5)
-CHECK_INTERVAL=20       # 20 seconds (more frequent)
-PROGRESS_TIMEOUT=40     # 40 seconds for progress detection (reduced from 60)
+MAX_ATTEMPTS=3
+XCODEBUILD_TIMEOUT=900  # 15 minutes (increased for stability)
+STUCK_THRESHOLD=300     # 5 minutes (increased for complex tests)
+CHECK_INTERVAL=30       # 30 seconds (less frequent to reduce overhead)
+PROGRESS_TIMEOUT=60     # 60 seconds for progress detection (increased)
 
 # Colors for output
 RED='\033[0;31m'
@@ -163,6 +163,9 @@ run_tests_with_monitoring() {
         -skip-testing:FoodScannerUITests \
         -parallel-testing-enabled NO \
         -maximum-concurrent-test-simulator-destinations 1 \
+        -test-timeouts-enabled YES \
+        -default-test-execution-time-allowance 30 \
+        -maximum-test-execution-time-allowance 60 \
         test > "$log_file" 2>&1 &
     
     local xcodebuild_pid=$!
@@ -199,6 +202,11 @@ run_tests_with_monitoring() {
             local current_log_size=$(wc -c < "$log_file" 2>/dev/null || echo 0)
             local log_age=$(($(date +%s) - $(stat -f %m "$log_file" 2>/dev/null || echo 0)))
             
+            # Check for test execution indicators
+            if grep -q "Test Suite.*started\|Test Suite.*passed\|Test Suite.*failed" "$log_file" 2>/dev/null; then
+                log_info "Test execution detected in logs"
+            fi
+            
             # If log file is growing or recently modified, we have progress
             if [ $current_log_size -gt $last_log_size ] || [ $log_age -lt $PROGRESS_TIMEOUT ]; then
                 last_activity=$current_time
@@ -207,7 +215,9 @@ run_tests_with_monitoring() {
                 log_info "Progress detected (log size: $current_log_size bytes)"
             else
                 stuck_count=$((stuck_count + 1))
-                log_warning "No progress detected for $((stuck_count * CHECK_INTERVAL)) seconds"
+                if [ $((stuck_count % 2)) -eq 0 ]; then
+                    log_warning "No progress detected for $((stuck_count * CHECK_INTERVAL)) seconds"
+                fi
             fi
         fi
         
