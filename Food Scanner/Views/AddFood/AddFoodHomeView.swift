@@ -12,6 +12,7 @@ enum AddFoodRoute: Hashable {
     case summary(gid: String)
     case detail(gid: String)
     case barcodeSearch(upc: String)
+    case unsupportedProduct(gid: String, source: SourceTag?)
 }
 
 // Deep-link target, e,g. open Add tab directly to .barcode later.
@@ -70,8 +71,32 @@ struct AddFoodHomeView: View {
                     }
                 case let .barcodeSearch(upc):
                     BarcodeSearchResultsView(upc: upc) { gid in
-                        path.append(.summary(gid: gid))
+                        // Check if product is supported and navigate accordingly
+                        let supportStatus = ProductSourceDetection.detectSupportStatus(from: gid)
+                        switch supportStatus {
+                        case .supported:
+                            path.append(.summary(gid: gid))
+                        case let .unsupported(source):
+                            path.append(.unsupportedProduct(gid: gid, source: source))
+                        case .unknown:
+                            path.append(.summary(gid: gid))
+                        }
                     }
+                case let .unsupportedProduct(gid, source):
+                    UnsupportedProductView(
+                        gid: gid,
+                        source: source,
+                        onSearchSimilar: {
+                            // Navigate to search mode
+                            mode = .search
+                            path.removeAll()
+                        },
+                        onTryDifferentBarcode: {
+                            // Navigate back to barcode scanner
+                            mode = .barcode
+                            path.removeAll()
+                        },
+                    )
                 }
             }
         }

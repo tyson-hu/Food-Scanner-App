@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Memory Management**: Automatic cache cleanup prevents memory bloat
 
 ### Security
-- **API Key Handling**: No hardcoded secrets, proper configuration management
+- **No Authentication Required**: Uses proxy service without API keys or secrets
 - **Request Security**: Optional authentication headers ready for production
 - **Privacy**: Comprehensive privacy manifest with proper API usage declarations
 

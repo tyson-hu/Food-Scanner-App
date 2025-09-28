@@ -13,7 +13,7 @@ struct AppEnvironment: Sendable {
     let cacheService: FDCCacheService
 
     // Utilities
-    var dateProvider: () -> Date = { Date() }
+    var dateProvider: @Sendable () -> Date = { Date() }
 
     // Live composition (decides Mock vs Remote via flag/override)
     static func live() -> AppEnvironment {

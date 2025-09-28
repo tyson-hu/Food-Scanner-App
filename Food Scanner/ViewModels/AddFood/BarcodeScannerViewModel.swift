@@ -44,10 +44,8 @@ final class BarcodeScannerViewModel {
 
     // MARK: - Public Methods
 
-    func checkPermissions() {
-        Task {
-            await checkCameraPermission()
-        }
+    func checkPermissions() async {
+        await checkCameraPermission()
     }
 
     func openSettings() {

@@ -15,6 +15,7 @@ final class AddFoodDetailViewModel {
     enum Phase: Equatable {
         case loading
         case loaded(FoodAuthoritativeDetail)
+        case unsupported(SourceTag?)
         case error(String)
     }
 
@@ -30,12 +31,27 @@ final class AddFoodDetailViewModel {
     }
 
     func load() async {
-        do {
-            let foodDetails = try await client.getFoodDetails(gid: gid)
-            await MainActor.run { self.phase = .loaded(foodDetails) }
-        } catch {
-            await MainActor
-                .run { self.phase = .error(error.localizedDescription) }
+        // Check if product is supported before making API call
+        let supportStatus = ProductSourceDetection.detectSupportStatus(from: gid)
+
+        switch supportStatus {
+        case .supported:
+            do {
+                let foodDetails = try await client.getFoodDetails(gid: gid)
+                phase = .loaded(foodDetails)
+            } catch {
+                phase = .error(error.localizedDescription)
+            }
+        case let .unsupported(source):
+            phase = .unsupported(source)
+        case .unknown:
+            // Try the API call anyway for unknown sources
+            do {
+                let foodDetails = try await client.getFoodDetails(gid: gid)
+                phase = .loaded(foodDetails)
+            } catch {
+                phase = .error(error.localizedDescription)
+            }
         }
     }
 

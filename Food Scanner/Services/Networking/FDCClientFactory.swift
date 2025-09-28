@@ -12,17 +12,24 @@ enum FDCClientFactory {
         // Precedence: runtime override -> build flag -> configuration default (Release)
         let wantsProxy = env.runtimeOverrideRemote || env.buildDefaultRemote || env.isRelease
 
+        let underlyingClient: FDCClient
         if wantsProxy {
             #if DEBUG
                 debugPrint("FDC DI: Selecting FDCProxyClient (proxy mode).")
             #endif
-            return FDCProxyClient()
+            underlyingClient = FDCProxyClient()
         } else {
             #if DEBUG
                 debugPrint("FDC DI: Using FDCMock (default).")
             #endif
-            return FDCMock()
+            underlyingClient = FDCMock()
         }
+
+        // Always wrap in FDCCachedClient
+        return FDCCachedClient(
+            underlyingClient: underlyingClient,
+            cacheService: FDCCacheService(),
+        )
     }
 
     // MARK: - Alternative Factory Methods for Testing

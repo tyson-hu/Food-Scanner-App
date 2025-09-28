@@ -18,6 +18,11 @@ struct FDCCachedClient: FDCClient {
         self.cacheService = cacheService
     }
 
+    // Expose underlying client for type checking
+    var underlyingClientType: FDCClient {
+        underlyingClient
+    }
+
     // MARK: - New API Methods (v1 Worker API)
 
     func getHealth() async throws -> FoodHealthResponse {
@@ -47,7 +52,11 @@ struct FDCCachedClient: FDCClient {
 
     func searchFoodsWithPagination(matching query: String, page: Int, pageSize: Int) async throws -> FDCSearchResult {
         // Check cache first
-        if let cachedResults = cacheService.cachedPaginatedSearchResults(for: query, page: page, pageSize: pageSize) {
+        if let cachedResults = cacheService.cachedPaginatedSearchResults(
+            for: query,
+            page: page,
+            pageSize: pageSize,
+        ) {
             return cachedResults
         }
 

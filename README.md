@@ -167,12 +167,12 @@ The app integrates with the Food Data Central (FDC) API through a proxy service:
 ### Data Protection
 - **Local Storage**: Food entries stored locally using SwiftData
 - **No Personal Data**: No user accounts or personal information collected
-- **API Keys**: No hardcoded secrets, proper configuration management
+- **No Authentication**: Uses proxy service without API keys or secrets
 - **Privacy Manifest**: Comprehensive privacy declarations
 
 ### Network Security
 - **HTTPS**: All API calls use secure connections
-- **Authentication**: Ready for production authentication headers
+- **Proxy Service**: Routes through secure calry.org proxy
 - **Rate Limiting**: Respects API rate limits with backoff
 
 ## Development

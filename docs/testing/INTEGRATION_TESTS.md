@@ -14,7 +14,7 @@ This project includes integration tests that make live network calls to external
 ### Local Development
 - **Status**: ✅ **Enabled** for full coverage
 - **Mode**: Full network testing
-- **Test Plan**: `FoodScanner-PR.xctestplan`
+- **Test Plan**: `FoodScanner.xctestplan`
 - **Duration**: 5-7 minutes
 - **Network Tests**: All executed
 
@@ -50,7 +50,7 @@ Add `INTEGRATION_TESTS=1` to your build settings or create a custom build config
 ### Option 4: Xcode Test Plan
 Select the appropriate test plan in Xcode:
 - **CI Offline**: `FoodScanner-CI-Offline.xctestplan` (no network tests)
-- **Full Testing**: `FoodScanner-PR.xctestplan` (includes network tests)
+- **Local Development**: `FoodScanner.xctestplan` (includes network tests)
 
 ## Integration Test Categories
 
@@ -95,7 +95,7 @@ Select the appropriate test plan in Xcode:
 
 ### Local Development
 - **Default behavior**: All tests run including network tests
-- **Test plan**: `FoodScanner-PR.xctestplan`
+- **Test plan**: `FoodScanner.xctestplan`
 - **Environment**: No special flags needed
 - **Benefits**:
   - Full test coverage
@@ -161,7 +161,7 @@ When adding new tests that require live network access:
    }
    ```
 4. **Add to test plan** if needed:
-   - Add to `FoodScanner-PR.xctestplan` for local development
+   - Add to `FoodScanner.xctestplan` for local development
    - Add to `FoodScanner-CI-Offline.xctestplan` skipped tests for CI
 5. **Update documentation** if needed
 
@@ -211,7 +211,7 @@ When adding new tests that require live network access:
 grep -r "CI_OFFLINE_MODE" FoodScannerTests/
 
 # Run specific test plan
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner" -destination "platform=iOS Simulator,name=iPhone 16"
 
 # Check network connectivity
 curl -I https://api.calry.org
@@ -221,7 +221,7 @@ curl -I https://api.calry.org
 
 # Check test plan configuration
 cat FoodScanner-CI-Offline.xctestplan
-cat FoodScanner-PR.xctestplan
+cat FoodScanner.xctestplan
 ```
 
 ## Performance Impact

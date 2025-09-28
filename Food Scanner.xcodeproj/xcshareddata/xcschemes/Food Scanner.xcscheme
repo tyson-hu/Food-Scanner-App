@@ -57,11 +57,8 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:FoodScanner-PR.xctestplan"
+            reference = "container:FoodScanner.xctestplan"
             default = "YES">
-         </TestPlanReference>
-         <TestPlanReference
-            reference = "container:FoodScanner-Full.xctestplan">
          </TestPlanReference>
          <TestPlanReference
             reference = "container:FoodScanner-CI-Offline.xctestplan">

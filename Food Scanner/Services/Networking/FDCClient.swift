@@ -83,9 +83,9 @@ enum FDCError: LocalizedError {
             case 400:
                 "Invalid search request. Please try different search terms."
             case 401:
-                "Authentication failed. Please check your API key."
+                "Authentication failed. Please check your connection."
             case 403:
-                "Access denied. Please check your API permissions."
+                "Access denied. Please try again later."
             case 404:
                 "Food not found. Please try a different search."
             case 429:

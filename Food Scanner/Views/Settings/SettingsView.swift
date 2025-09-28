@@ -78,11 +78,14 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        // Release or Debug
+        // Both Debug and Release should show the marketing version (CFBundleShortVersionString)
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+
         #if DEBUG
-            return (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") + " (Debug Build)"
+            return "\(version) (\(buildNumber)) - Debug Build"
         #else
-            return (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown") + " (Release Build)"
+            return "\(version) (\(buildNumber)) - Release Build"
         #endif
     }
 
@@ -91,7 +94,13 @@ struct SettingsView: View {
     }
 
     private var activeClientName: String {
-        (appEnv.fdcClient is FDCProxyClient) ? "Proxy" : "Mock"
+        if let cachedClient = appEnv.fdcClient as? FDCCachedClient {
+            // Check the underlying client type
+            (cachedClient.underlyingClientType is FDCProxyClient) ? "Proxy" : "Mock"
+        } else {
+            // Direct client (shouldn't happen in normal app flow)
+            (appEnv.fdcClient is FDCProxyClient) ? "Proxy" : "Mock"
+        }
     }
 }
 

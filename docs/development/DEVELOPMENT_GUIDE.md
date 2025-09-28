@@ -22,13 +22,42 @@ This guide provides comprehensive information for developers working on the Food
    open "Food Scanner.xcodeproj"
    ```
 
-3. **Configure API Key**:
-   - Copy `Config/Secrets.example` to `Config/Secrets.plist`
-   - Add your FDC API key to the plist file
+3. **No API Key Required**:
+   - The app uses the calry.org proxy service without authentication
+   - No additional configuration needed
 
 4. **Run the app**:
    - Select iPhone simulator or device
    - Press Cmd+R to build and run
+
+## 🌐 Multi-Source Data Support
+
+The Food Scanner app now supports multiple data sources through a unified proxy API:
+
+### Supported Data Sources
+- **FDC (Food Data Central)**: USDA's comprehensive food database
+- **DSLD (Dietary Supplement Label Database)**: NIH's supplement database
+- **DSID (Dietary Supplement Ingredient Database)**: Future support planned
+- **OFF (Open Food Facts)**: Community-driven food database (future support)
+
+### Global ID (GID) System
+All food items are identified using GIDs with source prefixes:
+- `fdc:12345` - FDC food item
+- `dsld:67890` - DSLD supplement item
+- `dsid:11111` - DSID supplement ingredient (future)
+- `off:22222` - Open Food Facts item (future)
+
+### Product Support Detection
+The app automatically determines product support status:
+- **Supported**: FDC and DSLD items with detailed nutrition information
+- **Unsupported**: DSID and OFF items with limited data
+- **Unknown**: Items with unrecognized source prefixes
+
+### DSLD Integration Features
+- **Data Validation**: Comprehensive validation for DSLD data quality
+- **Debugging Tools**: Detailed logging for DSLD API responses
+- **Error Handling**: User-friendly messages for empty or invalid DSLD data
+- **Source Detection**: Automatic identification of DSLD products
 
 ## 🏗️ Project Structure
 
@@ -70,10 +99,11 @@ Food Scanner/
 │   ├── Assets.xcassets       # Images and colors
 │   └── Samples/              # Sample data
 ├── Config/                    # Configuration files
-│   ├── Secrets.plist         # API keys and secrets
-│   └── Config.Debug.xcconfig # Debug configuration
+│   ├── Config.Debug.xcconfig # Debug configuration
+│   └── Config.Release.xcconfig # Release configuration
 └── Utilities/                 # Utility functions
-    └── DataNormalization.swift # Data processing
+    ├── DataNormalization.swift # Data processing
+    └── ProductSourceDetection.swift # Multi-source product detection
 ```
 
 ## 🧪 Testing
@@ -96,7 +126,7 @@ FoodScannerTests/
 ./scripts/test-local-network.sh
 
 # Or run specific test plan
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner" -destination "platform=iOS Simulator,name=iPhone 16"
 ```
 
 #### CI Environment (Offline Mode)
@@ -106,7 +136,7 @@ xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "
 ```
 
 ### Test Plans
-- **FoodScanner-PR.xctestplan**: Full test coverage including network tests
+- **FoodScanner.xctestplan**: Full test coverage including network tests
 - **FoodScanner-CI-Offline.xctestplan**: CI-optimized offline test plan
 
 ### Test Categories
@@ -221,8 +251,8 @@ xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-PR" -destination "
 - **Debug**: Run tests individually to isolate issues
 
 #### API Issues
-- **Check**: API key configuration and network connectivity
-- **Solution**: Verify authentication and rate limiting
+- **Check**: Network connectivity and proxy service availability
+- **Solution**: Verify proxy service connectivity and rate limiting
 - **Debug**: Use mock data and check error logs
 
 #### Simulator Issues
@@ -266,14 +296,14 @@ xcodebuild -showBuildSettings -scheme "Food Scanner"
 ## 🔒 Security
 
 ### Best Practices
-1. **API Keys**: Store in secure configuration files
+1. **Configuration**: No sensitive data required - uses proxy service
 2. **Data Validation**: Validate all user inputs
 3. **Network Security**: Use HTTPS for all API calls
 4. **Error Handling**: Don't expose sensitive information in errors
 5. **Code Review**: Security-focused code reviews
 
 ### Configuration
-- **Secrets**: Use `Config/Secrets.plist` for sensitive data
+- **Configuration**: No sensitive data required - app uses proxy service without authentication
 - **Environment**: Separate configurations for debug/release
 - **Validation**: Implement proper input validation
 - **Sanitization**: Sanitize user inputs before processing
@@ -322,6 +352,87 @@ xcodebuild -showBuildSettings -scheme "Food Scanner"
 - **Testing**: Full test suite must pass
 - **Documentation**: Docs must be updated if needed
 
+## 🔧 Troubleshooting
+
+### CI Build Issues
+
+#### Permission Dialog Appears During Tests
+**Problem**: Camera permission popup interrupts test execution
+**Solution**:
+```bash
+# Check if permissions are granted
+xcrun simctl privacy <simulator_udid> status camera tysonhu.foodscanner
+
+# Grant permissions manually
+xcrun simctl privacy <simulator_udid> grant camera tysonhu.foodscanner
+xcrun simctl privacy <simulator_udid> grant photos tysonhu.foodscanner
+xcrun simctl privacy <simulator_udid> grant microphone tysonhu.foodscanner
+```
+
+#### CI Builds Hanging or Timing Out
+**Problem**: Tests get stuck and don't complete
+**Solution**:
+1. Check simulator health: `./scripts/simulator-manager.sh health <udid>`
+2. Reset simulator: `./scripts/simulator-manager.sh reset <udid>`
+3. Clean up all simulators: `./scripts/simulator-manager.sh cleanup-all`
+4. Check CI logs for specific error messages
+
+#### Low Test Count in CI
+**Problem**: CI reports fewer tests than expected
+**Solution**:
+1. Verify test plan is correct: `FoodScanner-CI-Offline.xctestplan`
+2. Check for test compilation errors
+3. Ensure all test targets are included
+4. Review CI logs for test execution details
+
+### Local Development Issues
+
+#### Network Tests Failing
+**Problem**: Network-dependent tests fail locally
+**Solution**:
+1. Use the local network test runner: `./scripts/test-local-network.sh`
+2. Check network connectivity
+3. Verify external services are available
+4. Check for firewall or proxy issues
+
+#### Simulator Issues
+**Problem**: Simulator won't boot or is unresponsive
+**Solution**:
+1. Reset simulator: `xcrun simctl reset <udid>`
+2. Erase simulator: `xcrun simctl erase <udid>`
+3. Create fresh simulator: `./scripts/simulator-manager.sh create`
+4. Check system resources and available space
+
+### Common Error Messages
+
+#### "Expression is 'async' but is not marked with 'await'"
+**Fix**: Add `await` keyword before async function calls
+```swift
+// Wrong
+viewModel.checkPermissions()
+
+// Correct
+await viewModel.checkPermissions()
+```
+
+#### "Force unwrapping should be avoided"
+**Fix**: Use safe unwrapping with `guard let` or `if let`
+```swift
+// Wrong
+let source = extractSource(from: gid)!
+
+// Correct
+guard let source = extractSource(from: gid) else { return .unknown }
+```
+
+#### "Function should have complexity 10 or less"
+**Fix**: Extract complex logic into smaller helper methods
+```swift
+// Extract complex logic into private methods
+private func logDSLDResponseIfNeeded(gid: String, data: Data) { /* ... */ }
+private func validateDSLDDataIfNeeded(gid: String, foodCard: FoodMinimalCard) { /* ... */ }
+```
+
 ## 📞 Support
 
 ### Getting Help
@@ -339,7 +450,7 @@ xcodebuild -showBuildSettings -scheme "Food Scanner"
 ---
 
 **Last Updated**: September 2024  
-**Version**: 2.0 (Enhanced CI/CD)  
+**Version**: 2.1 (CI Permission Handling)  
 **Status**: Production Ready ✅
 
 This development guide is maintained alongside the codebase and reflects the current state of the Food Scanner app's development practices and workflows.

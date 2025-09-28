@@ -1,6 +1,6 @@
 # API Documentation
 
-This directory contains comprehensive documentation for the Food Scanner app's API integration, focusing on the Food Data Central (FDC) API.
+This directory contains comprehensive documentation for the Food Scanner app's API integration, including Food Data Central (FDC) API and Dietary Supplement Label Database (DSLD) integration.
 
 ## 📁 API Documentation Structure
 
@@ -8,26 +8,35 @@ This directory contains comprehensive documentation for the Food Scanner app's A
 api/
 ├── README.md                    # This file - API documentation index
 ├── FDC API.yaml                # OpenAPI 3.0 specification for FDC API
-└── M2-03_API_DOCUMENTATION.md  # Detailed API integration guide
+├── M2-03_API_DOCUMENTATION.md  # Detailed API integration guide
+└── DSLD_INTEGRATION.md         # DSLD integration guide
 ```
 
-## 🌐 Food Data Central (FDC) API
+## 🌐 Multi-Source API Integration
 
-The Food Scanner app integrates with the **Food Data Central API** to provide comprehensive food and nutrition information.
+The Food Scanner app integrates with multiple data sources through a unified proxy API to provide comprehensive food and supplement information.
+
+### Food Data Central (FDC) API
+The **Food Data Central API** provides comprehensive food and nutrition information.
 
 ### API Overview
 - **Provider**: USDA Food Data Central
 - **Base URL**: `https://api.calry.org` (proxy service)
-- **Authentication**: API key required
+- **Authentication**: No authentication required (proxy service)
 - **Rate Limits**: 1000 requests/hour
 - **Data Coverage**: 300,000+ food items with detailed nutrition information
 
+### Dietary Supplement Label Database (DSLD) API
+The **DSLD API** provides comprehensive supplement and vitamin information.
+
 ### Key Features
-- ✅ **Food Search**: Search by name, UPC, or barcode
-- ✅ **Detailed Information**: Complete nutrition facts and food details
-- ✅ **Nutrient Data**: Comprehensive nutritional breakdown
+- ✅ **Multi-Source Search**: Search across FDC and DSLD databases
+- ✅ **Food & Supplement Data**: Complete nutrition facts for foods and supplements
+- ✅ **Detailed Information**: Comprehensive nutritional breakdown
 - ✅ **Barcode Support**: UPC and EAN barcode lookup
+- ✅ **Product Source Detection**: Automatic detection of supported products
 - ✅ **Caching**: Smart caching for performance optimization
+- ✅ **DSLD Integration**: Full support for dietary supplements
 
 ## 📋 Documentation Files
 
@@ -35,7 +44,7 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 **OpenAPI 3.0 specification** for the FDC API:
 - **Complete API schema** with all endpoints
 - **Request/response models** with detailed field descriptions
-- **Authentication requirements** and API key setup
+- **Proxy service integration** without authentication
 - **Rate limiting information** and usage guidelines
 - **Error response schemas** and status codes
 
@@ -46,19 +55,27 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 
 ### [API Integration Guide](M2-03_API_DOCUMENTATION.md)
 **Comprehensive integration guide** for developers:
-- **Authentication setup** and API key management
+- **Multi-source data support** including FDC and DSLD
+- **Proxy service setup** without authentication
 - **Client implementation** using FDCProxyClient
 - **Error handling** strategies and best practices
 - **Caching implementation** for performance optimization
 - **Testing approaches** including mocking and integration tests
 
+### [DSLD Integration Guide](DSLD_INTEGRATION.md)
+**Detailed DSLD integration guide** for supplement support:
+- **DSLD API integration** with NIH's supplement database
+- **Data validation and debugging** for DSLD data quality
+- **Error handling** for supplement-specific issues
+- **Product source detection** and support status
+- **Testing and troubleshooting** for DSLD integration
+
 ## 🚀 Quick Start
 
-### 1. API Key Setup
+### 1. Basic Setup
 ```swift
-// Configure API key in your app
-let apiKey = "your-fdc-api-key"
-let client = FDCProxyClient(apiKey: apiKey)
+// No API key required - uses proxy service
+let client = FDCProxyClient()
 ```
 
 ### 2. Basic Usage
@@ -138,10 +155,10 @@ do {
 
 ### Common Issues
 
-#### API Key Problems
-- **Invalid Key**: Check API key format and validity
+#### Proxy Service Issues
+- **Service Availability**: Check calry.org proxy service status
 - **Rate Limiting**: Monitor request frequency and implement backoff
-- **Authentication**: Verify API key is properly configured
+- **Network Connectivity**: Verify proxy service accessibility
 
 #### Network Issues
 - **Connectivity**: Check network connection and firewall settings
@@ -159,8 +176,8 @@ do {
 # Test API connectivity
 curl -I https://api.calry.org
 
-# Check API key validity
-curl -H "Authorization: Bearer YOUR_API_KEY" https://api.calry.org/foods/search?query=apple
+# Test proxy service
+curl https://api.calry.org/v1/health
 
 # Monitor cache performance
 # Check app logs for cache hit/miss ratios
@@ -214,7 +231,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" https://api.calry.org/foods/search?
 
 ### API Resources
 - **FDC API Documentation**: [USDA Food Data Central](https://fdc.nal.usda.gov/api-guide.html)
-- **Rate Limiting**: 1000 requests/hour per API key
+- **Rate Limiting**: 1000 requests/hour through proxy service
 - **Support**: Check API status and maintenance windows
 - **Updates**: Monitor for API changes and new features
 

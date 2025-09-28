@@ -12,19 +12,43 @@ import VisionKit
 
 struct BarcodeScannerView: View {
     @State private var viewModel = BarcodeScannerViewModel()
+    @State private var isInitialized = false
     var onDetect: (String) -> Void = { _ in }
 
     var body: some View {
         Group {
-            if viewModel.isScanningAvailable {
+            if !isInitialized {
+                // Show loading state while checking permissions
+                LoadingView()
+            } else if viewModel.isScanningAvailable {
                 ScannerView(viewModel: viewModel, onDetect: onDetect)
             } else {
                 PermissionView(viewModel: viewModel)
             }
         }
         .onAppear {
-            viewModel.checkPermissions()
+            Task {
+                // Small delay to ensure smooth transition and prevent flash
+                try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+                await viewModel.checkPermissions()
+                isInitialized = true
+            }
         }
+    }
+}
+
+private struct LoadingView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            ProgressView()
+                .scaleEffect(1.5)
+
+            Text("Initializing Scanner...")
+                .font(.headline)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground))
     }
 }
 
@@ -108,7 +132,7 @@ private struct PermissionView: View {
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "camera.fill")
-                .font(.system(size: 60))
+                .font(.system(size: 50, weight: .light))
                 .foregroundColor(.secondary)
 
             Text("Camera Access Required")

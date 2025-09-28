@@ -23,7 +23,7 @@ echo ""
 # Run tests with network tests enabled
 xcodebuild \
     -scheme "Food Scanner" \
-    -testPlan "FoodScanner-PR" \
+    -testPlan "FoodScanner" \
     -destination "id=$SIMULATOR_ID" \
     -destination-timeout 180 \
     -derivedDataPath ./DerivedData \

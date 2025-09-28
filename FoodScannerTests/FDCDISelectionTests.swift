@@ -28,7 +28,12 @@ struct FDCDISelectionTests {
     func release_defaults_to_proxy() async throws {
         let env = makeEnv(isRelease: true, builtIn: true, override: false)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCProxyClient)
+        #expect(client is FDCCachedClient)
+        guard let cachedClient = client as? FDCCachedClient else {
+            #expect(Bool(false), "Expected FDCCachedClient")
+            return
+        }
+        #expect(cachedClient.underlyingClientType is FDCProxyClient)
     }
 
     @Test("Debug defaults to Mock")
@@ -36,7 +41,12 @@ struct FDCDISelectionTests {
     func debug_defaults_to_mock() async throws {
         let env = makeEnv(isRelease: false, builtIn: false, override: false)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCMock)
+        #expect(client is FDCCachedClient)
+        guard let cachedClient = client as? FDCCachedClient else {
+            #expect(Bool(false), "Expected FDCCachedClient")
+            return
+        }
+        #expect(cachedClient.underlyingClientType is FDCMock)
     }
 
     @Test("Debug runtime override → Proxy")
@@ -44,7 +54,12 @@ struct FDCDISelectionTests {
     func debug_override_forces_proxy() async throws {
         let env = makeEnv(isRelease: false, builtIn: false, override: true)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCProxyClient)
+        #expect(client is FDCCachedClient)
+        guard let cachedClient = client as? FDCCachedClient else {
+            #expect(Bool(false), "Expected FDCCachedClient")
+            return
+        }
+        #expect(cachedClient.underlyingClientType is FDCProxyClient)
     }
 
     @Test("Debug with build flag → Proxy")
@@ -52,7 +67,12 @@ struct FDCDISelectionTests {
     func debug_with_build_flag_uses_proxy() async throws {
         let env = makeEnv(isRelease: false, builtIn: true, override: false)
         let client = FDCClientFactory.make(env: env)
-        #expect(client is FDCProxyClient)
+        #expect(client is FDCCachedClient)
+        guard let cachedClient = client as? FDCCachedClient else {
+            #expect(Bool(false), "Expected FDCCachedClient")
+            return
+        }
+        #expect(cachedClient.underlyingClientType is FDCProxyClient)
     }
 
     // Optional: compact parameterized sweep over a few combos.
@@ -98,7 +118,12 @@ struct FDCDISelectionTests {
             override: testCase.override,
         )
         let client = FDCClientFactory.make(env: env)
-        let isProxy = client is FDCProxyClient
+        #expect(client is FDCCachedClient)
+        guard let cachedClient = client as? FDCCachedClient else {
+            #expect(Bool(false), "Expected FDCCachedClient")
+            return
+        }
+        let isProxy = cachedClient.underlyingClientType is FDCProxyClient
         #expect(isProxy == testCase.expectedProxy)
     }
 }
