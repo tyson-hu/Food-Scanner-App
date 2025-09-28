@@ -10,7 +10,7 @@
 --wrapcollections before-first
 
 --stripunusedargs closure-only
---trailingcommas always
+--trailingcommas never
 --importgrouping alphabetized
 
 --disable wrapMultilineStatementBraces

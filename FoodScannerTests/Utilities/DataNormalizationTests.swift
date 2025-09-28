@@ -140,7 +140,7 @@ struct DataNormalizationTests {
     func testCombineBrandNames() async throws {
         #expect(
             DataNormalization.combineBrandNames(owner: "Coca-Cola Company", name: "Coca-Cola") ==
-                "Coca-Cola (Coca-Cola Company)",
+                "Coca-Cola (Coca-Cola Company)"
         )
         #expect(DataNormalization.combineBrandNames(owner: "Coca-Cola Company", name: nil) == "Coca-Cola Company")
         #expect(DataNormalization.combineBrandNames(owner: nil, name: "Coca-Cola") == "Coca-Cola")
@@ -172,7 +172,7 @@ struct DataNormalizationTests {
     func testNormalizeIngredients() async throws {
         #expect(
             DataNormalization.normalizeIngredients("  Water, Sugar, Natural Flavors  ") ==
-                "Water, Sugar, Natural Flavors",
+                "Water, Sugar, Natural Flavors"
         )
         #expect(DataNormalization.normalizeIngredients("") == nil)
         #expect(DataNormalization.normalizeIngredients(nil) == nil)

@@ -32,7 +32,7 @@ struct FDCProxyClientTests {
                 numberOfResultsPerPage: 25,
                 pageSize: 25,
                 requireAllWords: false,
-                foodTypes: [],
+                foodTypes: []
             ),
             foods: [
                 ProxyFoodItem(
@@ -61,10 +61,10 @@ struct FDCProxyClientTests {
                     foodMeasures: nil,
                     foodAttributes: nil,
                     foodAttributeTypes: nil,
-                    foodVersionIds: nil,
-                ),
+                    foodVersionIds: nil
+                )
             ],
-            aggregations: nil,
+            aggregations: nil
         )
 
         do {
@@ -81,7 +81,7 @@ struct FDCProxyClientTests {
             url: url,
             statusCode: 200,
             httpVersion: nil,
-            headerFields: nil,
+            headerFields: nil
         )
 
         // When
@@ -206,10 +206,10 @@ struct FDCProxyClientTests {
                 numberOfResultsPerPage: 25,
                 pageSize: 25,
                 requireAllWords: false,
-                foodTypes: [],
+                foodTypes: []
             ),
             foods: [],
-            aggregations: nil,
+            aggregations: nil
         )
 
         do {
@@ -226,7 +226,7 @@ struct FDCProxyClientTests {
             url: url,
             statusCode: 200,
             httpVersion: nil,
-            headerFields: nil,
+            headerFields: nil
         )
 
         // Simulate first failure, then success
@@ -285,7 +285,7 @@ struct FDCProxyClientTests {
             url: url,
             statusCode: 200,
             httpVersion: nil,
-            headerFields: nil,
+            headerFields: nil
         )
 
         // When/Then
@@ -381,7 +381,7 @@ struct FDCProxyClientTests {
                 numberOfResultsPerPage: 25,
                 pageSize: 25,
                 requireAllWords: false,
-                foodTypes: [],
+                foodTypes: []
             ),
             foods: [
                 ProxyFoodItem(
@@ -410,10 +410,10 @@ struct FDCProxyClientTests {
                     foodMeasures: nil,
                     foodAttributes: nil,
                     foodAttributeTypes: nil,
-                    foodVersionIds: nil,
-                ),
+                    foodVersionIds: nil
+                )
             ],
-            aggregations: nil,
+            aggregations: nil
         )
 
         do {
@@ -430,7 +430,7 @@ struct FDCProxyClientTests {
             url: url,
             statusCode: 200,
             httpVersion: nil,
-            headerFields: nil,
+            headerFields: nil
         )
 
         // When
@@ -474,10 +474,10 @@ struct FDCProxyClientTests {
                 numberOfResultsPerPage: 25,
                 pageSize: 25,
                 requireAllWords: false,
-                foodTypes: [],
+                foodTypes: []
             ),
             foods: [],
-            aggregations: nil,
+            aggregations: nil
         )
 
         do {
@@ -494,7 +494,7 @@ struct FDCProxyClientTests {
             url: url,
             statusCode: 200,
             httpVersion: nil,
-            headerFields: nil,
+            headerFields: nil
         )
 
         // When

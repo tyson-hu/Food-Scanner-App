@@ -88,7 +88,7 @@ final class BarcodeScannerViewModel {
         notificationObserver = NotificationCenter.default.addObserver(
             forName: .barcodeScanned,
             object: nil,
-            queue: .main,
+            queue: .main
         ) { [weak self] notification in
             print("🔔 BarcodeScannerViewModel: Received barcode notification")
             guard let self,

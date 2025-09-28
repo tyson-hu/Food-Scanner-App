@@ -53,7 +53,7 @@ struct AddFoodSummaryView: View {
                         Stepper(
                             value: $bindableViewModel.servingMultiplier,
                             in: 0.25 ... 10.0,
-                            step: 0.25,
+                            step: 0.25
                         ) {
                             Text("Serving: \(String(format: "%.2f", bindableViewModel.servingMultiplier))×")
                         }
@@ -75,7 +75,7 @@ struct AddFoodSummaryView: View {
                             if let amount = serving.amount {
                                 InfoRow(
                                     label: "Amount",
-                                    value: "\(String(format: "%.1f", amount)) \(serving.unit ?? "")",
+                                    value: "\(String(format: "%.1f", amount)) \(serving.unit ?? "")"
                                 )
                             }
                             if let household = serving.household {
@@ -90,7 +90,7 @@ struct AddFoodSummaryView: View {
                             ForEach(foodCard.nutrients.prefix(5), id: \.name) { nutrient in
                                 NutrientSummaryRow(
                                     nutrient: nutrient,
-                                    multiplier: bindableViewModel.servingMultiplier,
+                                    multiplier: bindableViewModel.servingMultiplier
                                 )
                             }
                         }
@@ -109,7 +109,7 @@ struct AddFoodSummaryView: View {
                             // Convert to FoodEntry for logging
                             let entry = FoodEntry.from(
                                 foodCard: foodCard,
-                                multiplier: bindableViewModel.servingMultiplier,
+                                multiplier: bindableViewModel.servingMultiplier
                             )
                             onLog(entry)
                         }
@@ -193,7 +193,7 @@ struct NutrientSummaryRow: View {
     AddFoodSummaryView(
         gid: "fdc:123456",
         onLog: { _ in },
-        onShowDetails: { _ in },
+        onShowDetails: { _ in }
     )
     .environment(\.appEnv, .preview)
 }

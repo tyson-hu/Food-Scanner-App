@@ -95,7 +95,7 @@ struct AddFoodHomeView: View {
                             // Navigate back to barcode scanner
                             mode = .barcode
                             path.removeAll()
-                        },
+                        }
                     )
                 }
             }

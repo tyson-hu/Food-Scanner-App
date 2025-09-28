@@ -28,7 +28,7 @@ enum FDCClientFactory {
         // Always wrap in FDCCachedClient
         return FDCCachedClient(
             underlyingClient: underlyingClient,
-            cacheService: FDCCacheService(),
+            cacheService: FDCCacheService()
         )
     }
 
@@ -37,12 +37,12 @@ enum FDCClientFactory {
     static func makeProxyClient(
         baseURL: URL? = nil,
         authHeader: String? = nil,
-        authValue: String? = nil,
+        authValue: String? = nil
     ) -> FDCClient {
         FDCProxyClient(
             baseURL: baseURL,
             authHeader: authHeader,
-            authValue: authValue,
+            authValue: authValue
         )
     }
 
