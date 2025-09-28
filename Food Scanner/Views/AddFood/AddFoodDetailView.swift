@@ -47,6 +47,18 @@ struct AddFoodDetailView: View {
             case let .loaded(foodDetails):
                 loadedFoodAuthoritativeDetailView(foodDetails: foodDetails, bindableViewModel: $bindableViewModel)
 
+            case let .unsupported(source):
+                UnsupportedProductView(
+                    gid: gid,
+                    source: source,
+                    onSearchSimilar: {
+                        // Navigate back to search - this will be handled by the parent navigation
+                    },
+                    onTryDifferentBarcode: {
+                        // Navigate back to barcode scanner - this will be handled by the parent navigation
+                    },
+                )
+
             case let .error(message):
                 errorView(message: message, viewModel: viewModel)
             }

@@ -30,7 +30,7 @@ struct BarcodeScannerViewModelTests {
 
         // Since we can't easily mock AVCaptureDevice.authorizationStatus in tests,
         // we'll test the error handling path instead
-        viewModel.checkPermissions()
+        await viewModel.checkPermissions()
 
         // The actual permission status depends on the test environment
         // This test verifies the method doesn't crash

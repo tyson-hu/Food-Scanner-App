@@ -2,9 +2,156 @@
 
 ## Overview
 
-This document describes the enhanced FDC API integration implemented in M2-03, including barcode scanning functionality, comprehensive schema coverage, pagination, caching, and error handling.
+This document describes the enhanced FDC API integration implemented in M2-03, including barcode scanning functionality, comprehensive schema coverage, pagination, caching, error handling, and multi-source data support including DSLD (Dietary Supplement Label Database) integration.
+
+## Multi-Source Data Support
+
+The Food Scanner app now supports multiple data sources through a unified proxy API, providing comprehensive food and supplement information from various authoritative sources.
+
+### Supported Data Sources
+
+1. **FDC (Food Data Central)** - USDA's comprehensive food database
+   - Generic foods and branded products
+   - Complete nutritional information
+   - Serving size and household measurements
+
+2. **DSLD (Dietary Supplement Label Database)** - NIH's supplement database
+   - Dietary supplements and vitamins
+   - Supplement-specific nutritional data
+   - Brand and manufacturer information
+
+3. **DSID (Dietary Supplement Ingredient Database)** - Future support planned
+4. **OFF (Open Food Facts)** - Community-driven food database
+
+### Data Source Identification
+
+All food items are identified using Global IDs (GIDs) with source prefixes:
+- `fdc:12345` - FDC food item
+- `dsld:67890` - DSLD supplement item
+- `dsid:11111` - DSID supplement ingredient (future)
+- `off:22222` - Open Food Facts item (future)
+
+### Product Support Status
+
+The app automatically detects and handles different product types:
+- **Supported**: FDC and DSLD items with detailed nutrition information
+- **Unsupported**: DSID and OFF items (limited nutrition data)
+- **Unknown**: Items with unrecognized source prefixes
 
 ## API Endpoints
+
+### Proxy API Endpoints
+
+The app uses a unified proxy API that aggregates data from multiple sources:
+
+#### Search Foods (`/v1/search`)
+
+**Purpose**: Search across multiple data sources (FDC, DSLD) using text queries.
+
+**Parameters**:
+- `q` (string, required): Search term (minimum 2 characters)
+- `limit` (integer): Number of results per page (default: 20, max: 50)
+
+**Example Request**:
+```
+GET https://api.calry.org/v1/search?q=vitamin&limit=20
+```
+
+**Response Schema**:
+```json
+{
+  "query": "vitamin",
+  "generic": [
+    {
+      "id": "fdc:170881",
+      "kind": "generic_food",
+      "description": "Milk, chocolate, lowfat, with added vitamin A and vitamin D",
+      "brand": null,
+      "code": null,
+      "serving": null,
+      "nutrients": [],
+      "provenance": {
+        "source": "fdc",
+        "id": "170881",
+        "fetchedAt": "2025-09-27T23:26:46.972Z"
+      }
+    }
+  ],
+  "branded": [
+    {
+      "id": "dsld:207381",
+      "kind": "supplement",
+      "description": "Active Vitamin Pack",
+      "brand": "Kirkland Signature",
+      "code": null,
+      "serving": null,
+      "nutrients": [],
+      "provenance": {
+        "source": "dsld",
+        "id": "207381",
+        "fetchedAt": "2025-09-27T23:26:48.663Z"
+      }
+    }
+  ]
+}
+```
+
+#### Get Food Details (`/v1/food/{gid}`)
+
+**Purpose**: Get detailed information for a specific food or supplement item.
+
+**Parameters**:
+- `gid` (string, required): Global ID with source prefix (e.g., `fdc:12345`, `dsld:67890`)
+
+**Example Request**:
+```
+GET https://api.calry.org/v1/food/dsld:207381
+```
+
+**Response Schema**:
+```json
+{
+  "id": "dsld:207381",
+  "kind": "supplement",
+  "description": "Active Vitamin Pack",
+  "brand": "Kirkland Signature",
+  "code": null,
+  "serving": {
+    "amount": 1.0,
+    "unit": "packet",
+    "household": "1 packet"
+  },
+  "nutrients": [
+    {
+      "name": "Vitamin A",
+      "amount": 1000.0,
+      "unit": "μg",
+      "category": "vitamin"
+    }
+  ],
+  "provenance": {
+    "source": "dsld",
+    "id": "207381",
+    "fetchedAt": "2025-09-27T23:26:48.663Z"
+  }
+}
+```
+
+#### Barcode Lookup (`/v1/barcode/{code}`)
+
+**Purpose**: Look up food items by barcode/UPC code.
+
+**Parameters**:
+- `code` (string, required): Barcode/UPC code (8-14 digits)
+
+**Example Request**:
+```
+GET https://api.calry.org/v1/barcode/0031604031121
+```
+
+**Response Schema**: Same as `/v1/food/{gid}`
+
+### Legacy FDC API Endpoints
 
 ### Search Foods (`/foods/search`)
 
@@ -243,6 +390,53 @@ GET https://api.calry.org/food/12345
 - Separate cache for paginated vs. simple search results
 - Automatic cleanup of expired entries
 - LRU eviction when cache size exceeds limit
+
+## DSLD Integration Features
+
+### DSLD Data Validation
+
+The app includes comprehensive validation and debugging for DSLD data:
+
+#### Data Quality Checks
+- **Empty Data Detection**: Identifies when DSLD items return null/empty nutritional data
+- **Invalid ID Detection**: Detects when DSLD IDs are "undefined" or malformed
+- **Response Logging**: Detailed logging of DSLD API responses for debugging
+
+#### Debugging Output
+When DSLD data issues are detected, the app provides detailed logging:
+```
+🔍 DSLD Raw Response for dsld:undefined:
+{"id":"dsld:undefined","kind":"supplement","code":null,"description":null,"brand":null,"serving":null,"nutrients":[],"provenance":{"source":"dsld","id":"undefined","fetchedAt":"2025-09-27T23:18:22.011Z"}}
+
+⚠️ DSLD Warning: Received empty data for dsld:undefined
+   This might indicate the DSLD ID is invalid or the proxy service has an issue
+   Error: DSLD ID is 'undefined' - this suggests a problem with ID generation or passing
+```
+
+#### Error Handling for DSLD
+- **Empty Data**: Shows user-friendly error message when DSLD data is incomplete
+- **Invalid IDs**: Identifies and reports malformed DSLD identifiers
+- **Proxy Issues**: Detects when the proxy service fails to fetch DSLD data
+
+### Product Source Detection
+
+The app automatically determines product support based on the GID prefix:
+
+```swift
+enum ProductSupportStatus {
+    case supported(SourceTag)    // FDC, DSLD - full nutrition data
+    case unsupported(SourceTag?) // DSID, OFF - limited data
+    case unknown                 // Unrecognized source
+}
+```
+
+#### Supported Sources
+- **FDC**: Full nutritional information with serving sizes
+- **DSLD**: Supplement-specific nutritional data with brand information
+
+#### Unsupported Sources
+- **DSID**: Limited nutritional data (future support planned)
+- **OFF**: Community data with variable quality (future support planned)
 
 ## Error Handling
 

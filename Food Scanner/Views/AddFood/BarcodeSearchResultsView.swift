@@ -52,7 +52,7 @@ struct BarcodeSearchResultsView: View {
                 if let food = result {
                     VStack(spacing: 16) {
                         Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 60))
+                            .font(.system(size: 50, weight: .light))
                             .foregroundColor(.green)
 
                         Text("Food Found!")
@@ -75,16 +75,25 @@ struct BarcodeSearchResultsView: View {
                                 .foregroundColor(.secondary)
                         }
 
-                        Button("View Details") {
-                            onSelect(food.id)
+                        VStack(spacing: 8) {
+                            Button("View Details") {
+                                onSelect(food.id)
+                            }
+                            .buttonStyle(.borderedProminent)
+
+                            // Show source information
+                            if let source = ProductSourceDetection.extractSource(from: food.id) {
+                                Text("Source: \(source.rawValue.uppercased())")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
-                        .buttonStyle(.borderedProminent)
                     }
                     .padding()
                 } else {
                     VStack(spacing: 16) {
                         Image(systemName: "barcode.viewfinder")
-                            .font(.system(size: 60))
+                            .font(.system(size: 50, weight: .light))
                             .foregroundColor(.secondary)
 
                         Text("No Food Found")
@@ -112,7 +121,7 @@ struct BarcodeSearchResultsView: View {
             case let .error(message):
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 60))
+                        .font(.system(size: 50, weight: .light))
                         .foregroundColor(.red)
 
                     Text("Search Error")
@@ -168,7 +177,7 @@ final class BarcodeSearchResultsViewModel {
             print("🔍 BarcodeSearchResultsViewModel: Searching for UPC: \(upc)")
             let result = try await client.getFoodByBarcode(code: upc)
             print("📱 BarcodeSearchResultsViewModel: Found result for UPC: \(upc)")
-            await MainActor.run { self.phase = .loaded(result) }
+            phase = .loaded(result)
         } catch {
             print("❌ BarcodeSearchResultsViewModel: Search failed for UPC: \(upc), error: \(error)")
 
@@ -178,7 +187,7 @@ final class BarcodeSearchResultsViewModel {
                 errorMessage = "Search was cancelled. Please try again."
             } else if let fdcError = error as? FDCError, case .noResults = fdcError {
                 // Treat no results as a successful search with no result
-                await MainActor.run { self.phase = .loaded(nil) }
+                phase = .loaded(nil)
                 return
             } else if let fdcError = error as? FDCError, case .networkError = fdcError {
                 errorMessage = "No internet connection. Please check your network and try again."
@@ -188,7 +197,7 @@ final class BarcodeSearchResultsViewModel {
                 errorMessage = error.localizedDescription
             }
 
-            await MainActor.run { self.phase = .error(errorMessage) }
+            phase = .error(errorMessage)
         }
     }
 }

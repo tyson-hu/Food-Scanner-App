@@ -1,6 +1,6 @@
 # API Documentation
 
-This directory contains comprehensive documentation for the Food Scanner app's API integration, focusing on the Food Data Central (FDC) API.
+This directory contains comprehensive documentation for the Food Scanner app's API integration, including Food Data Central (FDC) API and Dietary Supplement Label Database (DSLD) integration.
 
 ## 📁 API Documentation Structure
 
@@ -8,12 +8,16 @@ This directory contains comprehensive documentation for the Food Scanner app's A
 api/
 ├── README.md                    # This file - API documentation index
 ├── FDC API.yaml                # OpenAPI 3.0 specification for FDC API
-└── M2-03_API_DOCUMENTATION.md  # Detailed API integration guide
+├── M2-03_API_DOCUMENTATION.md  # Detailed API integration guide
+└── DSLD_INTEGRATION.md         # DSLD integration guide
 ```
 
-## 🌐 Food Data Central (FDC) API
+## 🌐 Multi-Source API Integration
 
-The Food Scanner app integrates with the **Food Data Central API** to provide comprehensive food and nutrition information.
+The Food Scanner app integrates with multiple data sources through a unified proxy API to provide comprehensive food and supplement information.
+
+### Food Data Central (FDC) API
+The **Food Data Central API** provides comprehensive food and nutrition information.
 
 ### API Overview
 - **Provider**: USDA Food Data Central
@@ -22,12 +26,17 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 - **Rate Limits**: 1000 requests/hour
 - **Data Coverage**: 300,000+ food items with detailed nutrition information
 
+### Dietary Supplement Label Database (DSLD) API
+The **DSLD API** provides comprehensive supplement and vitamin information.
+
 ### Key Features
-- ✅ **Food Search**: Search by name, UPC, or barcode
-- ✅ **Detailed Information**: Complete nutrition facts and food details
-- ✅ **Nutrient Data**: Comprehensive nutritional breakdown
+- ✅ **Multi-Source Search**: Search across FDC and DSLD databases
+- ✅ **Food & Supplement Data**: Complete nutrition facts for foods and supplements
+- ✅ **Detailed Information**: Comprehensive nutritional breakdown
 - ✅ **Barcode Support**: UPC and EAN barcode lookup
+- ✅ **Product Source Detection**: Automatic detection of supported products
 - ✅ **Caching**: Smart caching for performance optimization
+- ✅ **DSLD Integration**: Full support for dietary supplements
 
 ## 📋 Documentation Files
 
@@ -46,11 +55,20 @@ The Food Scanner app integrates with the **Food Data Central API** to provide co
 
 ### [API Integration Guide](M2-03_API_DOCUMENTATION.md)
 **Comprehensive integration guide** for developers:
+- **Multi-source data support** including FDC and DSLD
 - **Proxy service setup** without authentication
 - **Client implementation** using FDCProxyClient
 - **Error handling** strategies and best practices
 - **Caching implementation** for performance optimization
 - **Testing approaches** including mocking and integration tests
+
+### [DSLD Integration Guide](DSLD_INTEGRATION.md)
+**Detailed DSLD integration guide** for supplement support:
+- **DSLD API integration** with NIH's supplement database
+- **Data validation and debugging** for DSLD data quality
+- **Error handling** for supplement-specific issues
+- **Product source detection** and support status
+- **Testing and troubleshooting** for DSLD integration
 
 ## 🚀 Quick Start
 

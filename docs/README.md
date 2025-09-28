@@ -14,7 +14,8 @@ docs/
 ├── api/                                # 🌐 API Documentation
 │   ├── README.md                       # API documentation index
 │   ├── FDC API.yaml                   # OpenAPI 3.0 specification
-│   └── M2-03_API_DOCUMENTATION.md     # Detailed integration guide
+│   ├── M2-03_API_DOCUMENTATION.md     # Detailed integration guide
+│   └── DSLD_INTEGRATION.md            # DSLD integration guide
 ├── testing/                            # 🧪 Testing Documentation
 │   └── INTEGRATION_TESTS.md           # Integration testing guide
 └── development/                        # 💻 Development Documentation
@@ -25,8 +26,9 @@ docs/
 
 ### For Developers
 1. **Local Development**: See [Testing Documentation](testing/INTEGRATION_TESTS.md) for running tests
-2. **API Integration**: See [API Documentation](api/M2-03_API_DOCUMENTATION.md) for FDC API usage
-3. **CI Configuration**: See [CI Documentation](ci/CI_OFFLINE_MODE.md) for build system
+2. **API Integration**: See [API Documentation](api/M2-03_API_DOCUMENTATION.md) for multi-source API usage
+3. **DSLD Integration**: See [DSLD Integration Guide](api/DSLD_INTEGRATION.md) for supplement support
+4. **CI Configuration**: See [CI Documentation](ci/CI_OFFLINE_MODE.md) for build system
 
 ### For CI/CD
 1. **Build System**: See [CI Improvements](ci/CI_IMPROVEMENTS.md) for build reliability
@@ -65,12 +67,21 @@ OpenAPI 3.0 specification for the Food Data Central API:
 - **Rate Limits**: Usage guidelines and restrictions
 
 #### [API Integration Guide](api/M2-03_API_DOCUMENTATION.md)
-Comprehensive guide to FDC API integration:
+Comprehensive guide to multi-source API integration:
+- **Multi-Source Support**: FDC and DSLD data sources
 - **Proxy Integration**: Uses calry.org proxy service without authentication
 - **Client Implementation**: FDCProxyClient usage
 - **Error Handling**: Comprehensive error management
 - **Caching**: Performance optimization strategies
 - **Testing**: Mock and integration testing approaches
+
+#### [DSLD Integration Guide](api/DSLD_INTEGRATION.md)
+Detailed guide to DSLD supplement integration:
+- **DSLD API Integration**: NIH's supplement database support
+- **Data Validation**: Comprehensive DSLD data quality checks
+- **Error Handling**: Supplement-specific error management
+- **Debugging Tools**: DSLD response logging and validation
+- **Testing**: DSLD integration testing and troubleshooting
 
 ### 🧪 Testing Documentation
 
@@ -92,7 +103,10 @@ Complete guide to integration testing:
 - ✅ **Automatic Recovery**: Stuck build detection and recovery
 
 ### API Integration
+- ✅ **Multi-Source Support**: FDC and DSLD data sources
 - ✅ **FDC API Integration**: Complete Food Data Central API support
+- ✅ **DSLD Integration**: Full Dietary Supplement Label Database support
+- ✅ **Product Source Detection**: Automatic detection of supported products
 - ✅ **Smart Caching**: 7-day TTL with LRU eviction
 - ✅ **Error Handling**: Professional-grade error management
 - ✅ **Mock Testing**: Comprehensive test coverage

@@ -36,18 +36,29 @@ struct FDCProxyClient: FDCClient {
 
     init(
         baseURL: URL? = nil,
-        session: URLSessionProtocol = URLSession.shared,
+        session: URLSessionProtocol? = nil,
         authHeader: String? = nil,
         authValue: String? = nil,
         maxRetries: Int = 3,
         baseDelay: TimeInterval = 1.0,
     ) {
         self.baseURL = baseURL ?? Self.defaultBaseURL
-        self.session = session
+        self.session = session ?? Self.createDefaultSession()
         self.authHeader = authHeader
         self.authValue = authValue
         self.maxRetries = maxRetries
         self.baseDelay = baseDelay
+    }
+
+    /// Creates a URLSession with configuration that avoids proxy issues
+    private static func createDefaultSession() -> URLSession {
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 60
+        // Disable proxy to avoid PAC evaluation errors
+        config.connectionProxyDictionary = [:]
+        return URLSession(configuration: config)
     }
 
     // MARK: - New API Methods (v1 Worker API)
@@ -124,7 +135,22 @@ struct FDCProxyClient: FDCClient {
                 throw FDCError.httpError(httpResponse.statusCode)
             }
 
-            return try JSONDecoder().decode(FoodMinimalCard.self, from: data)
+            // Debug: Log raw response for barcode lookups
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("🔍 Barcode Raw Response for \(code):")
+                print(jsonString)
+            }
+
+            do {
+                return try JSONDecoder().decode(FoodMinimalCard.self, from: data)
+            } catch {
+                // Debug: Log decoding error for barcode data
+                print("❌ Barcode Decoding Error for \(code): \(error)")
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("Raw JSON: \(jsonString)")
+                }
+                throw error
+            }
         }
     }
 
@@ -146,7 +172,16 @@ struct FDCProxyClient: FDCClient {
                 throw FDCError.httpError(httpResponse.statusCode)
             }
 
-            return try JSONDecoder().decode(FoodMinimalCard.self, from: data)
+            logDSLDResponseIfNeeded(gid: gid, data: data)
+
+            do {
+                let foodCard = try JSONDecoder().decode(FoodMinimalCard.self, from: data)
+                validateDSLDDataIfNeeded(gid: gid, foodCard: foodCard)
+                return foodCard
+            } catch {
+                logDSLDDecodingErrorIfNeeded(gid: gid, error: error, data: data)
+                throw error
+            }
         }
     }
 
@@ -275,6 +310,12 @@ struct FDCProxyClient: FDCClient {
         ))
     }
 
+    /// Check if network is available before making requests
+    private func isNetworkAvailable() -> Bool {
+        // Simple check - in a real app you might want to use Network framework
+        true // For now, let the URLSession handle connectivity
+    }
+
     /// Determine if an FDCError should be retried
     private func shouldRetryFDCError(_ error: FDCError, attempt: Int) -> Bool {
         // If this was the last attempt, don't retry
@@ -390,5 +431,36 @@ struct FDCProxyClient: FDCClient {
         }
 
         return request
+    }
+
+    // MARK: - DSLD Debugging Helpers
+
+    private func logDSLDResponseIfNeeded(gid: String, data: Data) {
+        guard gid.hasPrefix("dsld:") else { return }
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("🔍 DSLD Raw Response for \(gid):")
+            print(jsonString)
+        }
+    }
+
+    private func validateDSLDDataIfNeeded(gid: String, foodCard: FoodMinimalCard) {
+        guard gid.hasPrefix("dsld:") else { return }
+
+        if foodCard.description == nil, foodCard.brand == nil, foodCard.nutrients.isEmpty {
+            print("⚠️ DSLD Warning: Received empty data for \(gid)")
+            print("   This might indicate the DSLD ID is invalid or the proxy service has an issue")
+
+            if gid == "dsld:undefined" {
+                print("   Error: DSLD ID is 'undefined' - this suggests a problem with ID generation or passing")
+            }
+        }
+    }
+
+    private func logDSLDDecodingErrorIfNeeded(gid: String, error: Error, data: Data) {
+        guard gid.hasPrefix("dsld:") else { return }
+        print("❌ DSLD Decoding Error for \(gid): \(error)")
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Raw JSON: \(jsonString)")
+        }
     }
 }

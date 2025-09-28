@@ -30,6 +30,35 @@ This guide provides comprehensive information for developers working on the Food
    - Select iPhone simulator or device
    - Press Cmd+R to build and run
 
+## 🌐 Multi-Source Data Support
+
+The Food Scanner app now supports multiple data sources through a unified proxy API:
+
+### Supported Data Sources
+- **FDC (Food Data Central)**: USDA's comprehensive food database
+- **DSLD (Dietary Supplement Label Database)**: NIH's supplement database
+- **DSID (Dietary Supplement Ingredient Database)**: Future support planned
+- **OFF (Open Food Facts)**: Community-driven food database (future support)
+
+### Global ID (GID) System
+All food items are identified using GIDs with source prefixes:
+- `fdc:12345` - FDC food item
+- `dsld:67890` - DSLD supplement item
+- `dsid:11111` - DSID supplement ingredient (future)
+- `off:22222` - Open Food Facts item (future)
+
+### Product Support Detection
+The app automatically determines product support status:
+- **Supported**: FDC and DSLD items with detailed nutrition information
+- **Unsupported**: DSID and OFF items with limited data
+- **Unknown**: Items with unrecognized source prefixes
+
+### DSLD Integration Features
+- **Data Validation**: Comprehensive validation for DSLD data quality
+- **Debugging Tools**: Detailed logging for DSLD API responses
+- **Error Handling**: User-friendly messages for empty or invalid DSLD data
+- **Source Detection**: Automatic identification of DSLD products
+
 ## 🏗️ Project Structure
 
 ```
@@ -73,7 +102,8 @@ Food Scanner/
 │   ├── Config.Debug.xcconfig # Debug configuration
 │   └── Config.Release.xcconfig # Release configuration
 └── Utilities/                 # Utility functions
-    └── DataNormalization.swift # Data processing
+    ├── DataNormalization.swift # Data processing
+    └── ProductSourceDetection.swift # Multi-source product detection
 ```
 
 ## 🧪 Testing
