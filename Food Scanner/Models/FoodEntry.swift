@@ -32,7 +32,7 @@ final class FoodEntry {
         calories: Double,
         protein: Double,
         fat: Double,
-        carbs: Double,
+        carbs: Double
     ) {
         self.name = name
         self.brand = brand
@@ -52,7 +52,7 @@ extension FoodEntry {
     static func from(
         details foodDetails: FDCFoodDetails,
         multiplier servingMultiplier: Double,
-        at date: Date = Date(),
+        at date: Date = Date()
     ) -> FoodEntry {
         FoodEntry(
             name: foodDetails.name,
@@ -63,7 +63,7 @@ extension FoodEntry {
             calories: Double(foodDetails.calories) * servingMultiplier,
             protein: Double(foodDetails.protein) * servingMultiplier,
             fat: Double(foodDetails.fat) * servingMultiplier,
-            carbs: Double(foodDetails.carbs) * servingMultiplier,
+            carbs: Double(foodDetails.carbs) * servingMultiplier
         ).withDate(date)
     }
 
@@ -72,7 +72,7 @@ extension FoodEntry {
     static func from(
         foodCard: FoodMinimalCard,
         multiplier servingMultiplier: Double,
-        at date: Date = Date(),
+        at date: Date = Date()
     ) -> FoodEntry {
         // Extract FDC ID from GID if possible
         let fdcId: Int? = {
@@ -89,7 +89,7 @@ extension FoodEntry {
         let carbs = calculateNutrientValue(
             nutrients: foodCard.nutrients,
             name: "Carbohydrate, by difference",
-            unit: "g",
+            unit: "g"
         ) ?? 0.0
 
         return FoodEntry(
@@ -101,14 +101,14 @@ extension FoodEntry {
             calories: calories * servingMultiplier,
             protein: protein * servingMultiplier,
             fat: fat * servingMultiplier,
-            carbs: carbs * servingMultiplier,
+            carbs: carbs * servingMultiplier
         ).withDate(date)
     }
 
     static func from(
         foodDetails: FoodAuthoritativeDetail,
         multiplier servingMultiplier: Double,
-        at date: Date = Date(),
+        at date: Date = Date()
     ) -> FoodEntry {
         // Extract FDC ID from GID if possible
         let fdcId: Int? = {
@@ -125,7 +125,7 @@ extension FoodEntry {
         let carbs = calculateNutrientValue(
             nutrients: foodDetails.nutrients,
             name: "Carbohydrate, by difference",
-            unit: "g",
+            unit: "g"
         ) ?? 0.0
 
         return FoodEntry(
@@ -137,7 +137,7 @@ extension FoodEntry {
             calories: calories * servingMultiplier,
             protein: protein * servingMultiplier,
             fat: fat * servingMultiplier,
-            carbs: carbs * servingMultiplier,
+            carbs: carbs * servingMultiplier
         ).withDate(date)
     }
 

@@ -45,7 +45,7 @@ class BaseUITestCase: XCTestCase {
                     "While Using the App", "Allow While Using App", "Allow Once",
                     "Keep Only While Using",
                     "Allow All Photos", "Allow Access to All Photos",
-                    "Allow Paste", "Connect", "Join", "Continue",
+                    "Allow Paste", "Connect", "Join", "Continue"
                 ]
                 for title in buttons where alert.buttons[title].exists {
                     alert.buttons[title].tap()

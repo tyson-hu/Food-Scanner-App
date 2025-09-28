@@ -41,7 +41,7 @@ final class AddFoodSummaryViewModel {
             print("  Code: \(foodCard.code ?? "nil")")
             if let serving = foodCard.serving {
                 print(
-                    "  Serving: amount=\(serving.amount ?? 0), unit=\(serving.unit ?? "nil"), household=\(serving.household ?? "nil")",
+                    "  Serving: amount=\(serving.amount ?? 0), unit=\(serving.unit ?? "nil"), household=\(serving.household ?? "nil")"
                 )
             } else {
                 print("  Serving: nil")
@@ -54,7 +54,7 @@ final class AddFoodSummaryViewModel {
                 print("⚠️ DSLD data is empty - this might be a proxy service issue")
                 phase =
                     .error(
-                        "DSLD data is currently unavailable. This might be a temporary issue with the supplement database.",
+                        "DSLD data is currently unavailable. This might be a temporary issue with the supplement database."
                     )
             } else {
                 phase = .loaded(foodCard)

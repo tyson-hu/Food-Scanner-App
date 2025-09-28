@@ -23,7 +23,7 @@ struct AddFoodSearchViewModelTests {
         #expect(viewModel.phase == .results)
         #expect(
             viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
-                .contains(where: { $0.id == "fdc:1234" }),
+                .contains(where: { $0.id == "fdc:1234" })
         )
     }
 

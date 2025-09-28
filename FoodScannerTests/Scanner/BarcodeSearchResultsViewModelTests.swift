@@ -38,7 +38,7 @@ struct BarcodeSearchResultsViewModelTests {
             brand: "Test Brand",
             serving: FoodServing(amount: 100, unit: "g", household: "1 serving"),
             nutrients: [],
-            provenance: FoodProvenance(source: .fdc, id: "123456", fetchedAt: "2025-09-26T21:00:00Z"),
+            provenance: FoodProvenance(source: .fdc, id: "123456", fetchedAt: "2025-09-26T21:00:00Z")
         )
         mockClient.mockBarcodeResult = mockFood
 
@@ -274,7 +274,7 @@ class MockFDCClient: @unchecked Sendable, FDCClient {
             totalHits: mockSearchResult.count,
             currentPage: page,
             totalPages: 1,
-            pageSize: pageSize,
+            pageSize: pageSize
         )
     }
 

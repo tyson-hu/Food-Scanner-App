@@ -62,14 +62,14 @@ private struct ScannerView: View {
             // Camera view
             DataScannerViewControllerRepresentable(
                 recognizedDataTypes: [
-                    .barcode(symbologies: [.upce, .code128, .code39, .ean13, .ean8, .pdf417, .qr, .aztec]),
+                    .barcode(symbologies: [.upce, .code128, .code39, .ean13, .ean8, .pdf417, .qr, .aztec])
                 ],
                 recognizesMultipleItems: false,
                 isHighFrameRateTrackingEnabled: true,
                 isPinchToZoomEnabled: true,
                 isGuidanceEnabled: true,
                 isHighlightingEnabled: true,
-                isScannerReady: $isScannerReady,
+                isScannerReady: $isScannerReady
             )
             .ignoresSafeArea()
 
@@ -94,7 +94,7 @@ private struct ScannerView: View {
         }
         .alert("Scan Error", isPresented: Binding(
             get: { viewModel.showErrorAlert },
-            set: { viewModel.showErrorAlert = $0 },
+            set: { viewModel.showErrorAlert = $0 }
         )) {
             Button("OK") {}
         } message: {
@@ -171,7 +171,7 @@ private struct DataScannerViewControllerRepresentable: UIViewControllerRepresent
             isHighFrameRateTrackingEnabled: isHighFrameRateTrackingEnabled,
             isPinchToZoomEnabled: isPinchToZoomEnabled,
             isGuidanceEnabled: isGuidanceEnabled,
-            isHighlightingEnabled: isHighlightingEnabled,
+            isHighlightingEnabled: isHighlightingEnabled
         )
 
         scanner.delegate = context.coordinator
@@ -236,7 +236,7 @@ private struct DataScannerViewControllerRepresentable: UIViewControllerRepresent
         func dataScanner(
             _ dataScanner: DataScannerViewController,
             didAdd addedItems: [RecognizedItem],
-            allItems: [RecognizedItem],
+            allItems: [RecognizedItem]
         ) {
             print("🔍 BarcodeScanner: didAdd called with \(addedItems.count) items")
             // Handle newly recognized items
@@ -249,7 +249,7 @@ private struct DataScannerViewControllerRepresentable: UIViewControllerRepresent
                     NotificationCenter.default.post(
                         name: .barcodeScanned,
                         object: nil,
-                        userInfo: ["barcode": barcodeValue],
+                        userInfo: ["barcode": barcodeValue]
                     )
                 }
             }
@@ -258,7 +258,7 @@ private struct DataScannerViewControllerRepresentable: UIViewControllerRepresent
         func dataScanner(
             _ dataScanner: DataScannerViewController,
             didRemove removedItems: [RecognizedItem],
-            allItems: [RecognizedItem],
+            allItems: [RecognizedItem]
         ) {
             // Handle removed items if needed
         }
@@ -266,7 +266,7 @@ private struct DataScannerViewControllerRepresentable: UIViewControllerRepresent
         func dataScanner(
             _ dataScanner: DataScannerViewController,
             didUpdate updatedItems: [RecognizedItem],
-            allItems: [RecognizedItem],
+            allItems: [RecognizedItem]
         ) {
             // Handle updated items if needed
         }

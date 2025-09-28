@@ -61,7 +61,7 @@ struct AddFoodSearchView: View {
                 ContentUnavailableView(
                     "Search foods",
                     systemImage: "magnifyingglass",
-                    description: Text("Try \"yogurt\", \"rice\", or a brand name."),
+                    description: Text("Try \"yogurt\", \"rice\", or a brand name.")
                 )
             case .searching:
                 ProgressView().controlSize(.large)
@@ -70,14 +70,14 @@ struct AddFoodSearchView: View {
                     ContentUnavailableView(
                         "No matches",
                         systemImage: "exclamationmark.magnifyingglass",
-                        description: Text("Refine your terms."),
+                        description: Text("Refine your terms.")
                     )
                 }
             case let .error(msg):
                 ContentUnavailableView(
                     "Search failed",
                     systemImage: "exclamationmark.triangle",
-                    description: Text(msg),
+                    description: Text(msg)
                 )
             }
         }

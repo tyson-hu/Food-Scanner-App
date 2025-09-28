@@ -18,7 +18,7 @@ struct UnsupportedProductView: View {
         gid: String,
         source: SourceTag?,
         onSearchSimilar: (() -> Void)? = nil,
-        onTryDifferentBarcode: (() -> Void)? = nil,
+        onTryDifferentBarcode: (() -> Void)? = nil
     ) {
         self.gid = gid
         self.source = source
@@ -46,23 +46,23 @@ struct UnsupportedProductView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     QARow(
                         question: "Why can't I see detailed nutrition information?",
-                        answer: "This product is not from our supported databases (FDC or DSLD). We only provide detailed nutrition information for products from these official sources.",
+                        answer: "This product is not from our supported databases (FDC or DSLD). We only provide detailed nutrition information for products from these official sources."
                     )
 
                     QARow(
                         question: "What databases do we support?",
-                        answer: "• FDC (FoodData Central) - USDA's comprehensive food database\n• DSLD (Dietary Supplement Label Database) - NIH's supplement database",
+                        answer: "• FDC (FoodData Central) - USDA's comprehensive food database\n• DSLD (Dietary Supplement Label Database) - NIH's supplement database"
                     )
 
                     QARow(
                         question: "What can I do instead?",
-                        answer: "• Search for a similar product by name\n• Look for the product in our supported databases\n• Add the product manually with basic information",
+                        answer: "• Search for a similar product by name\n• Look for the product in our supported databases\n• Add the product manually with basic information"
                     )
 
                     if let source {
                         QARow(
                             question: "Product source detected:",
-                            answer: "\(source.rawValue.uppercased()) - This source is not supported for detailed nutrition information.",
+                            answer: "\(source.rawValue.uppercased()) - This source is not supported for detailed nutrition information."
                         )
                     }
                 }
@@ -119,7 +119,7 @@ struct QARow: View {
     NavigationView {
         UnsupportedProductView(
             gid: "off:123456",
-            source: .off,
+            source: .off
         )
         .navigationTitle("Product Details")
     }

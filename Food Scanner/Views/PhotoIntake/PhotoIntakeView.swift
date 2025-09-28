@@ -14,7 +14,7 @@ struct PhotoIntakeView: View {
         ContentUnavailableView(
             "Photo recognition coming soon",
             systemImage: "camera.macro",
-            description: Text("Stub for M1. We'll add Vision/CoreML later."),
+            description: Text("Stub for M1. We'll add Vision/CoreML later.")
         )
         .safeAreaInset(edge: .bottom) {
             Button("Simulate Match (fdcId 67890)") { onRecognize("fdc:67890") }
