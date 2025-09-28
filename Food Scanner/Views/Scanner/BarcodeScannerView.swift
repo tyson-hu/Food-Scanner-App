@@ -27,7 +27,7 @@ struct BarcodeScannerView: View {
             }
         }
         .onAppear {
-            Task {
+            Task { @MainActor in
                 // Small delay to ensure smooth transition and prevent flash
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
                 await viewModel.checkPermissions()
