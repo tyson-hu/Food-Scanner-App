@@ -35,6 +35,36 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Grant permissions to prevent test interruptions
+grant_permissions() {
+    local udid="$1"
+    log_info "Granting permissions to prevent test interruptions..."
+    
+    # Grant camera permission
+    if xcrun simctl privacy "$udid" grant camera tysonhu.foodscanner 2>/dev/null; then
+        log_info "Camera permission granted"
+    else
+        log_warning "Failed to grant camera permission"
+    fi
+    
+    # Grant photo library permission
+    if xcrun simctl privacy "$udid" grant photos tysonhu.foodscanner 2>/dev/null; then
+        log_info "Photo library permission granted"
+    else
+        log_warning "Failed to grant photo library permission"
+    fi
+    
+    # Grant microphone permission (in case it's needed)
+    if xcrun simctl privacy "$udid" grant microphone tysonhu.foodscanner 2>/dev/null; then
+        log_info "Microphone permission granted"
+    else
+        log_warning "Failed to grant microphone permission"
+    fi
+    
+    # Small delay to ensure permissions take effect
+    sleep 2
+}
+
 # Enhanced simulator cleanup
 cleanup_simulator() {
     local udid="$1"
@@ -54,6 +84,9 @@ cleanup_simulator() {
         log_error "Failed to boot simulator $udid"
         return 1
     fi
+    
+    # Grant permissions after booting to prevent permission dialogs
+    grant_permissions "$udid"
     
     # Wait for simulator to be fully booted
     log_info "Waiting for simulator to boot..."
@@ -96,7 +129,10 @@ check_simulator_health() {
         return 1
     fi
     
-    log_success "Simulator $udid is healthy"
+    # Grant permissions to prevent test interruptions
+    grant_permissions "$udid"
+    
+    log_success "Simulator $udid is healthy and permissions granted"
     return 0
 }
 
@@ -138,8 +174,12 @@ run_tests_with_monitoring() {
         return 1
     fi
     
+    # Grant permissions one more time before test execution
+    grant_permissions "$dest_id"
+    
     # Create log file for monitoring
     local log_file="/tmp/xcodebuild_attempt_${attempt}.log"
+    local debug_log="/tmp/xcodebuild_debug.log"
     local start_time=$(date +%s)
     
     log_info "Starting xcodebuild with ${XCODEBUILD_TIMEOUT}s timeout..."
@@ -167,6 +207,8 @@ run_tests_with_monitoring() {
         -default-test-execution-time-allowance 30 \
         -maximum-test-execution-time-allowance 60 \
         test > "$log_file" 2>&1 &
+    
+    # Debug log will be copied after completion
     
     local xcodebuild_pid=$!
     log_info "xcodebuild PID: $xcodebuild_pid"
@@ -202,10 +244,16 @@ run_tests_with_monitoring() {
             local current_log_size=$(wc -c < "$log_file" 2>/dev/null || echo 0)
             local log_age=$(($(date +%s) - $(stat -f %m "$log_file" 2>/dev/null || echo 0)))
             
-            # Check for test execution indicators
-            if grep -q "Test Suite.*started\|Test Suite.*passed\|Test Suite.*failed" "$log_file" 2>/dev/null; then
-                log_info "Test execution detected in logs"
-            fi
+    # Check for test execution indicators
+    if grep -q "Test Suite.*started\|Test Suite.*passed\|Test Suite.*failed" "$log_file" 2>/dev/null; then
+        log_info "Test execution detected in logs"
+    fi
+    
+    # Count tests for monitoring
+    local test_count=$(grep -c "◇ Test.*started" "$log_file" 2>/dev/null || echo "0")
+    if [ "$test_count" -gt 0 ] && [ $((test_count % 10)) -eq 0 ]; then
+        log_info "Tests started so far: $test_count"
+    fi
             
             # If log file is growing or recently modified, we have progress
             if [ $current_log_size -gt $last_log_size ] || [ $log_age -lt $PROGRESS_TIMEOUT ]; then
@@ -237,6 +285,9 @@ run_tests_with_monitoring() {
     wait "$xcodebuild_pid"
     local exit_code=$?
     local total_time=$(($(date +%s) - start_time))
+    
+    # Copy log for debugging
+    cp "$log_file" "$debug_log" 2>/dev/null || true
     
     # Show results
     log_info "xcodebuild completed in ${total_time}s with exit code $exit_code"
@@ -271,7 +322,22 @@ main() {
         log_info "=== Starting attempt $attempt/$MAX_ATTEMPTS ==="
         
         if run_tests_with_monitoring "$attempt" "$dest_id" "$derived_data_path"; then
-            log_success "Tests passed on attempt $attempt"
+            # Count final test results
+            local log_file="/tmp/xcodebuild_attempt_${attempt}.log"
+            local debug_log="/tmp/xcodebuild_debug.log"
+            local final_test_count=$(grep -c "◇ Test.*started" "$debug_log" 2>/dev/null || echo "0")
+            local passed_tests=$(grep -c "✔ Test.*passed" "$debug_log" 2>/dev/null || echo "0")
+            local failed_tests=$(grep -c "❌ Test.*failed" "$debug_log" 2>/dev/null || echo "0")
+            
+            log_success "Tests completed on attempt $attempt"
+            log_info "Test summary: $final_test_count started, $passed_tests passed, $failed_tests failed"
+            
+            # Warn if test count seems low
+            if [ "$final_test_count" -lt 60 ]; then
+                log_warning "Low test count detected ($final_test_count tests). Expected ~72 tests."
+                log_warning "This might indicate build issues in CI environment."
+            fi
+            
             exit 0
         else
             log_warning "Test attempt $attempt failed"

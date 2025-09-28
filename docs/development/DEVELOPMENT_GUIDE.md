@@ -352,6 +352,87 @@ xcodebuild -showBuildSettings -scheme "Food Scanner"
 - **Testing**: Full test suite must pass
 - **Documentation**: Docs must be updated if needed
 
+## 🔧 Troubleshooting
+
+### CI Build Issues
+
+#### Permission Dialog Appears During Tests
+**Problem**: Camera permission popup interrupts test execution
+**Solution**:
+```bash
+# Check if permissions are granted
+xcrun simctl privacy <simulator_udid> status camera tysonhu.foodscanner
+
+# Grant permissions manually
+xcrun simctl privacy <simulator_udid> grant camera tysonhu.foodscanner
+xcrun simctl privacy <simulator_udid> grant photos tysonhu.foodscanner
+xcrun simctl privacy <simulator_udid> grant microphone tysonhu.foodscanner
+```
+
+#### CI Builds Hanging or Timing Out
+**Problem**: Tests get stuck and don't complete
+**Solution**:
+1. Check simulator health: `./scripts/simulator-manager.sh health <udid>`
+2. Reset simulator: `./scripts/simulator-manager.sh reset <udid>`
+3. Clean up all simulators: `./scripts/simulator-manager.sh cleanup-all`
+4. Check CI logs for specific error messages
+
+#### Low Test Count in CI
+**Problem**: CI reports fewer tests than expected
+**Solution**:
+1. Verify test plan is correct: `FoodScanner-CI-Offline.xctestplan`
+2. Check for test compilation errors
+3. Ensure all test targets are included
+4. Review CI logs for test execution details
+
+### Local Development Issues
+
+#### Network Tests Failing
+**Problem**: Network-dependent tests fail locally
+**Solution**:
+1. Use the local network test runner: `./scripts/test-local-network.sh`
+2. Check network connectivity
+3. Verify external services are available
+4. Check for firewall or proxy issues
+
+#### Simulator Issues
+**Problem**: Simulator won't boot or is unresponsive
+**Solution**:
+1. Reset simulator: `xcrun simctl reset <udid>`
+2. Erase simulator: `xcrun simctl erase <udid>`
+3. Create fresh simulator: `./scripts/simulator-manager.sh create`
+4. Check system resources and available space
+
+### Common Error Messages
+
+#### "Expression is 'async' but is not marked with 'await'"
+**Fix**: Add `await` keyword before async function calls
+```swift
+// Wrong
+viewModel.checkPermissions()
+
+// Correct
+await viewModel.checkPermissions()
+```
+
+#### "Force unwrapping should be avoided"
+**Fix**: Use safe unwrapping with `guard let` or `if let`
+```swift
+// Wrong
+let source = extractSource(from: gid)!
+
+// Correct
+guard let source = extractSource(from: gid) else { return .unknown }
+```
+
+#### "Function should have complexity 10 or less"
+**Fix**: Extract complex logic into smaller helper methods
+```swift
+// Extract complex logic into private methods
+private func logDSLDResponseIfNeeded(gid: String, data: Data) { /* ... */ }
+private func validateDSLDDataIfNeeded(gid: String, foodCard: FoodMinimalCard) { /* ... */ }
+```
+
 ## 📞 Support
 
 ### Getting Help
@@ -369,7 +450,7 @@ xcodebuild -showBuildSettings -scheme "Food Scanner"
 ---
 
 **Last Updated**: September 2024  
-**Version**: 2.0 (Enhanced CI/CD)  
+**Version**: 2.1 (CI Permission Handling)  
 **Status**: Production Ready ✅
 
 This development guide is maintained alongside the codebase and reflects the current state of the Food Scanner app's development practices and workflows.
