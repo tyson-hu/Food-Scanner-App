@@ -28,7 +28,7 @@ enum FDCClientFactory {
         // Always wrap in FDCCachedClient
         return FDCCachedClient(
             underlyingClient: underlyingClient,
-            cacheService: FDCCacheService()
+            cacheService: FDCCacheService(),
         )
     }
 

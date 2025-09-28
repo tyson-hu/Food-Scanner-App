@@ -18,6 +18,7 @@ disabled_rules:
   - type_body_length
   - vertical_parameter_alignment
   - vertical_parameter_alignment_on_call
+  - trailing_comma  # Disable to avoid conflicts with CodeQL
 
 opt_in_rules:
   - empty_count
