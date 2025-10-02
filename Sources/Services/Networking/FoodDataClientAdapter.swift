@@ -402,7 +402,6 @@ public struct ProxyNutrientValue: Codable, Equatable {
 
 // MARK: - Error Conversion
 
-// swiftformat:disable:next redundantReturn
 private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataError {
     switch error {
     case .invalidURL:
