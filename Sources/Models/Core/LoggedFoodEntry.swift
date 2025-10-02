@@ -65,7 +65,7 @@ extension FoodEntry {
     nonisolated static func from(
         details foodDetails: FDCFoodDetails,
         multiplier servingMultiplier: Double,
-        at date: Date = Date()
+        at date: Date = .now
     ) -> FoodEntry {
         FoodEntryBuilder.from(details: foodDetails, multiplier: servingMultiplier, at: date)
     }
@@ -73,7 +73,7 @@ extension FoodEntry {
     nonisolated static func from(
         foodCard: FoodMinimalCard,
         multiplier servingMultiplier: Double,
-        at date: Date = Date()
+        at date: Date = .now
     ) -> FoodEntry {
         FoodEntryBuilder.from(foodCard: foodCard, multiplier: servingMultiplier, at: date)
     }
@@ -81,7 +81,7 @@ extension FoodEntry {
     nonisolated static func from(
         foodDetails: FoodAuthoritativeDetail,
         multiplier servingMultiplier: Double,
-        at date: Date = Date()
+        at date: Date = .now
     ) -> FoodEntry {
         FoodEntryBuilder.from(foodDetails: foodDetails, multiplier: servingMultiplier, at: date)
     }

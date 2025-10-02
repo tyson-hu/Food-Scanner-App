@@ -18,7 +18,7 @@ public struct FoodEntryBuilder {
     public nonisolated static func from(
         details foodDetails: FDCFoodDetails,
         multiplier servingMultiplier: Double,
-        at date: Date = Date()
+        at date: Date = .now
     ) -> FoodEntry {
         // Determine base unit based on serving size unit
         let baseUnit = determineBaseUnit(from: foodDetails.servingSizeUnit)
@@ -61,7 +61,7 @@ public struct FoodEntryBuilder {
     public nonisolated static func from(
         foodCard: FoodMinimalCard,
         multiplier servingMultiplier: Double,
-        at date: Date = Date()
+        at date: Date = .now
     ) -> FoodEntry {
         // Extract FDC ID from GID if possible
         let fdcId: Int? = {
@@ -122,7 +122,7 @@ public struct FoodEntryBuilder {
     public nonisolated static func from(
         foodDetails: FoodAuthoritativeDetail,
         multiplier servingMultiplier: Double,
-        at date: Date = Date()
+        at date: Date = .now
     ) -> FoodEntry {
         // Extract FDC ID from GID if possible
         let fdcId: Int? = {
