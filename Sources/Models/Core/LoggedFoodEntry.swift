@@ -62,7 +62,7 @@ public final class FoodEntry {
 // MARK: - Builder Extensions
 
 extension FoodEntry {
-    static func from(
+    nonisolated static func from(
         details foodDetails: FDCFoodDetails,
         multiplier servingMultiplier: Double,
         at date: Date = Date()
@@ -70,7 +70,7 @@ extension FoodEntry {
         FoodEntryBuilder.from(details: foodDetails, multiplier: servingMultiplier, at: date)
     }
 
-    static func from(
+    nonisolated static func from(
         foodCard: FoodMinimalCard,
         multiplier servingMultiplier: Double,
         at date: Date = Date()
@@ -78,7 +78,7 @@ extension FoodEntry {
         FoodEntryBuilder.from(foodCard: foodCard, multiplier: servingMultiplier, at: date)
     }
 
-    static func from(
+    nonisolated static func from(
         foodDetails: FoodAuthoritativeDetail,
         multiplier servingMultiplier: Double,
         at date: Date = Date()

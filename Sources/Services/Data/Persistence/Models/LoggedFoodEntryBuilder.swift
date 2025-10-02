@@ -15,7 +15,7 @@ public struct FoodEntryBuilder {
 
     // MARK: - Builder from FDC details
 
-    public static func from(
+    public nonisolated static func from(
         details foodDetails: FDCFoodDetails,
         multiplier servingMultiplier: Double,
         at date: Date = Date()
@@ -58,7 +58,7 @@ public struct FoodEntryBuilder {
 
     // MARK: - Builder from new API models
 
-    public static func from(
+    public nonisolated static func from(
         foodCard: FoodMinimalCard,
         multiplier servingMultiplier: Double,
         at date: Date = Date()
@@ -119,7 +119,7 @@ public struct FoodEntryBuilder {
         ).withDate(date)
     }
 
-    public static func from(
+    public nonisolated static func from(
         foodDetails: FoodAuthoritativeDetail,
         multiplier servingMultiplier: Double,
         at date: Date = Date()
@@ -180,7 +180,7 @@ public struct FoodEntryBuilder {
     // MARK: - Helper Functions
 
     // Helper to calculate nutrient values
-    private static func calculateNutrientValue(nutrients: [FoodNutrient], name: String, unit: String) -> Double? {
+    private nonisolated static func calculateNutrientValue(nutrients: [FoodNutrient], name: String, unit: String) -> Double? {
         // Always prefer per-100g nutrients as the standard
         if let per100gNutrient = nutrients.first(where: { nutrient in
             nutrient.name.lowercased().contains(name.lowercased()) &&
@@ -207,7 +207,7 @@ public struct FoodEntryBuilder {
     }
 
     // Helper to format serving description
-    private static func formatServingDescription(_ serving: FoodServing?, multiplier: Double) -> String {
+    private nonisolated static func formatServingDescription(_ serving: FoodServing?, multiplier: Double) -> String {
         guard let serving else {
             return String(format: "%.2f× 100g", multiplier)
         }
@@ -224,7 +224,7 @@ public struct FoodEntryBuilder {
     // MARK: - Base Unit Helper Functions
 
     /// Determine base unit from serving size unit
-    static func determineBaseUnit(from servingSizeUnit: String?) -> String {
+    nonisolated static func determineBaseUnit(from servingSizeUnit: String?) -> String {
         guard let unit = servingSizeUnit?.lowercased() else { return "g" }
 
         // Volume units → ml
@@ -238,7 +238,7 @@ public struct FoodEntryBuilder {
     }
 
     /// Calculate resolved quantity in base unit
-    static func calculateResolvedQuantity(
+    nonisolated static func calculateResolvedQuantity(
         quantity: Double,
         servingSize: Double?,
         servingSizeUnit: String?,
@@ -253,7 +253,7 @@ public struct FoodEntryBuilder {
     }
 
     /// Calculate resolved quantity in base unit from serving info
-    static func calculateResolvedQuantity(
+    nonisolated static func calculateResolvedQuantity(
         quantity: Double,
         serving: FoodServing?,
         baseUnit: BaseUnit
@@ -269,13 +269,13 @@ public struct FoodEntryBuilder {
     }
 
     /// Convert amount from source unit to target base unit
-    static func convertToBaseUnit(amount: Double, unit: String, targetBaseUnit: String) -> Double {
+    nonisolated static func convertToBaseUnit(amount: Double, unit: String, targetBaseUnit: String) -> Double {
         let grams = convertToGrams(amount: amount, unit: unit)
         return convertGramsToTargetUnit(grams: grams, targetBaseUnit: targetBaseUnit)
     }
 
     /// Convert amount to grams from various units
-    private static func convertToGrams(amount: Double, unit: String) -> Double {
+    private nonisolated static func convertToGrams(amount: Double, unit: String) -> Double {
         let unitLower = unit.lowercased()
 
         if let massConversion = convertMassToGrams(amount: amount, unit: unitLower) {
@@ -290,7 +290,7 @@ public struct FoodEntryBuilder {
     }
 
     /// Convert mass units to grams
-    private static func convertMassToGrams(amount: Double, unit: String) -> Double? {
+    private nonisolated static func convertMassToGrams(amount: Double, unit: String) -> Double? {
         switch unit {
         case "g", "gram", "grams":
             amount
@@ -306,7 +306,7 @@ public struct FoodEntryBuilder {
     }
 
     /// Convert volume units to grams (approximate for water)
-    private static func convertVolumeToGrams(amount: Double, unit: String) -> Double? {
+    private nonisolated static func convertVolumeToGrams(amount: Double, unit: String) -> Double? {
         switch unit {
         case "ml", "milliliter", "milliliters", "mlt":
             amount
@@ -326,7 +326,7 @@ public struct FoodEntryBuilder {
     }
 
     /// Convert grams to target base unit
-    private static func convertGramsToTargetUnit(grams: Double, targetBaseUnit: String) -> Double {
+    private nonisolated static func convertGramsToTargetUnit(grams: Double, targetBaseUnit: String) -> Double {
         if targetBaseUnit == "ml" {
             grams // Approximate 1:1 for water
         } else {
