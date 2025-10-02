@@ -464,22 +464,22 @@ public struct ProxyClientImpl: ProxyClient {
     private func mapNonProxyErrorToProxyError(_ error: Error) -> ProxyError {
         switch error {
         case is DecodingError:
-            .invalidResponse
+            return .invalidResponse
         case let urlError as URLError:
             switch urlError.code {
             case .badURL, .unsupportedURL:
-                .invalidURL
+                return .invalidURL
             case .cannotFindHost, .cannotConnectToHost:
-                .serverUnavailable
+                return .serverUnavailable
             case .timedOut, .notConnectedToInternet, .networkConnectionLost:
-                .networkError(urlError)
+                return .networkError(urlError)
             case .cancelled:
-                .networkError(urlError)
+                return .networkError(urlError)
             default:
-                .networkError(urlError)
+                return .networkError(urlError)
             }
         default:
-            .networkError(error)
+            return .networkError(error)
         }
     }
 

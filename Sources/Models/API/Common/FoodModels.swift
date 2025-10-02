@@ -76,18 +76,18 @@ public enum BaseUnit: String, Sendable, Codable, CaseIterable {
     public var displayName: String {
         switch self {
         case .grams:
-            "g"
+            return "g"
         case .milliliters:
-            "ml"
+            return "ml"
         }
     }
 
     public var per100DisplayName: String {
         switch self {
         case .grams:
-            "per 100 g"
+            return "per 100 g"
         case .milliliters:
-            "per 100 ml"
+            return "per 100 ml"
         }
     }
 }

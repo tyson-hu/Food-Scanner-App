@@ -405,20 +405,20 @@ public struct ProxyNutrientValue: Codable, Equatable {
 private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataError {
     switch error {
     case .invalidURL:
-        .invalidURL
+        return .invalidURL
     case .invalidResponse:
-        .invalidResponse
+        return .invalidResponse
     case let .httpError(code):
-        .httpError(code)
+        return .httpError(code)
     case let .networkError(error):
-        .networkError(error)
+        return .networkError(error)
     case .serverUnavailable:
-        .serverUnavailable
+        return .serverUnavailable
     case let .rateLimited(retryAfter):
-        .rateLimited(retryAfter)
+        return .rateLimited(retryAfter)
     case .invalidGID:
-        .invalidURL
+        return .invalidURL
     case let .proxyError(errorResponse):
-        .customError(ProxyError.proxyError(errorResponse).errorDescription ?? "Proxy error occurred")
+        return .customError(ProxyError.proxyError(errorResponse).errorDescription ?? "Proxy error occurred")
     }
 }
