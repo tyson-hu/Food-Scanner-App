@@ -25,10 +25,10 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI and 
 ## Architecture
 
 ### Networking Layer
-- **FDCProxyClient**: Routes requests through calry.org proxy with retry logic
-- **FDCCachedClient**: Transparent caching wrapper for improved performance
+- **ProxyClient**: Routes requests through calry.org proxy with retry logic
+- **FoodDataCachedClient**: Transparent caching wrapper for improved performance
 - **FDCMock**: Mock client for development and testing
-- **FDCClientFactory**: Environment-based client selection
+- **FoodDataClientFactory**: Environment-based client selection
 - **DataNormalization**: Utility for unit conversion and data standardization
 
 ### Data Layer

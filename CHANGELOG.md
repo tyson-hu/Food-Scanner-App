@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **M2-02: FDC Proxy Client Architecture** - Implemented proxy-based architecture for Add Food (text) feature
-  - `FDCProxyClient` - New client implementation that routes requests through `https://api.calry.org`
+  - `ProxyClient` - New client implementation that routes requests through `https://api.calry.org`
   - `ProxySearchResponse`, `ProxyFoodDetailResponse` - Response models matching FDC envelope structure
-  - `FDCClientFactory` - Environment-based client selection (proxy vs mock)
+  - `FoodDataClientFactory` - Environment-based client selection (proxy vs mock)
   - **Search Endpoint**: `/foods/search` with proper query parameters (`query`, `dataType=Branded`, `pageSize`, `pageNumber`)
   - **Details Endpoint**: `/food/{fdcId}` for fetching individual food details
   - **Field Mapping**: Robust fallbacks for `title`, `brand`, `serving`, and `upc` fields

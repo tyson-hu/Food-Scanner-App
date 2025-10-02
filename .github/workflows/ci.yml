@@ -285,6 +285,6 @@ jobs:
             -configuration Debug \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
-            build | xcpretty
+            build 2>&1 | grep -v "appintentsmetadataprocessor.*warning: Metadata extraction skipped" | xcpretty
       - name: Analyze
         uses: github/codeql-action/analyze@v3

@@ -1,0 +1,385 @@
+openapi: 3.0.0
+info:
+  title: Open Food Facts (OFF) API
+  description: Open Food Facts API accessed through calry.org proxy service
+  version: 1.0.0
+  contact:
+    name: Food Scanner App
+    url: https://github.com/food-scanner
+servers:
+  - url: https://api.calry.org
+    description: Production server
+paths:
+  /search:
+    get:
+      summary: Search products
+      description: Search for products in Open Food Facts database
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search term for products
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+          description: Number of results to return
+      responses:
+        '200':
+          description: Successful search response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OFFSearchResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /foodDetails/{gid}:
+    get:
+      summary: Get product details
+      description: Get detailed information for a specific product
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Global ID of the product (e.g., off:0123456789012)
+      responses:
+        '200':
+          description: Successful detail response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OFFProductResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /barcode/{barcode}:
+    get:
+      summary: Lookup product by barcode
+      description: Find product by UPC/EAN barcode
+      parameters:
+        - name: barcode
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9]{8,14}$'
+          description: UPC/EAN barcode
+      responses:
+        '200':
+          description: Successful barcode lookup
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OFFBarcodeResponse'
+        '404':
+          description: Barcode not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid barcode format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    OFFSearchResponse:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Original search query
+        totalResults:
+          type: integer
+          description: Total number of results available
+        pageSize:
+          type: integer
+          description: Number of results per page
+        currentPage:
+          type: integer
+          description: Current page number
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OFFSearchResult'
+    OFFSearchResult:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Global ID (e.g., off:0123456789012)
+        source:
+          type: string
+          enum: [off]
+          description: Data source
+        productName:
+          type: string
+          description: Product name
+        brands:
+          type: string
+          nullable: true
+          description: Brand names
+        code:
+          type: string
+          nullable: true
+          description: Product code
+        imageUrl:
+          type: string
+          nullable: true
+          description: Product image URL
+        imageSmallUrl:
+          type: string
+          nullable: true
+          description: Small product image URL
+        imageFrontUrl:
+          type: string
+          nullable: true
+          description: Front product image URL
+        imageNutritionUrl:
+          type: string
+          nullable: true
+          description: Nutrition label image URL
+        nutritionSummary:
+          $ref: '#/components/schemas/OFFNutritionSummary'
+    OFFProductResponse:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Global ID
+        source:
+          type: string
+          enum: [off]
+          description: Data source
+        productName:
+          type: string
+          description: Product name
+        brands:
+          type: string
+          nullable: true
+          description: Brand names
+        code:
+          type: string
+          nullable: true
+          description: Product code
+        categories:
+          type: string
+          nullable: true
+          description: Product categories
+        ingredientsText:
+          type: string
+          nullable: true
+          description: Ingredients text
+        imageUrl:
+          type: string
+          nullable: true
+          description: Product image URL
+        imageSmallUrl:
+          type: string
+          nullable: true
+          description: Small product image URL
+        imageFrontUrl:
+          type: string
+          nullable: true
+          description: Front product image URL
+        imageNutritionUrl:
+          type: string
+          nullable: true
+          description: Nutrition label image URL
+        nutriments:
+          $ref: '#/components/schemas/OFFNutriments'
+        servingSize:
+          type: string
+          nullable: true
+          description: Serving size
+        quantity:
+          type: string
+          nullable: true
+          description: Product quantity
+        packaging:
+          type: string
+          nullable: true
+          description: Packaging information
+        labels:
+          type: string
+          nullable: true
+          description: Product labels
+        origins:
+          type: string
+          nullable: true
+          description: Product origins
+        manufacturingPlaces:
+          type: string
+          nullable: true
+          description: Manufacturing places
+        countries:
+          type: string
+          nullable: true
+          description: Countries where sold
+        stores:
+          type: string
+          nullable: true
+          description: Stores where sold
+        purchasePlaces:
+          type: string
+          nullable: true
+          description: Purchase places
+        completeness:
+          $ref: '#/components/schemas/CompletenessFlags'
+    OFFBarcodeResponse:
+      type: object
+      properties:
+        barcode:
+          type: string
+          description: Scanned barcode
+        found:
+          type: boolean
+          description: Whether product was found
+        product:
+          $ref: '#/components/schemas/OFFProductResponse'
+    OFFNutriments:
+      type: object
+      properties:
+        energyKcal:
+          type: number
+          nullable: true
+          description: Energy in kcal
+        energyKj:
+          type: number
+          nullable: true
+          description: Energy in kJ
+        proteins:
+          type: number
+          nullable: true
+          description: Proteins in grams
+        carbohydrates:
+          type: number
+          nullable: true
+          description: Carbohydrates in grams
+        sugars:
+          type: number
+          nullable: true
+          description: Sugars in grams
+        fat:
+          type: number
+          nullable: true
+          description: Fat in grams
+        saturatedFat:
+          type: number
+          nullable: true
+          description: Saturated fat in grams
+        fiber:
+          type: number
+          nullable: true
+          description: Fiber in grams
+        sodium:
+          type: number
+          nullable: true
+          description: Sodium in mg
+        salt:
+          type: number
+          nullable: true
+          description: Salt in grams
+        calcium:
+          type: number
+          nullable: true
+          description: Calcium in mg
+        iron:
+          type: number
+          nullable: true
+          description: Iron in mg
+        vitaminC:
+          type: number
+          nullable: true
+          description: Vitamin C in mg
+        vitaminD:
+          type: number
+          nullable: true
+          description: Vitamin D in μg
+    OFFNutritionSummary:
+      type: object
+      properties:
+        energyKcal:
+          type: number
+          nullable: true
+          description: Energy in kcal
+        proteins:
+          type: number
+          nullable: true
+          description: Proteins in grams
+        carbohydrates:
+          type: number
+          nullable: true
+          description: Carbohydrates in grams
+        fat:
+          type: number
+          nullable: true
+          description: Fat in grams
+    CompletenessFlags:
+      type: object
+      properties:
+        core:
+          type: boolean
+          description: Core nutrition data available
+        label:
+          type: boolean
+          description: Label nutrition data available
+        micros:
+          type: boolean
+          description: Micronutrient data available
+        portions:
+          type: boolean
+          description: Portion data available
+        ingredients:
+          type: boolean
+          description: Ingredients data available
+        image:
+          type: boolean
+          description: Image data available
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: integer
+          description: Error code
+        details:
+          type: string
+          nullable: true
+          description: Additional error details
