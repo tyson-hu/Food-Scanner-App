@@ -11,11 +11,11 @@ import Foundation
 import Testing
 
 @Suite("FoodNormalizationService")
+@MainActor
 struct FoodNormalizationServiceTests {
     private let normalizationService = FoodNormalizationServiceImpl()
 
     @Test
-    @MainActor
     func fDCBrandedNormalization() throws {
         // Test FDC branded food normalization
         let fdcData = Data("""
@@ -69,7 +69,6 @@ struct FoodNormalizationServiceTests {
     }
 
     @Test
-    @MainActor
     func oFFProductNormalization() throws {
         // Test OFF product normalization
         let offData = Data("""
