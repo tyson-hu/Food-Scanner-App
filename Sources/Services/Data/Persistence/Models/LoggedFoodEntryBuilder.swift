@@ -180,7 +180,11 @@ public struct FoodEntryBuilder {
     // MARK: - Helper Functions
 
     // Helper to calculate nutrient values
-    private nonisolated static func calculateNutrientValue(nutrients: [FoodNutrient], name: String, unit: String) -> Double? {
+    private nonisolated static func calculateNutrientValue(
+        nutrients: [FoodNutrient],
+        name: String,
+        unit: String
+    ) -> Double? {
         // Always prefer per-100g nutrients as the standard
         if let per100gNutrient = nutrients.first(where: { nutrient in
             nutrient.name.lowercased().contains(name.lowercased()) &&
