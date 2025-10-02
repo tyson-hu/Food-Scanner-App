@@ -9,6 +9,7 @@
 @preconcurrency import XCTest
 
 final class AddFlowUITests: BaseUITestCase {
+    @MainActor
     func test_AddFood_search_detail_log_updates_today() {
         // Go to Add tab
         let addTab = app.tabBars.buttons["Add"]
