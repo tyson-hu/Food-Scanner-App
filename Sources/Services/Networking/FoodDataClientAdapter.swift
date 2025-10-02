@@ -418,7 +418,7 @@ private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataEr
         .rateLimited(retryAfter)
     case .invalidGID:
         .invalidURL
-    case .proxyError:
-        .serverUnavailable
+    case let .proxyError(errorResponse):
+        .customError(ProxyError.proxyError(errorResponse).errorDescription ?? "Proxy error occurred")
     }
 }

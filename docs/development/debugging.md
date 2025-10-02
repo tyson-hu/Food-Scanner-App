@@ -236,6 +236,34 @@ func debugServiceIntegration() {
 
 ## 🚨 Error Debugging
 
+### Proxy Error Semantics
+```swift
+func debugProxyError(_ error: ProxyError) {
+    print("🔍 Proxy Error Debug:")
+    print("  Error: \(error)")
+    print("  Description: \(error.errorDescription ?? "No description")")
+    print("  Recovery: \(error.recoverySuggestion ?? "No suggestion")")
+    
+    if case let .proxyError(apiError) = error {
+        print("  API Error: \(apiError.error)")
+        print("  Status: \(apiError.status ?? -1)")
+        print("  ID: \(apiError.id ?? "No ID")")
+    }
+}
+```
+
+### Error Conversion Flow
+```swift
+func debugErrorConversion(_ proxyError: ProxyError) {
+    print("🔄 Error Conversion Debug:")
+    print("  Original: \(proxyError)")
+    
+    let foodDataError = convertProxyErrorToFoodDataError(proxyError)
+    print("  Converted: \(foodDataError)")
+    print("  User Message: \(foodDataError.errorDescription ?? "No message")")
+}
+```
+
 ### Error Context
 ```swift
 func debugError(_ error: Error, context: String) {

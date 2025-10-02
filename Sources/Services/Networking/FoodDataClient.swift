@@ -71,6 +71,7 @@ enum FoodDataError: LocalizedError {
     case networkError(Error)
     case decodingError(Error)
     case noResults
+    case customError(String)
     case serverUnavailable
     case rateLimited(TimeInterval?)
 
@@ -116,6 +117,8 @@ enum FoodDataError: LocalizedError {
             "Unable to process food data. Please try again."
         case .noResults:
             "No foods found matching your search. Try different keywords."
+        case let .customError(message):
+            message
         case .serverUnavailable:
             "Food database is temporarily unavailable. Please try again later."
         case let .rateLimited(retryAfter):
@@ -163,6 +166,8 @@ enum FoodDataError: LocalizedError {
             }
         case .noResults:
             "Try using broader search terms or check spelling."
+        case .customError:
+            nil // Custom errors should provide their own recovery suggestions
         case .serverUnavailable:
             "Please try again in a few minutes."
         case .rateLimited:

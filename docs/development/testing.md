@@ -49,6 +49,62 @@ Tests/
 - **Default Test Plan**: Full test coverage including UI tests
 - **CI Test Plan**: Unit tests only for reliable CI/CD pipelines
 
+### Swift 6 Concurrency Testing
+When testing with Swift 6 strict concurrency enabled, follow these patterns:
+
+#### Unit Test Actor Isolation
+```swift
+@MainActor
+struct MyServiceTests {
+    @Test
+    func testServiceFunctionality() async throws {
+        // Tests run on MainActor - safe for UI-related code
+        let service = MyService()
+        let result = try await service.performAction()
+        #expect(result.isSuccess)
+    }
+}
+```
+
+#### Nonisolated Test Methods
+```swift
+struct MyModelTests {
+    @Test
+    func testModelInitialization() {
+        // Nonisolated test - safe for pure data operations
+        let model = MyModel(id: "123", name: "Test")
+        #expect(model.id == "123")
+    }
+}
+```
+
+#### UI Test Actor Isolation
+```swift
+final class MyUITests: BaseUITestCase {
+    @MainActor
+    func testUserFlow() {
+        // UI tests must be @MainActor for XCUI access
+        let addTab = app.tabBars.buttons["Add"]
+        XCTAssertTrue(addTab.waitForExistence(timeout: 3))
+        addTab.tap()
+    }
+}
+```
+
+#### Testing with Swift 6 Strict Concurrency
+```bash
+# Run tests with Swift 6 strict concurrency (matches CI)
+./scripts/test-with-swift6-strict.sh
+
+# Or use xcodebuild directly
+xcodebuild test \
+    -scheme "Food Scanner" \
+    -destination "platform=iOS Simulator,name=iPhone 16" \
+    -testPlan "FoodScanner-CI-Offline" \
+    SWIFT_STRICT_CONCURRENCY=complete \
+    OTHER_SWIFT_FLAGS='-warnings-as-errors'
+```
+
 ## 🔬 Unit Testing
 
 ### Test Structure

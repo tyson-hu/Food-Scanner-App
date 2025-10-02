@@ -426,6 +426,71 @@ swiftlint version
 swiftformat --version
 ```
 
+### Swift 6 Concurrency Issues
+
+#### "Main actor-isolated default value in a nonisolated context"
+**Symptoms**: Build fails with Swift 6 strict concurrency checking
+**Root Cause**: Using `Date()` as default parameter in nonisolated context
+**Solutions**:
+```swift
+// ❌ Problematic
+nonisolated static func create(at date: Date = Date()) -> MyType
+
+// ✅ Fixed
+nonisolated static func create(at date: Date = .now) -> MyType
+```
+
+#### "Call to main actor-isolated static method in a synchronous nonisolated context"
+**Symptoms**: Build fails when calling main actor-isolated methods from nonisolated contexts
+**Root Cause**: Missing `nonisolated` annotation on static methods
+**Solutions**:
+```swift
+// ❌ Problematic
+static func from(data: Data) -> MyType {
+    // Main actor-isolated code
+}
+
+// ✅ Fixed
+nonisolated static func from(data: Data) -> MyType {
+    // Main actor-isolated code
+}
+```
+
+#### "Sending 'self' risks causing data races"
+**Symptoms**: UI tests fail with data race warnings
+**Root Cause**: Capturing `self` in `MainActor.assumeIsolated` closures
+**Solutions**:
+```swift
+// ❌ Problematic
+func testMethod() {
+    MainActor.assumeIsolated {
+        self.app.tap()  // Captures self
+    }
+}
+
+// ✅ Fixed
+@MainActor
+func testMethod() {
+    app.tap()  // No self capture needed
+}
+```
+
+#### "Local tests pass but CI fails"
+**Symptoms**: Tests work locally but fail in CI with concurrency errors
+**Root Cause**: Different Swift concurrency checking levels
+**Solutions**:
+```bash
+# Test locally with CI settings
+./scripts/test-with-swift6-strict.sh
+
+# Or manually with xcodebuild
+xcodebuild test \
+    -scheme "Food Scanner" \
+    -destination "platform=iOS Simulator,name=iPhone 16" \
+    SWIFT_STRICT_CONCURRENCY=complete \
+    OTHER_SWIFT_FLAGS='-warnings-as-errors'
+```
+
 ## 📞 Getting Help
 
 ### Documentation

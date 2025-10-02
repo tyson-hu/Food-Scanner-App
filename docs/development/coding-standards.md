@@ -205,21 +205,40 @@ final class FoodSearchViewModel {
 ### Error Types
 ```swift
 enum FoodDataError: Error, LocalizedError {
-    case networkUnavailable
+    case invalidURL
     case invalidResponse
-    case decodingError
-    case rateLimitExceeded
+    case httpError(Int)
+    case networkError(Error)
+    case decodingError(Error)
+    case noResults
+    case customError(String)  // For preserving specific error messages
+    case serverUnavailable
+    case rateLimited(TimeInterval?)
     
     var errorDescription: String? {
         switch self {
-        case .networkUnavailable:
-            return "Network connection is unavailable"
+        case .invalidURL:
+            return "Unable to connect to food database. Please check your internet connection."
         case .invalidResponse:
-            return "Invalid response from server"
+            return "Received invalid data from food database. Please try again."
+        case let .httpError(code):
+            return "Server error (\(code)). Please try again later."
+        case let .networkError(error):
+            return "Network error: \(error.localizedDescription)"
         case .decodingError:
-            return "Failed to decode response"
-        case .rateLimitExceeded:
-            return "Rate limit exceeded"
+            return "Unable to process food data. Please try again."
+        case .noResults:
+            return "No foods found matching your search. Try different keywords."
+        case let .customError(message):
+            return message  // Preserves specific error messages
+        case .serverUnavailable:
+            return "Food database is temporarily unavailable. Please try again later."
+        case let .rateLimited(retryAfter):
+            if let retryAfter {
+                return "Too many requests. Please wait \(Int(retryAfter)) seconds and try again."
+            } else {
+                return "Too many requests. Please wait a moment and try again."
+            }
         }
     }
 }
@@ -247,6 +266,29 @@ func processData(_ data: Data) -> Result<ProcessedData, ProcessingError> {
     }
 }
 ```
+
+### Error Semantics Preservation
+When converting between error types, preserve specific error information:
+
+```swift
+// ✅ Good: Preserve specific error messages
+private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataError {
+    case let .proxyError(errorResponse):
+        .customError(ProxyError.proxyError(errorResponse).errorDescription ?? "Proxy error occurred")
+}
+
+// ❌ Bad: Lose specific error information
+private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataError {
+    case .proxyError:
+        .serverUnavailable  // Generic message loses context
+}
+```
+
+**Benefits of Error Semantics Preservation:**
+- **User-Friendly Messages**: Users see specific error details
+- **Better Debugging**: Developers get detailed error information
+- **Improved UX**: Appropriate error messages for different scenarios
+- **Maintainability**: Error handling remains consistent across layers
 
 ## 🧪 Testing Standards
 

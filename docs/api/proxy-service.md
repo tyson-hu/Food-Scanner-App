@@ -182,16 +182,42 @@ Error → ProxyClient → Retry Logic → Fallback → App Error
 
 ## 🚨 Error Handling
 
-### Network Errors
+### Proxy Error Types
 ```swift
-enum ProxyError: Error {
-    case networkUnavailable
-    case timeout
-    case rateLimitExceeded
-    case serverError(Int)
+enum ProxyError: LocalizedError {
+    case invalidURL
     case invalidResponse
-    case decodingError
+    case httpError(Int)
+    case networkError(Error)
+    case serverUnavailable
+    case rateLimited(TimeInterval?)
+    case invalidGID(String)
+    case proxyError(ProxyApiError)  // Contains specific error details
 }
+```
+
+### User-Friendly Error Messages
+The `ProxyError` enum provides specific, user-friendly error messages:
+
+```swift
+// NOT_FOUND cases show specific messages
+case let .proxyError(errorResponse):
+    if errorResponse.error == "NOT_FOUND" {
+        "Product not found in database. Please try a different barcode or search manually."
+    } else {
+        "Proxy error: \(errorResponse.error)"
+    }
+```
+
+### Error Conversion Flow
+```
+ProxyError.proxyError(ProxyApiError) 
+    ↓ (FoodDataClientAdapter)
+FoodDataError.customError(String)
+    ↓ (AddFoodSummaryViewModel)
+error.localizedDescription
+    ↓ (UI)
+User sees specific error message
 ```
 
 ### Retry Logic

@@ -311,6 +311,25 @@ func prepareForLogging() -> FoodEntry
 func handleNetworkError(_ error: Error) -> ProxyError
 ```
 
+### Error Semantics Preservation
+**Location**: `FoodDataClientAdapter.swift`
+```swift
+// Preserves specific error messages from ProxyError
+private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataError {
+    case let .proxyError(errorResponse):
+        .customError(ProxyError.proxyError(errorResponse).errorDescription ?? "Proxy error occurred")
+}
+```
+
+### User-Facing Error Display
+**Location**: `AddFoodSummaryViewModel.swift`
+```swift
+// Displays specific error messages to users
+catch {
+    phase = .error(error.localizedDescription)  // Shows "Product not found..." for NOT_FOUND
+}
+```
+
 ### Parsing Errors  
 **Location**: `FoodNormalizationService.swift`
 ```swift
