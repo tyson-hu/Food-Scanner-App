@@ -7,7 +7,8 @@ development/
 ├── README.md                       # 📋 This file - Development overview
 ├── coding-standards.md             # 📝 Code style and standards
 ├── testing.md                      # 🧪 Testing guidelines
-└── debugging.md                    # 🔍 Debugging guide
+├── debugging.md                    # 🔍 Debugging guide
+└── swift6-concurrency-config.md    # 🔧 Swift 6 concurrency configuration
 ```
 
 ## 💻 Development Overview
@@ -23,6 +24,7 @@ This section provides comprehensive guidance for developers working on the Food 
 
 ### 2. **Making Changes**
 - **Follow [Coding Standards](coding-standards.md)**
+- **Configure [Swift 6 Concurrency](swift6-concurrency-config.md)** to match CI
 - **Write tests** following [Testing Guidelines](testing.md)
 - **Debug issues** using [Debugging Guide](debugging.md)
 
