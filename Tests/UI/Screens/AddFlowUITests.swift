@@ -8,7 +8,6 @@
 
 @preconcurrency import XCTest
 
-@MainActor
 final class AddFlowUITests: BaseUITestCase {
     func test_AddFood_search_detail_log_updates_today() {
         // Go to Add tab

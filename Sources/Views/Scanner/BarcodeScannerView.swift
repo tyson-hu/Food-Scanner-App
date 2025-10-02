@@ -103,7 +103,8 @@ private struct ScannerView: View {
         }
         .onAppear {
             // Mark scanner as ready when view appears
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(500))
                 isScannerReady = true
             }
         }
@@ -184,7 +185,8 @@ private struct DataScannerViewControllerRepresentable: UIViewControllerRepresent
         // Start or stop scanning based on ready state
         if isScannerReady {
             // Use a small delay to ensure the scanner is fully ready
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(100))
                 context.coordinator.startScanning()
             }
         } else {

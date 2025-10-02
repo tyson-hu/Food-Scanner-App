@@ -69,7 +69,7 @@ struct AddFoodHomeView: View {
             path.removeAll()
 
             // reset so future activations re-trigger
-            DispatchQueue.main.sync {
+            Task { @MainActor in
                 activation = nil
             }
         }

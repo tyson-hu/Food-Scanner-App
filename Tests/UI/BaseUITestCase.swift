@@ -11,7 +11,7 @@
 /// Shared base for all UI tests.
 /// - No @MainActor on the class or overrides (so we match XCTestCase signatures).
 /// - Use MainActor.assumeIsolated { } at the call sites that touch XCUI APIs.
-class BaseUITestCase: XCTestCase {
+nonisolated class BaseUITestCase: XCTestCase {
     // Backing store; only mutate/read inside MainActor.assumeIsolated blocks.
     @MainActor private static var _sharedApp: XCUIApplication?
 

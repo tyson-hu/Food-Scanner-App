@@ -9,7 +9,6 @@
 @preconcurrency import XCTest
 
 final class FoodScannerUITests: BaseUITestCase {
-    @MainActor
     func testExample() throws {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         // The app is already launched by BaseUITestCase
