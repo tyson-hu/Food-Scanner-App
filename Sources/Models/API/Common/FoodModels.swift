@@ -73,6 +73,7 @@ public enum BaseUnit: String, Sendable, Codable, CaseIterable {
     case grams = "g"
     case milliliters = "ml"
 
+    // swiftformat:disable:next redundantReturn
     public var displayName: String {
         switch self {
         case .grams:
@@ -82,6 +83,7 @@ public enum BaseUnit: String, Sendable, Codable, CaseIterable {
         }
     }
 
+    // swiftformat:disable:next redundantReturn
     public var per100DisplayName: String {
         switch self {
         case .grams:

@@ -461,6 +461,7 @@ public struct ProxyClientImpl: ProxyClient {
     }
 
     /// Map non-ProxyError to appropriate ProxyError types
+    // swiftformat:disable:next redundantReturn
     private func mapNonProxyErrorToProxyError(_ error: Error) -> ProxyError {
         switch error {
         case is DecodingError:
