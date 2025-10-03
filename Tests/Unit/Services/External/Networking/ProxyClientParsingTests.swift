@@ -357,24 +357,22 @@ struct ProxyClientParsingTests {
 
     @Test
     func errorResponseParsing() throws {
-        // Test redirect response
+        // Test redirect response (updated to match actual API format)
         let redirectData = Data("""
         {
-            "isSuccessful": true,
+            "ok": true,
             "redirect": {
-                "isSuccessful": true,
-                "redirect": {
-                    "gid": "fdc:2451234",
-                    "reason": "kv_hint"
-                }
+                "gid": "fdc:2451234",
+                "reason": "kv_hint"
             }
         }
         """.utf8)
 
-        let redirectResponse = try JSONDecoder().decode(ProxyRedirectResponse.self, from: redirectData)
-        #expect(redirectResponse.isSuccessful == true)
-        #expect(redirectResponse.redirect.redirect.gid == "fdc:2451234")
-        #expect(redirectResponse.redirect.redirect.reason == "kv_hint")
+        let redirectResponse = try JSONDecoder().decode(ProxyRedirect.self, from: redirectData)
+        #expect(redirectResponse.success == true)
+        #expect(redirectResponse.isSuccessful == true) // Test computed property
+        #expect(redirectResponse.redirect.gid == "fdc:2451234")
+        #expect(redirectResponse.redirect.reason == "kv_hint")
 
         // Test error response
         let errorData = Data("""
