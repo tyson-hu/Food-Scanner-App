@@ -427,4 +427,53 @@ struct DebugConfig {
 - **Learn from debugging** experiences
 - **Share knowledge** with the team
 
+## 🔄 Proxy Redirect Debugging
+
+### Debug Redirect Parsing
+```swift
+// Debug redirect response parsing
+func debugRedirectParsing(data: Data) {
+    do {
+        let redirect = try JSONDecoder().decode(ProxyRedirect.self, from: data)
+        print("✅ Redirect parsed successfully: \(redirect.success)")
+        print("📍 GID: \(redirect.redirect.gid)")
+        print("📝 Reason: \(redirect.redirect.reason ?? "none")")
+    } catch {
+        print("❌ Failed to parse redirect: \(error)")
+        // Check if API response format changed
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("📄 Raw response: \(jsonString)")
+        }
+    }
+}
+```
+
+### Debug Barcode Lookup Flow
+```swift
+// Debug barcode lookup with redirect handling
+func debugBarcodeLookup(barcode: String) async {
+    do {
+        let result = try await proxyClient.lookupByBarcode(barcode: barcode)
+        switch result {
+        case .fdc(let envelope):
+            print("🍎 FDC redirect successful: \(envelope.gid ?? "unknown")")
+        case .off(let envelope):
+            print("🌍 OFF redirect successful: \(envelope.gid ?? "unknown")")
+        }
+    } catch {
+        print("❌ Barcode lookup failed: \(error)")
+        // Check if it's a redirect parsing issue
+        if case ProxyError.invalidResponse = error {
+            print("🔄 Possible redirect parsing issue")
+        }
+    }
+}
+```
+
+### Common Redirect Issues
+- **Model Mismatch**: API returns `"ok"` but model expects `isSuccessful`
+- **Missing Fields**: Redirect response missing required fields
+- **Invalid GID**: GID format doesn't match expected pattern (`fdc:` or `off:`)
+- **Decoding Errors**: JSON structure doesn't match Swift model
+
 This debugging guide provides comprehensive techniques and tools for effectively debugging issues in the Food Scanner app.

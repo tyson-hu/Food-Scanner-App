@@ -236,12 +236,23 @@ public struct ProxyApiError: Decodable, Error {
 }
 
 public struct ProxyRedirect: Codable, Equatable {
-    public let isSuccessful: Bool
+    public let success: Bool
     public let redirect: RedirectInfo
 
     public struct RedirectInfo: Codable, Equatable {
         public let gid: String
         public let reason: String?
+    }
+
+    // Computed property for backward compatibility
+    public var isSuccessful: Bool {
+        success
+    }
+
+    // Custom coding keys to map from API response
+    private enum CodingKeys: String, CodingKey {
+        case success = "ok"
+        case redirect
     }
 }
 
