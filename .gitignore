@@ -124,14 +124,8 @@ fastlane/test_output/
 # =========================
 # OS-level noise
 # =========================
-.DS_Store
-.AppleDouble
-.LSOverride
 Icon?
 ._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
 
 # =========================
 # Logs & temp
@@ -140,6 +134,9 @@ Thumbs.db
 *.tmp
 *.swp
 *.lock
+/tmp/xcodebuild_*.log
+/tmp/xcodebuild_test.log
+/tmp/xcodebuild_debug.log
 
 # =========================
 # Secrets
@@ -152,3 +149,73 @@ Food Scanner/Config/Secrets.plist
 FDC API.yaml
 /AdditionalDocumentation
 Agent.md
+
+# =========================
+# Local Development
+# =========================
+# Local CI environment files
+.env.ci
+.env.local
+
+# Test artifacts
+test_urls.swift
+*.test.swift
+
+# Temporary files created during development
+*.backup
+*.orig
+*.rej
+
+# =========================
+# CI/CD Artifacts
+# =========================
+# CI-specific build artifacts
+ci-build/
+ci-test-results/
+ci-lint-results/
+
+# =========================
+# Documentation Build
+# =========================
+# Generated documentation
+docs/_build/
+docs/.doctrees/
+
+# =========================
+# Project Specific
+# =========================
+# Local CI setup artifacts
+.env.ci
+.env.local
+
+# Test files created during development
+test_urls.swift
+*.test.swift
+
+# Temporary Swift files
+*.swift.backup
+*.swift.orig
+
+# Xcode project user data (keep shared data)
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Simulator data
+simulator-data/
+
+# =========================
+# macOS Specific
+# =========================
+# macOS Finder
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS Spotlight
+.Spotlight-V100
+
+# macOS Trash
+.Trashes
+
+# macOS Thumbnails
+Thumbs.db

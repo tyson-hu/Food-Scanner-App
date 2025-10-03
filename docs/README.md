@@ -1,249 +1,242 @@
 # Food Scanner App Documentation
 
-Welcome to the comprehensive documentation for the Food Scanner iOS app. This documentation covers all aspects of the project including CI/CD, API integration, testing, and development workflows.
+Welcome to the comprehensive documentation for the Food Scanner iOS app. This documentation covers all aspects of the project including architecture, API integration, development workflows, and CI/CD.
 
 ## 📁 Documentation Structure
 
 ```
 docs/
-├── README.md                           # 📋 Main documentation index
-├── IMPROVEMENTS_SUMMARY.md             # 📊 Complete improvements summary
-├── ci/                                 # 🔧 CI/CD Documentation
-│   ├── CI_IMPROVEMENTS.md             # CI system overview & enhancements
-│   └── CI_OFFLINE_MODE.md             # Offline mode configuration guide
-├── api/                                # 🌐 API Documentation
-│   ├── README.md                       # API documentation index
-│   ├── FDC API.yaml                   # OpenAPI 3.0 specification
-│   ├── M2-03_API_DOCUMENTATION.md     # Detailed integration guide
-│   └── DSLD_INTEGRATION.md            # DSLD integration guide
-├── testing/                            # 🧪 Testing Documentation
-│   └── INTEGRATION_TESTS.md           # Integration testing guide
-└── development/                        # 💻 Development Documentation
-    └── DEVELOPMENT_GUIDE.md           # Comprehensive development guide
+├── README.md                           # 📋 This file - Main documentation index
+├── getting-started/                     # 🚀 Getting Started
+│   ├── README.md                       # Quick start guide with tree map
+│   ├── installation.md                 # Setup and installation
+│   └── first-run.md                    # Running the app for first time
+├── architecture/                        # 🏗️ Architecture
+│   ├── README.md                       # Architecture overview with tree map
+│   ├── project-structure.md            # Current project organization with tree map
+│   ├── mvvm-pattern.md                 # MVVM implementation details
+│   └── data-flow.md                    # High-level data flow overview
+├── api/                                 # 🌐 API Integration
+│   ├── README.md                       # API overview with tree map
+│   ├── data-journey.md                 # 🎯 Complete data flow from proxy to UI
+│   ├── fdc-integration.md              # FDC-specific integration details
+│   ├── off-integration.md              # OFF-specific integration details
+│   ├── proxy-service.md                # Proxy service architecture
+│   └── schemas/                        # API schemas
+│       ├── fdc-api.yaml               # OpenAPI 3.0 specification for FDC
+│       └── off-api.yaml               # OpenAPI 3.0 specification for OFF
+├── development/                         # 💻 Development
+│   ├── README.md                       # Development overview with tree map
+│   ├── local-ci-setup.md               # Local CI environment setup guide
+│   ├── coding-standards.md             # Code style and standards
+│   ├── testing.md                      # Testing guidelines
+│   └── debugging.md                    # Debugging guide
+├── ci-cd/                               # 🔧 CI/CD
+│   ├── README.md                       # CI/CD overview with tree map
+│   ├── build-process.md                # Build configuration
+│   ├── test-strategy.md                # Testing strategy
+│   └── troubleshooting.md              # Common issues
+└── changelog/                           # 📝 Change Logs
+    ├── README.md                       # Changelog overview
+    └── v0.3.0.md                       # Version 0.3.0 - Initial release + Code quality improvements
 ```
 
 ## 🚀 Quick Start
 
-### For Developers
-1. **Local Development**: See [Testing Documentation](testing/INTEGRATION_TESTS.md) for running tests
-2. **API Integration**: See [API Documentation](api/M2-03_API_DOCUMENTATION.md) for multi-source API usage
-3. **DSLD Integration**: See [DSLD Integration Guide](api/DSLD_INTEGRATION.md) for supplement support
-4. **CI Configuration**: See [CI Documentation](ci/CI_OFFLINE_MODE.md) for build system
+### For New Developers
+1. **📖 [Getting Started](getting-started/README.md)** - Quick start guide
+2. **🏗️ [Architecture Overview](architecture/README.md)** - Understand the system
+3. **🎯 [Data Journey](api/data-journey.md)** - How data flows through the system
+4. **💻 [Development Guide](development/README.md)** - Development workflows
+5. **🔧 [Local CI Setup](development/local-ci-setup.md)** - Match CI environment locally
 
-### For CI/CD
-1. **Build System**: See [CI Improvements](ci/CI_IMPROVEMENTS.md) for build reliability
-2. **Offline Mode**: See [CI Offline Mode](ci/CI_OFFLINE_MODE.md) for stable builds
-3. **Troubleshooting**: See troubleshooting sections in CI docs
+### For API Integrators
+1. **🌐 [API Overview](api/README.md)** - API integration guide
+2. **🎯 [Data Journey](api/data-journey.md)** - Complete data flow
+3. **🇺🇸 [FDC Integration](api/fdc-integration.md)** - USDA data processing
+4. **🌍 [OFF Integration](api/off-integration.md)** - Community data handling
+
+### For DevOps/CI
+1. **🔧 [CI/CD Overview](ci-cd/README.md)** - Build and deployment
+2. **🧪 [Test Strategy](ci-cd/test-strategy.md)** - Testing approach
+3. **🚨 [Troubleshooting](ci-cd/troubleshooting.md)** - Common issues
 
 ## 📋 Documentation Overview
 
-### 🔧 CI/CD Documentation
+### 🚀 Getting Started
+**Essential guides for new team members**:
+- **Quick Start**: Get up and running in minutes
+- **Installation**: Setup and configuration
+- **First Run**: Running the app for the first time
+- **Local CI Setup**: Match CI environment for consistent development
 
-#### [CI Improvements](ci/CI_IMPROVEMENTS.md)
-Comprehensive overview of CI system enhancements:
-- **Problem Analysis**: Original CI issues and challenges
-- **Solution Overview**: Multi-layered approach to prevent stuck builds
-- **New Scripts**: Enhanced test runners and simulator management
-- **Configuration**: Timeout settings and offline mode
-- **Performance Metrics**: Before/after comparison
-- **Troubleshooting**: Common issues and debug commands
+### 🏗️ Architecture
+**System design and structure**:
+- **Project Structure**: Current organization with tree maps
+- **MVVM Pattern**: Implementation details and patterns
+- **Data Flow**: High-level system flow
+- **Component Overview**: Key services and their roles
 
-#### [CI Offline Mode](ci/CI_OFFLINE_MODE.md)
-Detailed guide to the 100% offline CI configuration:
-- **Overview**: Why offline mode and its benefits
-- **Key Changes**: Reduced timeouts, pre-test reset, network exclusion
-- **Test Plans**: CI vs Local development configurations
-- **Environment Variables**: CI_OFFLINE_MODE and related settings
-- **Running Tests**: Scripts for different environments
-- **Benefits**: Stability, speed, and reliability improvements
+### 🌐 API Integration
+**Backend data processing**:
+- **Data Journey**: Complete flow from proxy to UI (⭐ **START HERE**)
+- **FDC Integration**: USDA Food Data Central processing
+- **OFF Integration**: Open Food Facts processing
+- **Proxy Service**: calry.org integration
+- **API Schemas**: OpenAPI specifications
 
-### 🌐 API Documentation
+### 💻 Development
+**Development workflows and standards**:
+- **Coding Standards**: Code style and conventions
+- **Testing**: Unit, integration, and UI testing
+- **Debugging**: Tools and techniques
+- **Best Practices**: Development guidelines
 
-#### [FDC API Specification](api/FDC API.yaml)
-OpenAPI 3.0 specification for the Food Data Central API:
-- **Endpoints**: Search, food details, and nutrient information
-- **Models**: Request/response schemas
-- **Proxy Service**: No authentication required
-- **Rate Limits**: Usage guidelines and restrictions
-
-#### [API Integration Guide](api/M2-03_API_DOCUMENTATION.md)
-Comprehensive guide to multi-source API integration:
-- **Multi-Source Support**: FDC and DSLD data sources
-- **Proxy Integration**: Uses calry.org proxy service without authentication
-- **Client Implementation**: FDCProxyClient usage
-- **Error Handling**: Comprehensive error management
-- **Caching**: Performance optimization strategies
-- **Testing**: Mock and integration testing approaches
-
-#### [DSLD Integration Guide](api/DSLD_INTEGRATION.md)
-Detailed guide to DSLD supplement integration:
-- **DSLD API Integration**: NIH's supplement database support
-- **Data Validation**: Comprehensive DSLD data quality checks
-- **Error Handling**: Supplement-specific error management
-- **Debugging Tools**: DSLD response logging and validation
-- **Testing**: DSLD integration testing and troubleshooting
-
-### 🧪 Testing Documentation
-
-#### [Integration Tests](testing/INTEGRATION_TESTS.md)
-Complete guide to integration testing:
-- **Test Configuration**: CI vs Local development setup
-- **Running Tests**: Multiple methods and scripts
-- **Test Categories**: Network-dependent vs offline tests
-- **Best Practices**: CI stability and local development
-- **Troubleshooting**: Common issues and solutions
+### 🔧 CI/CD
+**Build and deployment**:
+- **Build Process**: Configuration and setup
+- **Test Strategy**: Testing approach and coverage
+- **Troubleshooting**: Common build issues
+- **Performance**: Optimization and monitoring
 
 ## 🎯 Key Features
 
-### CI/CD System
-- ✅ **100% Offline Mode**: No network dependencies in CI
-- ✅ **Enhanced Reliability**: >99% success rate
-- ✅ **Fast Builds**: 2-3 minute CI builds
-- ✅ **Comprehensive Monitoring**: Real-time progress tracking
-- ✅ **Automatic Recovery**: Stuck build detection and recovery
+### 🍎 Core Functionality
+- **Food Search**: Text-based search with real-time results
+- **Barcode Scanning**: VisionKit-powered barcode recognition
+- **Photo Recognition**: AI-powered food recognition (coming soon)
+- **Nutrition Tracking**: Daily food intake logging
+- **Multi-Source Data**: FDC, OFF, and future DSLD support
 
-### API Integration
-- ✅ **Multi-Source Support**: FDC and DSLD data sources
-- ✅ **FDC API Integration**: Complete Food Data Central API support
-- ✅ **DSLD Integration**: Full Dietary Supplement Label Database support
-- ✅ **Product Source Detection**: Automatic detection of supported products
-- ✅ **Smart Caching**: 7-day TTL with LRU eviction
-- ✅ **Error Handling**: Professional-grade error management
-- ✅ **Mock Testing**: Comprehensive test coverage
-- ✅ **Rate Limiting**: Proper API usage management
+### 🔧 Technical Features
+- **Proxy Architecture**: Reliable data access through calry.org
+- **Smart Caching**: Intelligent caching for performance
+- **Data Normalization**: Unit conversion and standardization
+- **Error Handling**: Comprehensive error management
+- **Offline Support**: Cached data when network unavailable
 
-### Testing Strategy
-- ✅ **Dual Mode Testing**: CI offline + Local full testing
-- ✅ **Network Test Isolation**: Conditional compilation for CI
-- ✅ **Comprehensive Coverage**: Unit, integration, and UI tests
-- ✅ **Performance Testing**: Build time and reliability metrics
-- ✅ **Debugging Support**: Detailed logging and error reporting
+## 🏗️ Project Structure
 
-## 🛠️ Development Workflow
+The app follows a clean iOS-focused MVVM architecture:
 
-### Local Development
-1. **Setup**: Clone repository and open in Xcode
-2. **Testing**: Run `./scripts/test-local-network.sh` for full testing
-3. **API Development**: Use mock data for development
-4. **Debugging**: Use comprehensive logging and error reporting
-
-### CI/CD Pipeline
-1. **Automatic**: GitHub Actions handles CI builds
-2. **Offline Mode**: All tests run without network dependencies
-3. **Fast Feedback**: 2-3 minute build times
-4. **Reliable**: >99% success rate with automatic recovery
-
-### Code Quality
-1. **Linting**: SwiftLint and SwiftFormat integration
-2. **Testing**: Comprehensive test coverage
-3. **Documentation**: Up-to-date API and process documentation
-4. **Monitoring**: Performance and reliability metrics
-
-## 📊 Performance Metrics
-
-### CI Build Performance
-- **Build Time**: 2-3 minutes (offline mode)
-- **Success Rate**: >99%
-- **Retry Rate**: <5%
-- **Stuck Builds**: 0%
-
-### API Performance
-- **Cache Hit Rate**: ~80-90%
-- **Response Time**: <500ms (cached), <2s (network)
-- **Error Rate**: <1%
-- **Rate Limit Compliance**: 100%
-
-### Test Performance
-- **CI Tests**: 2-3 minutes (offline)
-- **Local Tests**: 5-7 minutes (full coverage)
-- **Test Success Rate**: >99% (CI), ~95-98% (local)
-- **Coverage**: >90%
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-#### CI Build Failures
-- **Check**: Simulator state and health
-- **Solution**: Use offline mode and pre-test reset
-- **Debug**: Review CI logs and simulator status
-
-#### API Integration Issues
-- **Check**: Network connectivity and proxy service availability
-- **Solution**: Verify proxy service connectivity and rate limiting
-- **Debug**: Use mock data and check error logs
-
-#### Test Failures
-- **Check**: Test plan configuration and environment
-- **Solution**: Use appropriate test plan for environment
-- **Debug**: Run local network tests for full debugging
-
-### Debug Commands
-
-```bash
-# Check CI offline mode
-grep -r "CI_OFFLINE_MODE" FoodScannerTests/
-
-# Run local network tests
-./scripts/test-local-network.sh
-
-# Check simulator status
-xcrun simctl list devices
-
-# Run specific test plan
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner"
-
-# Check API connectivity
-curl -I https://api.calry.org
+```
+Sources/                           # 📱 All source code
+├── Models/                        # 📋 Data Models
+│   ├── API/                       # 🌐 API models + converters
+│   │   ├── Common/               # 🔄 Shared API structures
+│   │   ├── FDC/                  # 🇺🇸 USDA Food Data Central
+│   │   └── OFF/                  # 🌍 Open Food Facts
+│   └── Services/                 # 🔧 Business Logic
+│       ├── Data/                 # 💾 Data services + processing
+│       │   ├── Caching/         # 🗄️ Cache services
+│       │   ├── Persistence/     # 💿 Database layer
+│       │   └── Processing/      # ⚙️ Data processing
+│       └── External/            # 🌍 External services
+│           └── Networking/      # 🌍 Network services
+├── Platform/                     # 📱 Platform-specific code
+│   ├── iOS/                     # 🍎 iOS-specific implementation
+│   │   ├── App/                 # 🚀 App configuration
+│   │   ├── ViewModels/          # 🧠 MVVM ViewModels
+│   │   └── Views/               # 🎨 SwiftUI Views
+│   └── Shared/                  # 🔄 Shared platform code
+└── UI/                          # 🎨 UI Layer
+    ├── Components/              # 🧩 Reusable components
+    └── Screens/                 # 📱 Screen implementations
 ```
 
-## 🚀 Future Enhancements
+## 🧪 Testing Structure
 
-### Planned Improvements
-1. **Metrics Dashboard**: Real-time CI and API performance monitoring
-2. **Test Parallelization**: Run compatible tests in parallel
-3. **Cloud Testing**: Integration with cloud-based testing services
-4. **Advanced Caching**: Persistent cache and preloading
-5. **Performance Optimization**: Further build time improvements
+Tests mirror the source structure for easy navigation:
 
-### Monitoring
-- Track build success rates and performance
-- Monitor API usage and error rates
-- Measure test coverage and execution times
-- User feedback and experience metrics
+```
+Tests/                             # 🧪 Test code
+├── Unit/                          # 🔬 Unit tests (CI-friendly)
+│   ├── Models/                    # 📋 Model tests
+│   ├── Services/                  # 🔧 Service tests
+│   └── ViewModels/                # 🧠 ViewModel tests
+└── UI/                            # 🎨 UI tests (Local only)
+    ├── Screens/                   # 📱 Screen tests
+    └── BaseUITestCase.swift       # 🧪 UI test base
+```
 
-## 📝 Contributing
+## 🎯 Data Flow Journey
 
-### Documentation Updates
-1. **Keep docs current** with code changes
-2. **Update metrics** when performance changes
-3. **Add troubleshooting** for new issues
-4. **Review accuracy** regularly
+The complete data journey from raw proxy data to cooked display data:
 
-### Code Changes
-1. **Update tests** when adding new features
-2. **Maintain offline mode** for CI stability
-3. **Follow patterns** established in existing code
-4. **Document changes** in appropriate sections
+```
+Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → Merging → Conversion → Display Models
+     ↓              ↓                    ↓              ↓            ↓         ↓           ↓
+  JSON Response  Envelope<T>         RawSource      NormalizedFood  Merged   FoodMinimalCard  UI Display
+```
+
+**📖 See [Complete Data Journey](api/data-journey.md)** for detailed technical flow with function headers and visual diagrams.
+
+## 🔧 Development Tools
+
+### Required Tools
+- **Xcode**: 26.0 or later
+- **iOS Deployment Target**: 26.0 or later
+- **Swift**: 6.2 or later
+- **macOS**: 26.0 or later (for development)
+
+### Key Dependencies
+- **SwiftUI**: Modern declarative UI framework
+- **SwiftData**: Modern data persistence
+- **VisionKit**: Barcode scanning capabilities
+- **Observation**: Reactive state management
+
+### Code Quality Tools
+- **SwiftLint**: Code style enforcement (0 violations)
+- **SwiftFormat**: Automatic code formatting (conflict-free)
+- **Custom Rules**: Project-specific linting rules
+- **CI/CD Integration**: Automated code quality checks
+
+## 📊 Project Status
+
+### ✅ Completed Features
+- Multi-source data support (FDC, OFF)
+- Barcode scanning with VisionKit
+- Smart caching and offline support
+- Comprehensive error handling
+- Clean MVVM architecture
+- CI/CD pipeline with offline mode
+- Code quality tools integration (SwiftLint + SwiftFormat)
+- Comprehensive documentation and changelog system
+
+### 🚧 In Progress
+- Photo recognition with AI
+- DSLD supplement database integration
+- Enhanced UI/UX improvements
+
+### 📋 Planned Features
+- **v0.3.1**: Food entry support for current food data
+- **Enhanced Tracking**: Improved nutrition tracking capabilities
+- **Data Management**: Better food data management and persistence
+
+## 🤝 Contributing
+
+### For Developers
+1. **Read [Getting Started](getting-started/README.md)** first
+2. **Understand [Architecture](architecture/README.md)** before coding
+3. **Follow [Coding Standards](development/coding-standards.md)**
+4. **Write tests** following [Testing Guidelines](development/testing.md)
+
+### For Documentation
+1. **Keep tree maps updated** when adding new files
+2. **Include function headers** with explanations
+3. **Use visual diagrams** for complex flows
+4. **Cross-reference** related documents
 
 ## 📞 Support
 
-### Getting Help
-1. **Check documentation** for common issues
-2. **Review troubleshooting** sections
-3. **Use debug commands** for investigation
-4. **Check CI logs** for build issues
+### Documentation Issues
+- **Missing information**: Check if it's in another document
+- **Outdated content**: Create an issue with details
+- **Unclear explanations**: Suggest improvements
 
-### Reporting Issues
-1. **Include logs** and error messages
-2. **Specify environment** (CI vs Local)
-3. **Describe steps** to reproduce
-4. **Check existing** documentation first
+### Development Issues
+- **Build problems**: See [CI/CD Troubleshooting](ci-cd/troubleshooting.md)
+- **API questions**: Check [Data Journey](api/data-journey.md)
+- **Architecture questions**: Review [Architecture Overview](architecture/README.md)
 
----
-
-**Last Updated**: September 2024  
-**Version**: 2.0 (Offline CI Mode)  
-**Status**: Production Ready ✅
-
-This documentation is maintained alongside the codebase and reflects the current state of the Food Scanner app's CI/CD system, API integration, and testing strategy.
+This documentation provides everything needed to understand, develop, and maintain the Food Scanner iOS app.

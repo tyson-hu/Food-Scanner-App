@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Food Data Central (FDC) API
+  description: USDA Food Data Central API accessed through calry.org proxy service
+  version: 1.0.0
+  contact:
+    name: Food Scanner App
+    url: https://github.com/food-scanner
+servers:
+  - url: https://api.calry.org
+    description: Production server
+paths:
+  /search:
+    get:
+      summary: Search foods
+      description: Search for foods across multiple data sources
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search term for food items
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+          description: Number of results to return
+      responses:
+        '200':
+          description: Successful search response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /foodDetails/{gid}:
+    get:
+      summary: Get food details
+      description: Get detailed information for a specific food item
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Global ID of the food item
+      responses:
+        '200':
+          description: Successful detail response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodDetailResponse'
+        '404':
+          description: Food not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /barcode/{barcode}:
+    get:
+      summary: Lookup food by barcode
+      description: Find food item by UPC/EAN barcode
+      parameters:
+        - name: barcode
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9]{8,14}$'
+          description: UPC/EAN barcode
+      responses:
+        '200':
+          description: Successful barcode lookup
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarcodeResponse'
+        '404':
+          description: Barcode not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid barcode format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Original search query
+        totalResults:
+          type: integer
+          description: Total number of results available
+        pageSize:
+          type: integer
+          description: Number of results per page
+        currentPage:
+          type: integer
+          description: Current page number
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+    SearchResult:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Global ID (e.g., fdc:123456)
+        source:
+          type: string
+          enum: [fdc, off]
+          description: Data source
+        description:
+          type: string
+          description: Food description
+        brand:
+          type: string
+          nullable: true
+          description: Brand name
+        barcode:
+          type: string
+          nullable: true
+          description: Product barcode
+        imageUrl:
+          type: string
+          nullable: true
+          description: Product image URL
+        nutritionSummary:
+          $ref: '#/components/schemas/NutritionSummary'
+    FoodDetailResponse:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Global ID
+        source:
+          type: string
+          enum: [fdc, off]
+          description: Data source
+        description:
+          type: string
+          description: Food description
+        brand:
+          type: string
+          nullable: true
+          description: Brand name
+        barcode:
+          type: string
+          nullable: true
+          description: Product barcode
+        imageUrl:
+          type: string
+          nullable: true
+          description: Product image URL
+        ingredients:
+          type: string
+          nullable: true
+          description: Ingredients text
+        nutrition:
+          type: array
+          items:
+            $ref: '#/components/schemas/Nutrient'
+        serving:
+          $ref: '#/components/schemas/Serving'
+        portions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Portion'
+        completeness:
+          $ref: '#/components/schemas/CompletenessFlags'
+    BarcodeResponse:
+      type: object
+      properties:
+        barcode:
+          type: string
+          description: Scanned barcode
+        found:
+          type: boolean
+          description: Whether product was found
+        product:
+          $ref: '#/components/schemas/FoodDetailResponse'
+    Nutrient:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Nutrient ID
+        name:
+          type: string
+          description: Nutrient name
+        amount:
+          type: number
+          description: Nutrient amount
+        unit:
+          type: string
+          description: Nutrient unit
+        basis:
+          type: string
+          enum: [per100g, perServing]
+          description: Basis for nutrient amount
+    Serving:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Serving amount
+        unit:
+          type: string
+          description: Serving unit
+        household:
+          type: string
+          nullable: true
+          description: Household measurement
+    Portion:
+      type: object
+      properties:
+        label:
+          type: string
+          description: Portion label
+        amount:
+          type: number
+          nullable: true
+          description: Portion amount
+        unit:
+          type: string
+          nullable: true
+          description: Portion unit
+        household:
+          type: string
+          description: Household measurement
+        massG:
+          type: number
+          nullable: true
+          description: Mass in grams
+        volMl:
+          type: number
+          nullable: true
+          description: Volume in milliliters
+    NutritionSummary:
+      type: object
+      properties:
+        calories:
+          type: number
+          description: Energy in kcal
+        protein:
+          type: number
+          description: Protein in grams
+        carbs:
+          type: number
+          description: Carbohydrates in grams
+        fat:
+          type: number
+          description: Fat in grams
+    CompletenessFlags:
+      type: object
+      properties:
+        core:
+          type: boolean
+          description: Core nutrition data available
+        label:
+          type: boolean
+          description: Label nutrition data available
+        micros:
+          type: boolean
+          description: Micronutrient data available
+        portions:
+          type: boolean
+          description: Portion data available
+        ingredients:
+          type: boolean
+          description: Ingredients data available
+        image:
+          type: boolean
+          description: Image data available
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: integer
+          description: Error code
+        details:
+          type: string
+          nullable: true
+          description: Additional error details

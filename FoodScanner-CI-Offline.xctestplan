@@ -14,18 +14,6 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : {
-        "suites" : [
-          {
-            "name" : "FDCProxyClientTests",
-            "testFunctions" : [
-              "retryLogicWithNetworkTimeoutError()",
-              "searchFoodsWithNetworkError()",
-              "searchFoodsWithUPCNetworkError()"
-            ]
-          }
-        ]
-      },
       "target" : {
         "containerPath" : "container:Food Scanner.xcodeproj",
         "identifier" : "842FD0C02E7E072C00CD2A5F",

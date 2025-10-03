@@ -24,41 +24,43 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		842FCEB92E7B365000CD2A5F /* Food Scanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Food Scanner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		842FD2BF2E82E2D300CD2A5F /* FoodScanner.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FoodScanner.xctestplan; sourceTree = "<group>"; };
 		846281442E88875C00BBEBF6 /* FoodScanner-CI-Offline.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "FoodScanner-CI-Offline.xctestplan"; sourceTree = "<group>"; };
+		84F634A82E8F0C8600516D5F /* Food Scanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Food Scanner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		84F637002E8F1B5700516D5F /* FoodScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		84F637012E8F1B5700516D5F /* FoodScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		842FD2A92E80A74800CD2A5F /* Exceptions for "Food Scanner" folder in "Food Scanner" target */ = {
+		84F634B12E8F19CB00516D5F /* Exceptions for "Tests" folder in "FoodScannerTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Config/Config.Debug.xcconfig,
-				Config/Config.Release.xcconfig,
+				UI/BaseUITestCase.swift,
+				UI/Screens/AddFlowUITests.swift,
+				UI/Screens/FoodScannerUITests.swift,
+				UI/Screens/FoodScannerUITestsLaunchTests.swift,
 			);
-			target = 842FCEB82E7B365000CD2A5F /* Food Scanner */;
+			target = 842FD0C02E7E072C00CD2A5F /* FoodScannerTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		842FCEBB2E7B365000CD2A5F /* Food Scanner */ = {
+		842FCEBB2E7B365000CD2A5F /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		842FD0C22E7E072C00CD2A5F /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				842FD2A92E80A74800CD2A5F /* Exceptions for "Food Scanner" folder in "Food Scanner" target */,
+				84F634B12E8F19CB00516D5F /* Exceptions for "Tests" folder in "FoodScannerTests" target */,
 			);
-			path = "Food Scanner";
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		842FD0C22E7E072C00CD2A5F /* FoodScannerTests */ = {
+		842FD0CF2E7E073700CD2A5F /* Tests/UI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FoodScannerTests;
-			sourceTree = "<group>";
-		};
-		842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FoodScannerUITests;
+			path = Tests/UI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -93,21 +95,13 @@
 			children = (
 				846281442E88875C00BBEBF6 /* FoodScanner-CI-Offline.xctestplan */,
 				842FD2BF2E82E2D300CD2A5F /* FoodScanner.xctestplan */,
-				842FCEBB2E7B365000CD2A5F /* Food Scanner */,
-				842FD0C22E7E072C00CD2A5F /* FoodScannerTests */,
-				842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */,
-				842FCEBA2E7B365000CD2A5F /* Products */,
+				842FCEBB2E7B365000CD2A5F /* Sources */,
+				842FD0C22E7E072C00CD2A5F /* Tests */,
+				842FD0CF2E7E073700CD2A5F /* Tests/UI */,
+				84F634A82E8F0C8600516D5F /* Food Scanner.app */,
+				84F637002E8F1B5700516D5F /* FoodScannerTests.xctest */,
+				84F637012E8F1B5700516D5F /* FoodScannerUITests.xctest */,
 			);
-			sourceTree = "<group>";
-		};
-		842FCEBA2E7B365000CD2A5F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				842FCEB92E7B365000CD2A5F /* Food Scanner.app */,
-				842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */,
-				842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,13 +120,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				842FCEBB2E7B365000CD2A5F /* Food Scanner */,
+				842FCEBB2E7B365000CD2A5F /* Sources */,
 			);
 			name = "Food Scanner";
 			packageProductDependencies = (
 			);
 			productName = "Food Scanner";
-			productReference = 842FCEB92E7B365000CD2A5F /* Food Scanner.app */;
+			productReference = 84F634A82E8F0C8600516D5F /* Food Scanner.app */;
 			productType = "com.apple.product-type.application";
 		};
 		842FD0C02E7E072C00CD2A5F /* FoodScannerTests */ = {
@@ -149,13 +143,13 @@
 				842FD0C62E7E072C00CD2A5F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				842FD0C22E7E072C00CD2A5F /* FoodScannerTests */,
+				842FD0C22E7E072C00CD2A5F /* Tests */,
 			);
 			name = FoodScannerTests;
 			packageProductDependencies = (
 			);
 			productName = FoodScannerTests;
-			productReference = 842FD0C12E7E072C00CD2A5F /* FoodScannerTests.xctest */;
+			productReference = 84F637002E8F1B5700516D5F /* FoodScannerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		842FD0CD2E7E073700CD2A5F /* FoodScannerUITests */ = {
@@ -172,13 +166,13 @@
 				842FD0D52E7E073700CD2A5F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				842FD0CF2E7E073700CD2A5F /* FoodScannerUITests */,
+				842FD0CF2E7E073700CD2A5F /* Tests/UI */,
 			);
 			name = FoodScannerUITests;
 			packageProductDependencies = (
 			);
 			productName = FoodScannerUITests;
-			productReference = 842FD0CE2E7E073700CD2A5F /* FoodScannerUITests.xctest */;
+			productReference = 84F637012E8F1B5700516D5F /* FoodScannerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -214,7 +208,7 @@
 			mainGroup = 842FCEB02E7B365000CD2A5F;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 842FCEBA2E7B365000CD2A5F /* Products */;
+			productRefGroup = 842FCEB02E7B365000CD2A5F;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -289,6 +283,8 @@
 /* Begin XCBuildConfiguration section */
 		842FCEC22E7B365100CD2A5F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Sources */;
+			baseConfigurationReferenceRelativePath = Config/Config.Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -348,12 +344,18 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		842FCEC32E7B365100CD2A5F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Sources */;
+			baseConfigurationReferenceRelativePath = Config/Config.Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -405,18 +407,21 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		842FCEC52E7B365100CD2A5F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Food Scanner */;
-			baseConfigurationReferenceRelativePath = Config/Config.Debug.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EQ8K2UN7YU;
@@ -437,7 +442,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.3;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = tysonhu.foodscanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -449,18 +454,17 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		842FCEC62E7B365100CD2A5F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Food Scanner */;
-			baseConfigurationReferenceRelativePath = Config/Config.Release.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EQ8K2UN7YU;
@@ -481,7 +485,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.3;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = tysonhu.foodscanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -493,7 +497,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -517,7 +521,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Food Scanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Food Scanner";
 				XROS_DEPLOYMENT_TARGET = 26.0;
@@ -543,7 +547,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Food Scanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Food Scanner";
 				XROS_DEPLOYMENT_TARGET = 26.0;
@@ -564,7 +568,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Food Scanner";
 			};
@@ -584,7 +588,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Food Scanner";
 			};
