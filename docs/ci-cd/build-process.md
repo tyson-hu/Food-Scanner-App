@@ -283,6 +283,24 @@ jobs:
         run: xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-CI-Offline"
 ```
 
+### Security Scanning
+
+#### CodeQL (Temporarily Disabled)
+**Status**: CodeQL security scanning is currently disabled in our GitHub Actions workflow.
+
+**Reason**: CodeQL does not yet support:
+- **Xcode 26.0.0**: Latest Xcode version used in our project
+- **Swift 6.2**: Latest Swift version with strict concurrency
+- **iOS 26**: Latest iOS target deployment
+
+**Alternative Security Measures**:
+- **Dependency Scanning**: Automated dependency vulnerability scanning
+- **Manual Code Review**: Comprehensive code review process
+- **Static Analysis**: SwiftLint and SwiftFormat for code quality
+- **Build Validation**: Comprehensive CI/CD pipeline with quality gates
+
+**Re-enablement**: CodeQL will be re-enabled once GitHub Actions supports Xcode 26 and Swift 6.2.
+
 ### Local CI
 ```bash
 # Run local CI

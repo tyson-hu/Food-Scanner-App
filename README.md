@@ -1,6 +1,25 @@
 # Food Scanner
 
-A modern iOS app for tracking nutrition and food intake, built with SwiftUI and SwiftData.
+A modern iOS app for tracking nutrition and food intake, built with SwiftUI, SwiftData, and Swift 6.2 with strict concurrency.
+
+## 🚀 Project Status
+
+**Current Version**: 0.3.0  
+**Swift Version**: 6.2 with strict concurrency  
+**Xcode Version**: 26.0.0  
+**iOS Target**: 26.0+  
+**Architecture**: MVVM with comprehensive service layer
+
+### ⚠️ CodeQL Security Scanning
+
+**Temporarily Disabled**: CodeQL security scanning is currently disabled in our GitHub Actions workflow because:
+
+- **Xcode 26 Support**: CodeQL does not yet support Xcode 26.0.0
+- **Swift 6.2 Compatibility**: CodeQL lacks full compatibility with Swift 6.2 strict concurrency
+- **CI Pipeline**: We maintain comprehensive CI/CD with linting, building, and testing
+- **Security**: We use alternative security practices including dependency scanning and manual code review
+
+**Re-enablement**: CodeQL will be re-enabled once GitHub Actions supports Xcode 26 and Swift 6.2.
 
 ## Features
 
@@ -45,14 +64,42 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI and 
 ## Setup
 
 ### Prerequisites
-- Xcode 16.0+
-- iOS 18.0+ target
-- Swift 6.0+
+- **Xcode 26.0.0+**: Latest Xcode version with iOS 26 support
+- **iOS 26.0+**: Target deployment for latest iOS features
+- **Swift 6.2**: Latest Swift version with strict concurrency
+- **macOS**: Compatible with Xcode 26.0.0 requirements
 
 ### Installation
 1. Clone the repository
 2. Open `Food Scanner.xcodeproj` in Xcode
 3. Build and run on simulator or device
+
+### Local Development Environment
+
+The project includes comprehensive local CI scripts that replicate the GitHub Actions environment:
+
+```bash
+# Setup local CI environment
+./scripts/setup-local-ci.sh
+
+# Build with CI-equivalent settings
+./scripts/build-local-ci.sh
+
+# Run tests with CI-equivalent settings
+./scripts/test-local-ci.sh
+
+# Run linting checks
+./scripts/lint-local-ci.sh
+```
+
+**Environment Variables**:
+```bash
+export CI_OFFLINE_MODE=YES
+export NETWORK_TESTING_DISABLED=YES
+export ENABLE_PREVIEWS=NO
+export SWIFT_STRICT_CONCURRENCY=complete
+export OTHER_SWIFT_FLAGS='-warnings-as-errors'
+```
 
 ### Configuration
 The app uses environment-based configuration:
@@ -203,10 +250,11 @@ The app integrates with the Food Data Central (FDC) API through a proxy service:
 4. Submit pull request with proper documentation
 
 ### Code Standards
-- **Swift 6.0**: Modern Swift with strict concurrency
-- **SwiftUI**: Declarative UI patterns
-- **Testing**: Comprehensive test coverage
-- **Documentation**: Clear code documentation and comments
+- **Swift 6.2**: Latest Swift with complete strict concurrency
+- **SwiftUI**: Declarative UI patterns with iOS 26 features
+- **Testing**: Comprehensive test coverage with CI-equivalent settings
+- **Documentation**: Clear code documentation and comprehensive guides
+- **Code Quality**: Zero lint violations with SwiftLint and SwiftFormat
 
 ### Pull Request Requirements
 - [ ] iOS 26 SDK; no deprecated APIs
