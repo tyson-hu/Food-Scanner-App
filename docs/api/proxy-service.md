@@ -282,6 +282,56 @@ class ProxyCache {
 
 ## 🔧 Configuration
 
+### API Configuration Service
+The app uses a configurable API setup that reads from `.xcconfig` files and `Info.plist`:
+
+```swift
+public struct APIConfiguration: Sendable {
+    public let baseURL: URL
+    public let basePath: String
+
+    public init() throws {
+        guard let infoDictionary = Bundle.main.infoDictionary else {
+            throw APIConfigurationError.missingInfoPlist
+        }
+
+        guard let scheme = infoDictionary["APIScheme"] as? String,
+              let host = infoDictionary["APIHost"] as? String else {
+            throw APIConfigurationError.invalidBaseURL
+        }
+
+        guard let basePath = infoDictionary["APIBasePath"] as? String else {
+            throw APIConfigurationError.missingBasePath
+        }
+
+        guard let baseURL = URL(string: "\(scheme)://\(host)") else {
+            throw APIConfigurationError.invalidBaseURL
+        }
+
+        self.baseURL = baseURL
+        self.basePath = basePath
+    }
+}
+```
+
+### Build Configuration (.xcconfig)
+```xcconfig
+// API Configuration
+API_SCHEME = https
+API_HOST = api.calry.org
+API_BASE_PATH = /v1
+```
+
+### Info.plist Configuration
+```xml
+<key>APIScheme</key>
+<string>$(API_SCHEME)</string>
+<key>APIHost</key>
+<string>$(API_HOST)</string>
+<key>APIBasePath</key>
+<string>$(API_BASE_PATH)</string>
+```
+
 ### Environment Settings
 ```swift
 enum ProxyEnvironment {

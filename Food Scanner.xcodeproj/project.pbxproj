@@ -283,6 +283,8 @@
 /* Begin XCBuildConfiguration section */
 		842FCEC22E7B365100CD2A5F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Sources */;
+			baseConfigurationReferenceRelativePath = Config/Config.Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -352,6 +354,8 @@
 		};
 		842FCEC32E7B365100CD2A5F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 842FCEBB2E7B365000CD2A5F /* Sources */;
+			baseConfigurationReferenceRelativePath = Config/Config.Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

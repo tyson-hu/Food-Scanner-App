@@ -19,13 +19,17 @@ public struct APIConfiguration: Sendable {
             throw APIConfigurationError.missingInfoPlist
         }
 
-        guard let baseURLString = infoDictionary["APIBaseURL"] as? String,
-              let baseURL = URL(string: baseURLString) else {
+        guard let scheme = infoDictionary["APIScheme"] as? String,
+              let host = infoDictionary["APIHost"] as? String else {
             throw APIConfigurationError.invalidBaseURL
         }
 
         guard let basePath = infoDictionary["APIBasePath"] as? String else {
             throw APIConfigurationError.missingBasePath
+        }
+
+        guard let baseURL = URL(string: "\(scheme)://\(host)") else {
+            throw APIConfigurationError.invalidBaseURL
         }
 
         self.baseURL = baseURL

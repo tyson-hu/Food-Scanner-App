@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>APIBaseURL</key>
-	<string>https://api.calry.org</string>
+	<key>APIScheme</key>
+	<string>$(API_SCHEME)</string>
+	<key>APIHost</key>
+	<string>$(API_HOST)</string>
 	<key>APIBasePath</key>
-	<string>/v1</string>
+	<string>$(API_BASE_PATH)</string>
 	<key>FeatureFDCRemoteDefault</key>
 	<string>$(FEATURE_FDC_REMOTE)</string>
 	<key>NSCameraUsageDescription</key>

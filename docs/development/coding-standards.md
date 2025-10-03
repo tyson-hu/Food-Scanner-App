@@ -381,6 +381,75 @@ let searchResults = response.searchResults // ✅
 let processedData = processSearchResults(searchResults) // ✅
 ```
 
+## 🔧 Configuration Management
+
+### API Configuration Standards
+The app uses a centralized configuration system for API endpoints and settings:
+
+#### .xcconfig Files
+```xcconfig
+// API Configuration
+API_SCHEME = https
+API_HOST = api.calry.org
+API_BASE_PATH = /v1
+
+// Feature Flags
+FEATURE_FDC_REMOTE = 0
+```
+
+#### Info.plist Integration
+```xml
+<key>APIScheme</key>
+<string>$(API_SCHEME)</string>
+<key>APIHost</key>
+<string>$(API_HOST)</string>
+<key>APIBasePath</key>
+<string>$(API_BASE_PATH)</string>
+```
+
+#### APIConfiguration Service
+```swift
+public struct APIConfiguration: Sendable {
+    public let baseURL: URL
+    public let basePath: String
+
+    public init() throws {
+        guard let infoDictionary = Bundle.main.infoDictionary else {
+            throw APIConfigurationError.missingInfoPlist
+        }
+
+        guard let scheme = infoDictionary["APIScheme"] as? String,
+              let host = infoDictionary["APIHost"] as? String else {
+            throw APIConfigurationError.invalidBaseURL
+        }
+
+        guard let basePath = infoDictionary["APIBasePath"] as? String else {
+            throw APIConfigurationError.missingBasePath
+        }
+
+        guard let baseURL = URL(string: "\(scheme)://\(host)") else {
+            throw APIConfigurationError.invalidBaseURL
+        }
+
+        self.baseURL = baseURL
+        self.basePath = basePath
+    }
+}
+```
+
+### Configuration Best Practices
+- **Split URLs**: Use separate scheme, host, and path components to avoid `.xcconfig` comment issues
+- **Environment-specific**: Different values for Debug vs Release builds
+- **Type safety**: Validate configuration at initialization time
+- **Error handling**: Provide clear error messages for configuration issues
+- **No hardcoding**: All API endpoints should be configurable
+
+### .xcconfig Gotchas
+- **Comments**: `//` starts a comment, so `https://api.calry.org` becomes `https:`
+- **Quotes**: Use quotes for URLs: `API_BASE_URL = "https://api.calry.org"`
+- **Variables**: Use `$(VARIABLE)` syntax in Info.plist for variable substitution
+- **Build settings**: Verify with `xcodebuild -showBuildSettings | grep API_`
+
 ## 🔧 Code Formatting
 
 ### SwiftFormat Configuration

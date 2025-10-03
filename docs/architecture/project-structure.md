@@ -56,6 +56,8 @@ Food Scanner/
 │   │   │       └── Utilities/          # 🛠️ Unit conversion utilities
 │   │   │           ├── UnitConversion.swift                # Unit conversion
 │   │   │           └── ProductSourceDetection.swift        # Source detection
+│   │   ├── Internal/                   # 🔧 Internal services
+│   │   │   └── APIConfiguration.swift                     # API configuration service
 │   │   └── Networking/                 # 🌍 Network services
 │   │       ├── FoodDataClient.swift                    # Base API client protocol
 │   │       ├── ProxyClient.swift                       # Proxy API client
@@ -161,22 +163,41 @@ Food Scanner/
 ### 3. **Services/ Structure**
 **Purpose**: Logical grouping by functionality
 - **Data/**: All data-related services (Caching, Persistence, Processing)
+- **Internal/**: Internal configuration and utility services
 - **Networking/**: External API communication
 - **Processing/**: Data transformation and normalization
 
-### 4. **App/ Configuration**
+### 4. **API Configuration Service**
+**Purpose**: Centralized API configuration management
+- **APIConfiguration.swift**: Reads configuration from `.xcconfig` and `Info.plist`
+- **Split components**: Scheme, host, and path for flexible configuration
+- **Environment support**: Easy switching between Debug/Release configurations
+- **Type safety**: Compile-time configuration validation
 **Purpose**: App-level configuration and setup
 - **App/**: Main app entry point and configuration
 - **Config/**: Configuration files and settings
 - **Clean separation** from business logic
 
-### 5. **Views/ and ViewModels/ Separation**
+### 4. **API Configuration Service**
+**Purpose**: Centralized API configuration management
+- **APIConfiguration.swift**: Reads configuration from `.xcconfig` and `Info.plist`
+- **Split components**: Scheme, host, and path for flexible configuration
+- **Environment support**: Easy switching between Debug/Release configurations
+- **Type safety**: Compile-time configuration validation
+
+### 5. **App/ Configuration**
+**Purpose**: App-level configuration and setup
+- **App/**: Main app entry point and configuration
+- **Config/**: Configuration files and settings
+- **Clean separation** from business logic
+
+### 6. **Views/ and ViewModels/ Separation**
 **Purpose**: Clean MVVM separation
 - **Views/**: SwiftUI view implementations
 - **ViewModels/**: Business logic for views
 - **Clear boundaries** between presentation and logic
 
-### 6. **Tests/ Mirroring**
+### 7. **Tests/ Mirroring**
 **Purpose**: Easy test navigation
 - **Unit/**: Unit tests (CI-friendly)
 - **UI/**: UI tests (Local only)
