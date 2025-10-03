@@ -64,7 +64,7 @@ struct FoodDataCachedClient: FoodDataClient {
                 pageSize: pageSize
             )
         }
-        if let cachedResults = cachedResults {
+        if let cachedResults {
             return cachedResults
         }
 
@@ -88,7 +88,7 @@ struct FoodDataCachedClient: FoodDataClient {
         let cachedResponse = await MainActor.run {
             cacheService.cachedFoodDetails(for: fdcId)
         }
-        if let cachedResponse = cachedResponse {
+        if let cachedResponse {
             return cachedResponse.toFDCFoodDetails()
         }
 
@@ -108,7 +108,7 @@ struct FoodDataCachedClient: FoodDataClient {
         let cachedResponse = await MainActor.run {
             cacheService.cachedFoodDetails(for: fdcId)
         }
-        if let cachedResponse = cachedResponse {
+        if let cachedResponse {
             return cachedResponse
         }
 
