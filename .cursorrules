@@ -181,11 +181,47 @@ let url = try apiConfig.url(for: "/endpoint")
 
 ## Git Workflow & Quality
 
+### Pre-Commit & Pre-Push Requirements (MANDATORY)
+Before ANY commit or push operation, you MUST:
+
+1. **Run Lint Check**:
+   ```bash
+   ./scripts/lint-local-ci.sh
+   ```
+   - **SwiftLint**: Must show 0 violations
+   - **SwiftFormat**: Must show 0 files require formatting
+   - **Failure**: If linting fails, fix all issues before proceeding
+
+2. **Run Build Check**:
+   ```bash
+   ./scripts/build-local-ci.sh
+   ```
+   - **Build Success**: Must complete without errors or warnings
+   - **Swift 6 Compliance**: Must pass strict concurrency checks
+   - **Failure**: If build fails, fix all issues before proceeding
+
+3. **Run Test Check** (if tests exist):
+   ```bash
+   ./scripts/test-local-ci.sh
+   ```
+   - **Test Success**: All tests must pass
+   - **Coverage**: Maintain test coverage standards
+   - **Failure**: If tests fail, fix all issues before proceeding
+
+4. **Git Status Check**:
+   ```bash
+   git status
+   ```
+   - **Clean Working Tree**: No uncommitted changes
+   - **Staged Changes**: Only intended changes are staged
+   - **Untracked Files**: Verify no unwanted files are present
+
 ### Commit Standards
 - **Conventional Commits**: `feat:`, `fix:`, `docs:`, `refactor:`, etc.
 - **Detailed Messages**: Comprehensive change descriptions
 - **Categorized Changes**: Organized by type (cleanup, docs, scripts, etc.)
 - **Emoji Usage**: Visual indicators for different change types
+- **Pre-Commit Validation**: Always run lint and build checks first
 
 ### .gitignore Configuration
 - **Build Artifacts**: `build/`, `DerivedData/`
@@ -276,6 +312,9 @@ let url = try apiConfig.url(for: "/endpoint")
 - **Testing**: Consider testability and provide test examples
 - **Documentation**: Update relevant documentation
 - **Performance**: Consider performance implications
+- **Lint Compliance**: ALWAYS run lint checks before any commit or push
+- **Build Validation**: ALWAYS run build checks before any commit or push
+- **Zero Tolerance**: No lint violations or build failures are acceptable
 
 ## Mandatory Post-Change Actions
 
@@ -365,8 +404,12 @@ Before considering any task complete, verify:
 5. Update project structure docs
 6. Clean up code and temporary files
 7. Verify all documentation is consistent
-8. Run final checks (build, test, lint)
-9. Commit with comprehensive message
+8. Run lint check: ./scripts/lint-local-ci.sh
+9. Run build check: ./scripts/build-local-ci.sh
+10. Run test check: ./scripts/test-local-ci.sh (if applicable)
+11. Check git status: git status
+12. Commit with comprehensive message
+13. Push to remote repository
 ```
 
 **CRITICAL**: These actions are MANDATORY for every change. Do not consider any task complete without performing these documentation updates and cleanup actions.
