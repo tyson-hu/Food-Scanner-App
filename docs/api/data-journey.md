@@ -46,8 +46,8 @@ func searchFoods(query: String, pageSize: Int?) async throws -> ProxySearchRespo
 // Fetches detailed food information by GID
 func getFoodDetails(gid: String) async throws -> ProxyFoodDetailResponse
 
-// Looks up food by barcode
-func lookupBarcode(_ barcode: String) async throws -> ProxyBarcodeResponse
+// Looks up food by barcode (returns union type for FDC or OFF)
+func lookupByBarcode(barcode: String) async throws -> BarcodeLookupResult
 ```
 
 **What happens**: Raw JSON responses from calry.org proxy service containing FDC or OFF data.
@@ -73,9 +73,47 @@ struct Envelope<T: Decodable>: Decodable {
 // Type aliases for specific data sources
 typealias FdcEnvelope = Envelope<FdcFood>
 typealias OffEnvelope = Envelope<OffProduct>
+
+// Union type for barcode lookup results (can be either FDC or OFF)
+enum BarcodeLookupResult: Codable {
+    case fdc(FdcEnvelope)
+    case off(Envelope<OffReadResponse>)
+}
 ```
 
 **What happens**: Raw JSON becomes a structured envelope with metadata about the data source and timing.
+
+### Redirect Handling
+**Location**: `Sources/Services/Networking/ProxyClient.swift`
+
+When barcode lookups result in redirects, the system intelligently handles both FDC and OFF redirects:
+
+**Key Functions**:
+```swift
+// Handles redirect responses from barcode lookup
+func followRedirect(_ redirect: ProxyRedirect) async throws -> BarcodeLookupResult
+
+// Fetches FDC details for FDC redirects
+func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcFood>
+
+// Fetches OFF details for OFF redirects  
+func getOFFProductDirect(barcode: String) async throws -> Envelope<OffReadResponse>
+```
+
+**Redirect Logic**:
+```swift
+if gid.hasPrefix("fdc:") {
+    // FDC redirect: Return actual FDC data
+    let fdcEnvelope = try await getFoodDetails(fdcId: fdcId)
+    return .fdc(fdcEnvelope)
+} else if gid.hasPrefix("off:") {
+    // OFF redirect: Return actual OFF data
+    let offEnvelope = try await getOFFProductDirect(barcode: barcode)
+    return .off(offEnvelope)
+}
+```
+
+**What happens**: Barcode lookups that redirect to FDC return FDC data, redirects to OFF return OFF data. No more confusing data conversions!
 
 ---
 

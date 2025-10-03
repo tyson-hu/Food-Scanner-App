@@ -30,6 +30,48 @@ public struct Envelope<T: Codable>: Codable {
 public typealias FdcEnvelope = Envelope<FdcFood>
 public typealias OffEnvelope = Envelope<OffProduct>
 
+// Union type for barcode lookup results (can be either FDC or OFF)
+public enum BarcodeLookupResult: Codable {
+    case fdc(FdcEnvelope)
+    case off(Envelope<OffReadResponse>)
+
+    public var gid: String {
+        switch self {
+        case let .fdc(envelope):
+            return envelope.gid ?? "unknown"
+        case let .off(envelope):
+            return envelope.gid ?? "unknown"
+        }
+    }
+
+    public var source: RawSource {
+        switch self {
+        case let .fdc(envelope):
+            return envelope.source
+        case let .off(envelope):
+            return envelope.source
+        }
+    }
+
+    public var barcode: String? {
+        switch self {
+        case let .fdc(envelope):
+            return envelope.barcode
+        case let .off(envelope):
+            return envelope.barcode
+        }
+    }
+
+    public var fetchedAt: String {
+        switch self {
+        case let .fdc(envelope):
+            return envelope.fetchedAt
+        case let .off(envelope):
+            return envelope.fetchedAt
+        }
+    }
+}
+
 // MARK: - FDC (USDA FoodData Central) raw model
 
 public enum FdcDataType: String, Codable {

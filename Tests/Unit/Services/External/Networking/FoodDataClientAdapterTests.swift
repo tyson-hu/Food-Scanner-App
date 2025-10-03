@@ -47,14 +47,14 @@ struct FoodDataClientAdapterTests {
             return offProductResponse ?? createEmptyOffEnvelope()
         }
 
-        func lookupByBarcode(barcode: String) async throws -> Envelope<OffReadResponse> {
+        func lookupByBarcode(barcode: String) async throws -> BarcodeLookupResult {
             if let error { throw error }
-            return barcodeLookupResponse ?? createEmptyOffEnvelope()
+            return .off(barcodeLookupResponse ?? createEmptyOffEnvelope())
         }
 
-        func followRedirect(_ redirect: ProxyRedirect) async throws -> Envelope<OffReadResponse> {
+        func followRedirect(_ redirect: ProxyRedirect) async throws -> BarcodeLookupResult {
             if let error { throw error }
-            return createEmptyOffEnvelope()
+            return .off(createEmptyOffEnvelope())
         }
 
         private func createEmptyFdcEnvelope() -> Envelope<FdcFood> {

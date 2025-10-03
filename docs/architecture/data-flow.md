@@ -62,7 +62,7 @@ User Input → SearchViewModel → FoodDataClient → ProxyClient → API → Re
 
 ### 2. **Barcode Flow**
 ```
-Camera Input → ScannerViewModel → Barcode Detection → Product Lookup → API → Response → Display
+Camera Input → ScannerViewModel → Barcode Detection → Product Lookup → Redirect Handling → Data Processing → Display
 ```
 
 **Detailed Steps**:
@@ -70,9 +70,16 @@ Camera Input → ScannerViewModel → Barcode Detection → Product Lookup → A
 2. **ScannerViewModel** processes image
 3. **VisionKit detects** barcode
 4. **Product lookup** via API
-5. **API returns** product data
-6. **Normalization** processes data
-7. **UI displays** product info
+5. **Redirect handling** determines data source (FDC or OFF)
+6. **FDC redirects** return actual FDC data
+7. **OFF redirects** return actual OFF data
+8. **Normalization** processes data based on source
+9. **UI displays** product info
+
+**Redirect Logic**:
+- **FDC Redirects**: `BarcodeLookupResult.fdc(FdcEnvelope)` - Returns actual FDC data
+- **OFF Redirects**: `BarcodeLookupResult.off(Envelope<OffReadResponse>)` - Returns actual OFF data
+- **No Conversion**: Preserves original data source and quality
 
 ### 3. **Logging Flow**
 ```

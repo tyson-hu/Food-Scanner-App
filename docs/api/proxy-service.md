@@ -64,8 +64,8 @@ func searchFoods(query: String, pageSize: Int?) async throws -> ProxySearchRespo
 // Get detailed food information
 func getFoodDetails(gid: String) async throws -> ProxyFoodDetailResponse
 
-// Lookup food by barcode
-func lookupBarcode(_ barcode: String) async throws -> ProxyBarcodeResponse
+// Lookup food by barcode (returns union type for FDC or OFF)
+func lookupByBarcode(barcode: String) async throws -> BarcodeLookupResult
 
 // Handle network errors and retries
 func handleNetworkError(_ error: Error) -> ProxyError
@@ -121,9 +121,42 @@ GET /barcode/{barcode}
 **Parameters**:
 - `barcode`: UPC/EAN barcode (required)
 
-**Response**: `ProxyBarcodeResponse`
+**Response**: `BarcodeLookupResult` (union type)
+
+**Response Types**:
+- `BarcodeLookupResult.fdc(FdcEnvelope)` - When barcode redirects to FDC
+- `BarcodeLookupResult.off(Envelope<OffReadResponse>)` - When barcode redirects to OFF
+
+**Redirect Handling**:
+The barcode endpoint intelligently handles redirects:
+- **FDC Redirects**: Returns actual FDC data (`.fdc` case)
+- **OFF Redirects**: Returns actual OFF data (`.off` case)
+- **No Data Conversion**: Preserves original data source and quality
 
 ## 📋 Response Models
+
+### Barcode Lookup Result
+```swift
+// Union type for barcode lookup results (can be either FDC or OFF)
+enum BarcodeLookupResult: Codable {
+    case fdc(FdcEnvelope)
+    case off(Envelope<OffReadResponse>)
+    
+    var gid: String {
+        switch self {
+        case .fdc(let envelope): return envelope.gid ?? "unknown"
+        case .off(let envelope): return envelope.gid ?? "unknown"
+        }
+    }
+    
+    var source: RawSource {
+        switch self {
+        case .fdc(let envelope): return envelope.source
+        case .off(let envelope): return envelope.source
+        }
+    }
+}
+```
 
 ### Search Response
 ```swift

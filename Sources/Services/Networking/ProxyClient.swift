@@ -40,12 +40,12 @@ public protocol ProxyClient: Sendable {
     // MARK: - GTIN/UPC Lookup
 
     /// Lookup food by barcode with FDC fallback to OFF (GET /v1/gtin/:barcode)
-    func lookupByBarcode(barcode: String) async throws -> Envelope<OffReadResponse>
+    func lookupByBarcode(barcode: String) async throws -> BarcodeLookupResult
 
     // MARK: - Redirect Handling
 
     /// Handle redirect responses from barcode lookup
-    func followRedirect(_ redirect: ProxyRedirect) async throws -> Envelope<OffReadResponse>
+    func followRedirect(_ redirect: ProxyRedirect) async throws -> BarcodeLookupResult
 }
 
 // MARK: - Proxy Client Implementation
@@ -158,7 +158,7 @@ public struct ProxyClientImpl: ProxyClient {
 
     // MARK: - GTIN/UPC Lookup
 
-    public func lookupByBarcode(barcode: String) async throws -> Envelope<OffReadResponse> {
+    public func lookupByBarcode(barcode: String) async throws -> BarcodeLookupResult {
         // Check cache first
         let cacheKey = "barcode:\(barcode)"
         if let cachedResponse = cache.get(for: cacheKey) {
@@ -202,7 +202,8 @@ public struct ProxyClientImpl: ProxyClient {
             }
 
             // Try to decode as the new envelope format
-            return try JSONDecoder().decode(Envelope<OffReadResponse>.self, from: data)
+            let offEnvelope = try JSONDecoder().decode(Envelope<OffReadResponse>.self, from: data)
+            return .off(offEnvelope)
         }
 
         // Cache successful response
@@ -212,7 +213,7 @@ public struct ProxyClientImpl: ProxyClient {
 
     // MARK: - Redirect Handling
 
-    public func followRedirect(_ redirect: ProxyRedirect) async throws -> Envelope<OffReadResponse> {
+    public func followRedirect(_ redirect: ProxyRedirect) async throws -> BarcodeLookupResult {
         try await followRedirect(redirect, depth: 0, visited: [])
     }
 
@@ -220,7 +221,7 @@ public struct ProxyClientImpl: ProxyClient {
         _ redirect: ProxyRedirect,
         depth: Int,
         visited: Set<String>
-    ) async throws -> Envelope<OffReadResponse> {
+    ) async throws -> BarcodeLookupResult {
         // Prevent infinite redirect loops
         guard depth < 5 else {
             throw ProxyError.invalidResponse
@@ -238,19 +239,20 @@ public struct ProxyClientImpl: ProxyClient {
 
         if gid.hasPrefix("fdc:") {
             let fdcIdString = String(gid.dropFirst(4)) // Remove "fdc:" prefix
-            guard Int(fdcIdString) != nil else {
+            guard let fdcId = Int(fdcIdString) else {
                 throw ProxyError.invalidGID(gid)
             }
-            // For FDC redirects, we need to return an FDC envelope, but the method signature expects OffReadResponse
-            // This is a design issue - we should handle this differently
-            throw ProxyError.invalidResponse // FDC redirects should be handled differently
+            // Fetch FDC details and return as FDC result
+            let fdcEnvelope = try await getFoodDetails(fdcId: fdcId)
+            return .fdc(fdcEnvelope)
         } else if gid.hasPrefix("off:") {
             let barcode = String(gid.dropFirst(4)) // Remove "off:" prefix
             if barcode.isEmpty {
                 throw ProxyError.invalidGID(gid)
             }
             // Call the direct OFF product endpoint without redirect handling to avoid loops
-            return try await getOFFProductDirect(barcode: barcode)
+            let offEnvelope = try await getOFFProductDirect(barcode: barcode)
+            return .off(offEnvelope)
         } else {
             throw ProxyError.invalidGID(gid)
         }
@@ -259,7 +261,7 @@ public struct ProxyClientImpl: ProxyClient {
     private func getOFFProductDirect(barcode: String) async throws -> Envelope<OffReadResponse> {
         // Check cache first
         let cacheKey = "off:\(barcode)"
-        if let cachedResponse = cache.get(for: cacheKey) {
+        if let cachedResponse = cache.getOff(for: cacheKey) {
             return cachedResponse
         }
 
@@ -286,7 +288,7 @@ public struct ProxyClientImpl: ProxyClient {
         }
 
         // Cache successful response
-        cache.set(response, for: cacheKey)
+        cache.setOff(response, for: cacheKey)
         return response
     }
 
@@ -348,7 +350,15 @@ public struct ProxyClientImpl: ProxyClient {
             // Check for redirect envelope (kv hint)
             if let redirectResponse = try? JSONDecoder().decode(ProxyRedirect.self, from: data),
                redirectResponse.isSuccessful, !redirectResponse.redirect.gid.isEmpty {
-                return try await followRedirect(redirectResponse, depth: depth, visited: [])
+                let result = try await followRedirect(redirectResponse, depth: depth, visited: [])
+                // Convert BarcodeLookupResult back to Envelope<OffReadResponse> for OFF product lookups
+                switch result {
+                case let .off(offEnvelope):
+                    return offEnvelope
+                case .fdc:
+                    // FDC redirects in OFF product context should be treated as errors
+                    throw ProxyError.invalidResponse
+                }
             }
 
             return try JSONDecoder().decode(Envelope<OffReadResponse>.self, from: data)
@@ -646,14 +656,29 @@ private final class ResponseCache: Sendable {
     private var cache: [String: Data] = [:]
     private let lock = NSLock()
 
-    func get(for key: String) -> Envelope<OffReadResponse>? {
+    func get(for key: String) -> BarcodeLookupResult? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let data = cache[key] else { return nil }
+        return try? JSONDecoder().decode(BarcodeLookupResult.self, from: data)
+    }
+
+    func set(_ response: BarcodeLookupResult, for key: String) {
+        guard let data = try? JSONEncoder().encode(response) else { return }
+        lock.lock()
+        defer { lock.unlock() }
+        cache[key] = data
+    }
+
+    // Legacy method for OFF-only cache
+    func getOff(for key: String) -> Envelope<OffReadResponse>? {
         lock.lock()
         defer { lock.unlock() }
         guard let data = cache[key] else { return nil }
         return try? JSONDecoder().decode(Envelope<OffReadResponse>.self, from: data)
     }
 
-    func set(_ response: Envelope<OffReadResponse>, for key: String) {
+    func setOff(_ response: Envelope<OffReadResponse>, for key: String) {
         guard let data = try? JSONEncoder().encode(response) else { return }
         lock.lock()
         defer { lock.unlock() }

@@ -66,8 +66,13 @@ public struct FoodDataClientAdapter: FoodDataClient {
 
     public func getFoodByBarcode(code: String) async throws -> FoodMinimalCard {
         do {
-            let envelope = try await proxyClient.lookupByBarcode(barcode: code)
-            let normalizedFood = normalizer.normalizeOffEnvelope(envelope)
+            let result = try await proxyClient.lookupByBarcode(barcode: code)
+            let normalizedFood: NormalizedFood = switch result {
+            case let .fdc(fdcEnvelope):
+                normalizer.normalizeFdcEnvelope(fdcEnvelope)
+            case let .off(offEnvelope):
+                normalizer.normalizeOffEnvelope(offEnvelope)
+            }
             return converter.convertToFoodMinimalCard(normalizedFood)
         } catch let error as ProxyError {
             // If GTIN lookup fails, try searching by barcode as text
