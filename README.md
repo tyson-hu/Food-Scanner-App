@@ -4,11 +4,12 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI, Swi
 
 ## 🚀 Project Status
 
-**Current Version**: 0.3.0  
+**Current Version**: 0.4.0  
 **Swift Version**: 6.2 with strict concurrency  
 **Xcode Version**: 26.0.0  
 **iOS Target**: 26.0+  
-**Architecture**: MVVM with comprehensive service layer
+**Architecture**: MVVM with comprehensive service layer  
+**Focus**: Enhanced food logging and nutrition tracking
 
 ### ⚠️ CodeQL Security Scanning
 
@@ -24,11 +25,12 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI, Swi
 ## Features
 
 ### 🍎 Core Functionality
+- **Enhanced Food Logging**: Comprehensive food entry system with detailed nutrition tracking
 - **Food Search**: Search for foods using text queries with real-time results
 - **Barcode Scanning**: Scan product barcodes using VisionKit for instant food lookup
 - **Photo Recognition**: AI-powered food recognition from photos (coming soon)
 - **Nutrition Tracking**: Log daily food intake with detailed nutrition information
-- **Today View**: View daily nutrition totals and food entries
+- **Today View**: View daily nutrition totals and food entries with enhanced analytics
 - **Smart Caching**: Intelligent caching system for improved performance and offline support
 
 ### 🔧 Technical Features

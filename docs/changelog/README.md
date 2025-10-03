@@ -67,13 +67,13 @@ v0.3.0 (2024-01-15)
 ### Version Number Source
 **Important**: Changelog version numbers must always match the version number set in Xcode project settings.
 
-- **Current Version**: 0.3.0 (as set in Xcode)
+- **Current Version**: 0.4.0 (as set in Xcode)
 - **Version Source**: Xcode project settings → General → Version
 - **Changelog Sync**: All changelog files must use the same version number as Xcode
 
 ### Version Number Format
-- **Format**: `v0.3.x` (matches Xcode version)
-- **File Naming**: `v0.3.x.md` (matches changelog file names)
+- **Format**: `v0.4.x` (matches Xcode version)
+- **File Naming**: `v0.4.x.md` (matches changelog file names)
 - **Consistency**: All references must use the same version number
 
 ### Future Versions
@@ -89,12 +89,13 @@ When updating the Xcode version number:
 ```
 changelog/
 ├── README.md                       # This file - Changelog overview
-└── v0.3.0.md                       # Version 0.3.0 - Initial release + Code quality improvements
+├── v0.3.0.md                       # Version 0.3.0 - Initial release + Code quality improvements
+└── v0.4.0.md                       # Version 0.4.0 - Enhanced food logging and nutrition tracking
 ```
 
 ### Version Files
 - **v0.3.0.md**: Initial release with code quality improvements and tool integration
-- **v0.3.1.md**: Food entry support and enhanced tracking (planned)
+- **v0.4.0.md**: Enhanced food logging system with comprehensive nutrition tracking
 
 ## 🔄 Changelog Process
 
@@ -218,10 +219,11 @@ changelog/
 
 ## 🚀 Next Version
 
-### Planned Features (v0.3.1)
-- **Food Entry Support**: Add support for current food data entry and logging
-- **Enhanced Tracking**: Improved nutrition tracking capabilities
-- **Data Management**: Better food data management and persistence
+### Planned Features (v0.5.0)
+- **Social Features**: Share nutrition goals and achievements
+- **Recipe Integration**: Recipe creation and meal planning
+- **Advanced Analytics**: Detailed nutrition insights and trends
+- **Health App Integration**: Integration with Apple Health
 
 ### Development Notes
 - **Track progress** on planned features

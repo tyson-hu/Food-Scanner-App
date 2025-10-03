@@ -2,7 +2,7 @@
 
 ## 🏗️ Current Project Organization
 
-The Food Scanner app follows a clean iOS-focused MVVM architecture with clear separation of concerns. This document provides a detailed tree map of the current project structure.
+The Food Scanner app follows a clean iOS-focused MVVM architecture with clear separation of concerns, enhanced with comprehensive food logging capabilities. This document provides a detailed tree map of the current project structure.
 
 ## 📁 Complete Project Structure
 
