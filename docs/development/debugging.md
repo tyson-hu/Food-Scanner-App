@@ -22,6 +22,12 @@ This document provides comprehensive debugging techniques and tools for the Food
 - **Document steps** to reproduce issues
 - **Track resolution** for future reference
 
+### 4. **Swift 6 Concurrency**
+- **Main-actor isolation** debugging
+- **Cross-actor access** detection
+- **Thread safety** verification
+- **Actor boundary** analysis
+
 ## 🛠️ Xcode Debugging Tools
 
 ### Breakpoints
@@ -261,6 +267,34 @@ func debugErrorConversion(_ proxyError: ProxyError) {
     let foodDataError = convertProxyErrorToFoodDataError(proxyError)
     print("  Converted: \(foodDataError)")
     print("  User Message: \(foodDataError.errorDescription ?? "No message")")
+}
+```
+
+### Main-Actor Isolation Debugging
+```swift
+func debugMainActorIsolation() {
+    print("🎭 Main-Actor Isolation Debug:")
+    print("  Current actor: \(MainActor.shared)")
+    print("  Is main actor: \(MainActor.isMainActor)")
+    
+    // Check if we're in the right context
+    if MainActor.isMainActor {
+        print("  ✅ Running on main actor")
+    } else {
+        print("  ⚠️ Not on main actor - use MainActor.run")
+    }
+}
+
+func debugCrossActorAccess() {
+    print("🔗 Cross-Actor Access Debug:")
+    
+    // Safe way to access @MainActor properties
+    Task {
+        let value = await MainActor.run {
+            cacheService.cachedValue()
+        }
+        print("  Cached value: \(value)")
+    }
 }
 ```
 

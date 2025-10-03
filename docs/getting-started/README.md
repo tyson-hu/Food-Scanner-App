@@ -28,7 +28,16 @@ cd "Food Scanner"
 open "Food Scanner.xcodeproj"
 ```
 
-### 3. **Build & Run** (2 minutes)
+### 3. **Setup Local CI Environment** (2 minutes)
+```bash
+# Run automated setup script
+./scripts/setup-local-ci.sh
+
+# Source CI environment variables
+source .env.ci
+```
+
+### 4. **Build & Run** (2 minutes)
 - Select iPhone simulator or device
 - Press `Cmd+R` to build and run
 - **No API key required** - uses calry.org proxy service

@@ -28,6 +28,7 @@ The Food Scanner app follows a clean iOS-focused MVVM architecture with clear se
 
 ### 3. **Clean Separation**
 - **API Layer**: External data sources
+- **Local CI Environment**: Development environment matching CI exactly
 - **Service Layer**: Business logic and processing
 - **UI Layer**: Presentation and user interaction
 

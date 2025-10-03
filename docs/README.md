@@ -27,6 +27,7 @@ docs/
 │       └── off-api.yaml               # OpenAPI 3.0 specification for OFF
 ├── development/                         # 💻 Development
 │   ├── README.md                       # Development overview with tree map
+│   ├── local-ci-setup.md               # Local CI environment setup guide
 │   ├── coding-standards.md             # Code style and standards
 │   ├── testing.md                      # Testing guidelines
 │   └── debugging.md                    # Debugging guide
@@ -47,6 +48,7 @@ docs/
 2. **🏗️ [Architecture Overview](architecture/README.md)** - Understand the system
 3. **🎯 [Data Journey](api/data-journey.md)** - How data flows through the system
 4. **💻 [Development Guide](development/README.md)** - Development workflows
+5. **🔧 [Local CI Setup](development/local-ci-setup.md)** - Match CI environment locally
 
 ### For API Integrators
 1. **🌐 [API Overview](api/README.md)** - API integration guide
@@ -66,6 +68,7 @@ docs/
 - **Quick Start**: Get up and running in minutes
 - **Installation**: Setup and configuration
 - **First Run**: Running the app for the first time
+- **Local CI Setup**: Match CI environment for consistent development
 
 ### 🏗️ Architecture
 **System design and structure**:

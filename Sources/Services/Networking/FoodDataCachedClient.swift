@@ -57,11 +57,14 @@ struct FoodDataCachedClient: FoodDataClient {
         pageSize: Int
     ) async throws -> FoodDataSearchResult {
         // Check cache first
-        if let cachedResults = cacheService.cachedPaginatedSearchResults(
-            for: query,
-            page: page,
-            pageSize: pageSize
-        ) {
+        let cachedResults = await MainActor.run {
+            cacheService.cachedPaginatedSearchResults(
+                for: query,
+                page: page,
+                pageSize: pageSize
+            )
+        }
+        if let cachedResults = cachedResults {
             return cachedResults
         }
 
@@ -73,14 +76,19 @@ struct FoodDataCachedClient: FoodDataClient {
         )
 
         // Cache the results
-        cacheService.cachePaginatedSearchResults(results, for: query, page: page, pageSize: pageSize)
+        await MainActor.run {
+            cacheService.cachePaginatedSearchResults(results, for: query, page: page, pageSize: pageSize)
+        }
 
         return results
     }
 
     func fetchFoodDetails(fdcId: Int) async throws -> FDCFoodDetails {
         // Check cache first
-        if let cachedResponse = cacheService.cachedFoodDetails(for: fdcId) {
+        let cachedResponse = await MainActor.run {
+            cacheService.cachedFoodDetails(for: fdcId)
+        }
+        if let cachedResponse = cachedResponse {
             return cachedResponse.toFDCFoodDetails()
         }
 
@@ -88,14 +96,19 @@ struct FoodDataCachedClient: FoodDataClient {
         let response = try await underlyingClient.fetchFoodDetailResponse(fdcId: fdcId)
 
         // Cache the response
-        cacheService.cacheFoodDetails(response, for: fdcId)
+        await MainActor.run {
+            cacheService.cacheFoodDetails(response, for: fdcId)
+        }
 
         return response.toFDCFoodDetails()
     }
 
     func fetchFoodDetailResponse(fdcId: Int) async throws -> ProxyFoodDetailResponse {
         // Check cache first
-        if let cachedResponse = cacheService.cachedFoodDetails(for: fdcId) {
+        let cachedResponse = await MainActor.run {
+            cacheService.cachedFoodDetails(for: fdcId)
+        }
+        if let cachedResponse = cachedResponse {
             return cachedResponse
         }
 
@@ -103,7 +116,9 @@ struct FoodDataCachedClient: FoodDataClient {
         let response = try await underlyingClient.fetchFoodDetailResponse(fdcId: fdcId)
 
         // Cache the response
-        cacheService.cacheFoodDetails(response, for: fdcId)
+        await MainActor.run {
+            cacheService.cacheFoodDetails(response, for: fdcId)
+        }
 
         return response
     }

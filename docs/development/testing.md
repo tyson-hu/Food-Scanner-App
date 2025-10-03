@@ -21,6 +21,12 @@ This document provides comprehensive testing guidelines for the Food Scanner iOS
 - **Mock external** dependencies
 - **Clean state** between tests
 
+### 4. **CI Environment Consistency**
+- **Local tests match CI** exactly
+- **Same build settings** and flags
+- **Same test plans** and configurations
+- **Swift 6 strict concurrency** enabled
+
 ## 📁 Test Organization
 
 ### Test Structure
@@ -48,6 +54,26 @@ Tests/
 ### Test Plans
 - **Default Test Plan**: Full test coverage including UI tests
 - **CI Test Plan**: Unit tests only for reliable CI/CD pipelines
+
+### Local CI Testing
+Run tests with CI-equivalent settings locally:
+
+```bash
+# Setup local CI environment
+./scripts/setup-local-ci.sh
+
+# Source CI environment variables
+source .env.ci
+
+# Run tests with CI settings
+./scripts/test-local-ci.sh
+```
+
+**Benefits**:
+- **Exact CI replication**: Same settings, flags, and configuration
+- **Early issue detection**: Catch problems before they reach CI
+- **Consistent results**: Local tests match CI exactly
+- **Swift 6 compliance**: Strict concurrency checking enabled
 
 ### Swift 6 Concurrency Testing
 When testing with Swift 6 strict concurrency enabled, follow these patterns:

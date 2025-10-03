@@ -131,10 +131,10 @@ Food Scanner/
 │   ├── Config.Debug.xcconfig          # Debug configuration
 │   └── Config.Release.xcconfig        # Release configuration
 ├── Scripts/                            # 🔧 Build scripts
-│   ├── build-without-appintents-warning.sh  # Warning-filtered build script
-│   ├── build-with-swift6-strict.sh     # Swift 6 strict concurrency build
-│   ├── test-with-swift6-strict.sh      # Swift 6 strict concurrency test
-│   ├── configure-swift6-local.sh       # Swift 6 local environment setup
+│   ├── setup-local-ci.sh              # Local CI environment setup
+│   ├── build-local-ci.sh              # CI-equivalent build script
+│   ├── test-local-ci.sh               # CI-equivalent test script
+│   ├── lint-local-ci.sh               # CI-equivalent lint script
 │   ├── ci-test-runner.sh              # CI test runner with warning filtering
 │   ├── simulator-manager.sh            # Simulator management
 │   └── test-local-network.sh          # Local network testing

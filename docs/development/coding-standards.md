@@ -21,6 +21,12 @@ This document defines the coding standards and style guidelines for the Food Sca
 - **Document complex** logic
 - **Use clear** structure and organization
 
+### 4. **Swift 6 Concurrency**
+- **Main-actor isolation** for UI-related code
+- **Proper actor boundaries** for thread safety
+- **Use `MainActor.run`** for cross-actor access
+- **Avoid `@unchecked Sendable`** when possible
+
 ## 📋 Naming Conventions
 
 ### Files and Directories
@@ -380,6 +386,60 @@ let button = submitButton // ✅
 let searchResults = response.searchResults // ✅
 let processedData = processSearchResults(searchResults) // ✅
 ```
+
+## 🎭 Main-Actor Isolation Patterns
+
+### Cross-Actor Access
+When accessing `@MainActor` properties from non-isolated contexts:
+
+```swift
+// ❌ Incorrect - Direct access
+func someMethod() async {
+    let value = cacheService.cachedValue() // Error: cross-actor access
+}
+
+// ✅ Correct - Use MainActor.run
+func someMethod() async {
+    let value = await MainActor.run {
+        cacheService.cachedValue()
+    }
+}
+```
+
+### Cache Service Integration
+For `@MainActor` cache services:
+
+```swift
+// ❌ Incorrect - Direct method calls
+func fetchData() async throws -> Data {
+    if let cached = cacheService.cachedData() {
+        return cached
+    }
+    let data = try await networkCall()
+    cacheService.cacheData(data)
+    return data
+}
+
+// ✅ Correct - Proper isolation
+func fetchData() async throws -> Data {
+    let cached = await MainActor.run {
+        cacheService.cachedData()
+    }
+    if let cached = cached {
+        return cached
+    }
+    let data = try await networkCall()
+    await MainActor.run {
+        cacheService.cacheData(data)
+    }
+    return data
+}
+```
+
+### Performance Considerations
+- **Minimize MainActor.run calls**: Batch operations when possible
+- **Use nonisolated when safe**: For pure data operations
+- **Avoid blocking**: Keep MainActor.run closures lightweight
 
 ## 🔧 Configuration Management
 

@@ -1,203 +1,189 @@
 # Development Documentation
 
-## 📁 Development Documentation Structure
+This directory contains comprehensive guides and documentation for local development setup, ensuring consistency with the CI environment.
 
+## 📚 Documentation Overview
+
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| [local-ci-setup.md](local-ci-setup.md) | Complete guide to set up local environment matching CI | All developers |
+| [coding-standards.md](coding-standards.md) | Code style, patterns, and best practices | All developers |
+| [testing.md](testing.md) | Testing strategies and guidelines | All developers |
+| [debugging.md](debugging.md) | Debugging techniques and tools | All developers |
+
+## 🚀 Quick Start
+
+### 1. Initial Setup
+```bash
+# Run the automated setup script
+./scripts/setup-local-ci.sh
 ```
-development/
-├── README.md                       # 📋 This file - Development overview
-├── coding-standards.md             # 📝 Code style and standards
-├── testing.md                      # 🧪 Testing guidelines
-├── debugging.md                    # 🔍 Debugging guide
-└── swift6-concurrency-config.md    # 🔧 Swift 6 concurrency configuration
+
+### 2. Verify Environment
+```bash
+# Source CI environment variables
+source .env.ci
+
+# Run all CI-equivalent checks
+./scripts/build-local-ci.sh && ./scripts/test-local-ci.sh && ./scripts/lint-local-ci.sh
 ```
 
-## 💻 Development Overview
+### 3. Development Workflow
+```bash
+# Before committing changes
+./scripts/build-local-ci.sh    # Build with CI settings
+./scripts/test-local-ci.sh     # Test with CI settings  
+./scripts/lint-local-ci.sh     # Lint with CI settings
+```
 
-This section provides comprehensive guidance for developers working on the Food Scanner iOS app, including coding standards, testing practices, and debugging techniques.
+## 🛠️ Available Scripts
 
-## 🎯 Development Workflow
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `setup-local-ci.sh` | Environment setup and verification | `./scripts/setup-local-ci.sh` |
+| `build-local-ci.sh` | Build with CI-equivalent settings | `./scripts/build-local-ci.sh` |
+| `test-local-ci.sh` | Test with CI-equivalent settings | `./scripts/test-local-ci.sh` |
+| `lint-local-ci.sh` | Lint with CI-equivalent settings | `./scripts/lint-local-ci.sh` |
 
-### 1. **Understanding the Codebase**
-- **Start with [Architecture Overview](../architecture/README.md)**
-- **Review [Project Structure](../architecture/project-structure.md)**
-- **Study [Data Journey](../api/data-journey.md)**
+## 🔧 Environment Requirements
 
-### 2. **Making Changes**
-- **Follow [Coding Standards](coding-standards.md)**
-- **Configure [Swift 6 Concurrency](swift6-concurrency-config.md)** to match CI
-- **Write tests** following [Testing Guidelines](testing.md)
-- **Debug issues** using [Debugging Guide](debugging.md)
+### System Requirements
+- **macOS**: Sequoia 15.6 or later
+- **Xcode**: Version 26.0.0 (matches CI exactly)
+- **iOS Simulator**: iOS 26 runtime with iPhone 16 device type
 
-### 3. **Testing Your Changes**
-- **Unit tests**: Test individual components
-- **Integration tests**: Test service interactions
-- **UI tests**: Test user interface flows
-
-## 🏗️ Development Environment
-
-### Required Tools
-- **Xcode**: 26.0 or later
-- **iOS Deployment Target**: 26.0 or later
-- **Swift**: 6.2 or later
-- **macOS**: 26.0 or later
-
-### Recommended Extensions
-- **SwiftLint**: Code style enforcement
+### Tools Required
+- **SwiftLint**: Code style checking
 - **SwiftFormat**: Code formatting
-- **GitLens**: Git integration
+- **Homebrew**: Package manager (for tool installation)
 
-### Development Setup
-1. **Clone repository**
-2. **Open in Xcode**
-3. **Build and run**
-4. **Verify all tests pass**
+## 📋 Development Checklist
 
-## 🔧 Key Development Areas
+### Before Starting Development
+- [ ] Run `./scripts/setup-local-ci.sh` to configure environment
+- [ ] Verify all tools are installed and working
+- [ ] Source environment variables: `source .env.ci`
+- [ ] Run initial build: `./scripts/build-local-ci.sh`
 
-### 1. **Models Layer** (`Sources/Models/`)
-- **Data structures** and business entities
-- **API models** for external data
-- **Converters** for data transformation
+### Before Committing Changes
+- [ ] Run build script: `./scripts/build-local-ci.sh`
+- [ ] Run test script: `./scripts/test-local-ci.sh`
+- [ ] Run lint script: `./scripts/lint-local-ci.sh`
+- [ ] Ensure all checks pass with CI-equivalent settings
 
-### 2. **Services Layer** (`Sources/Services/`)
-- **Business logic** and data processing
-- **External API** communication
-- **Data persistence** and caching
+### Before Pushing to CI
+- [ ] Run full CI simulation: All scripts in sequence
+- [ ] Verify no concurrency warnings
+- [ ] Check that tests pass with strict concurrency
+- [ ] Ensure linting passes with zero violations
 
-### 3. **ViewModels Layer** (`Sources/ViewModels/`)
-- **Business logic** for UI
-- **State management** with `@Observable`
-- **Service coordination**
+## 🐛 Troubleshooting
 
-### 4. **Views Layer** (`Sources/Views/`)
-- **SwiftUI** presentation layer
-- **Reusable components**
-- **User interaction** handling
+### Common Issues
 
-## 🧪 Testing Strategy
+1. **"Xcode 26 not found"**
+   - Install Xcode 26.0.0 from Apple Developer Portal
+   - Verify with `xcodebuild -version`
 
-### Test Organization
-```
-Tests/
-├── Unit/                    # Unit tests (CI-friendly)
-│   ├── Models/             # Model tests
-│   ├── Services/           # Service tests
-│   └── ViewModels/         # ViewModel tests
-└── UI/                     # UI tests (Local only)
-    ├── Screens/            # Screen tests
-    └── Components/         # Component tests
-```
+2. **"iOS 26 runtime not available"**
+   - Install through Xcode → Settings → Platforms
+   - Or use `xcrun simctl runtime add "iOS 26"`
 
-### Testing Levels
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: Service interaction testing
-- **UI Tests**: User interface testing
+3. **"Build fails with concurrency errors"**
+   - This is expected! Fix the concurrency issues
+   - Use `MainActor.run` for cross-actor access
+   - Check the main-actor isolation guide
 
-## 🚀 Best Practices
+4. **"Tests fail locally but pass in CI"**
+   - Ensure you're using the same test plan: `FoodScanner-CI-Offline`
+   - Check environment variables are set correctly
+   - Verify simulator is properly configured
 
-### 1. **Code Organization**
-- **Single responsibility** for each component
-- **Clear naming** conventions
-- **Consistent patterns** across the codebase
+### Getting Help
 
-### 2. **Error Handling**
-- **Graceful degradation** for errors
-- **User-friendly** error messages
-- **Comprehensive logging** for debugging
+1. **Check the logs**: Scripts create detailed logs in `/tmp/`
+2. **Review CI configuration**: See `.github/workflows/ci.yml`
+3. **Compare with CI**: Run the same commands CI uses
+4. **Check documentation**: Each script has detailed help
 
-### 3. **Performance**
-- **Efficient algorithms** and data structures
-- **Proper memory management**
-- **Optimized UI** rendering
+## 📊 CI Environment Details
 
-### 4. **Maintainability**
-- **Clear documentation** and comments
-- **Modular design** for easy changes
-- **Consistent code style**
+### Build Settings
+- `SWIFT_STRICT_CONCURRENCY=complete`
+- `OTHER_SWIFT_FLAGS='-warnings-as-errors'`
+- `DEFAULT_ISOLATION=MainActor`
+- `CODE_SIGNING_ALLOWED=NO`
+- `ENABLE_PREVIEWS=NO`
 
-## 🔍 Debugging Techniques
+### Test Configuration
+- Test Plan: `FoodScanner-CI-Offline`
+- Destination: iPhone 16 simulator
+- Parallel testing: Disabled
+- UI tests: Skipped
+- Timeouts: 30s default, 60s maximum
 
-### 1. **Console Logging**
-- **Strategic logging** at key points
-- **Error tracking** and reporting
-- **Performance monitoring**
+### Linting Configuration
+- SwiftFormat: Lint mode on Sources and Tests
+- SwiftLint: Strict mode with zero violations allowed
 
-### 2. **Xcode Debugging**
-- **Breakpoints** for step-by-step debugging
-- **View hierarchy** inspection
-- **Memory graph** analysis
+## 🔄 Integration with IDEs
 
-### 3. **Network Debugging**
-- **API request/response** logging
-- **Error handling** verification
-- **Performance monitoring**
+### Xcode Integration
+1. Add build phases to run scripts
+2. Configure scheme environment variables
+3. Set up breakpoints for debugging
 
-## 📚 Key Resources
+### VS Code Integration
+1. Add tasks for script execution
+2. Configure launch configurations
+3. Set up debugging profiles
 
-### Documentation
-- **[Architecture Overview](../architecture/README.md)** - System design
-- **[API Integration](../api/README.md)** - Backend integration
-- **[Data Journey](../api/data-journey.md)** - Data flow
+### Terminal Integration
+1. Add aliases for quick access
+2. Configure shell environment
+3. Set up pre-commit hooks
 
-### Code Examples
-- **ViewModels**: Observable state management
-- **Services**: Business logic implementation
-- **Models**: Data structure design
+## 📈 Performance Tips
 
-### Testing Examples
-- **Unit Tests**: Component testing
-- **Integration Tests**: Service testing
-- **UI Tests**: User interface testing
+### Build Performance
+- Use derived data caching: `./DerivedData`
+- Enable parallel compilation in Xcode
+- Clean derived data regularly
 
-## 🎯 Development Goals
+### Test Performance
+- Skip UI tests during development
+- Use parallel testing for faster iteration
+- Monitor test execution times
 
-### 1. **Code Quality**
-- **Clean, readable** code
-- **Comprehensive testing**
-- **Good documentation**
+### Development Workflow
+- Run scripts in background when possible
+- Use incremental builds
+- Cache simulator state
 
-### 2. **Performance**
-- **Fast, responsive** UI
-- **Efficient** data processing
-- **Optimized** memory usage
+## 🎯 Best Practices
 
-### 3. **Maintainability**
-- **Easy to modify** and extend
-- **Clear architecture** and patterns
-- **Consistent** code style
+### Code Quality
+- Follow coding standards in `coding-standards.md`
+- Use consistent formatting with SwiftFormat
+- Maintain zero linting violations
 
-## 🚨 Common Issues
-
-### Build Issues
-- **Clean build folder** first
-- **Check deployment target** settings
-- **Verify simulator** availability
-
-### Runtime Issues
-- **Check console logs** for errors
-- **Verify network** connectivity
-- **Test on device** if simulator issues
-
-### Testing Issues
-- **Mock external** dependencies
-- **Use proper** test data
-- **Verify test** isolation
-
-## 📞 Getting Help
-
-### Documentation
-- **Check relevant** documentation first
-- **Search for** similar issues
-- **Review code** examples
-
-### Code Review
-- **Follow coding** standards
-- **Write comprehensive** tests
-- **Document complex** logic
+### Testing
+- Write comprehensive unit tests
+- Test with CI-equivalent settings
+- Maintain high test coverage
 
 ### Debugging
-- **Use debugging** tools effectively
-- **Log relevant** information
-- **Test edge cases**
+- Use debugging techniques from `debugging.md`
+- Monitor CI logs for issues
+- Test locally before pushing
 
-This development guide provides everything needed to effectively develop and maintain the Food Scanner iOS app.
+## 📚 Additional Resources
+
+- [Apple Developer Documentation](https://developer.apple.com/documentation/)
+- [Swift 6 Concurrency Guide](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
+- [Xcode 26 Release Notes](https://developer.apple.com/documentation/xcode-release-notes)
+- [iOS 26 Simulator Documentation](https://developer.apple.com/documentation/xcode/simulator)
+
+---
+
+*This documentation ensures your local development environment matches the CI environment exactly, helping you catch issues early and maintain consistent builds.*

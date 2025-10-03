@@ -4,6 +4,69 @@
 
 This document provides solutions for common issues encountered during development and CI/CD of the Food Scanner app.
 
+## 🔧 Local CI Environment Issues
+
+### Setup Problems
+
+#### "Xcode 26 not found"
+**Symptoms**: Setup script fails to find Xcode 26
+**Solutions**:
+```bash
+# Check Xcode version
+xcodebuild -version
+
+# Install Xcode 26.0.0 from Apple Developer Portal
+# Verify installation
+xcodebuild -version
+```
+
+#### "iOS 26 runtime not available"
+**Symptoms**: Simulator creation fails
+**Solutions**:
+```bash
+# Install iOS 26 runtime through Xcode
+# Xcode → Settings → Platforms → iOS 26
+
+# Or via command line
+xcrun simctl runtime add "iOS 26"
+```
+
+#### "iPhone 16 simulator not found"
+**Symptoms**: Test script fails to find simulator
+**Solutions**:
+```bash
+# Create iPhone 16 simulator manually
+xcrun simctl create "iPhone 16" "iPhone 16" "iOS 26"
+
+# Or run setup script which creates it automatically
+./scripts/setup-local-ci.sh
+```
+
+### Build Issues
+
+#### "Build fails with concurrency errors locally but passes in CI"
+**Symptoms**: Local build fails with Swift 6 concurrency errors
+**Solutions**:
+```bash
+# Source CI environment variables
+source .env.ci
+
+# Run build with CI settings
+./scripts/build-local-ci.sh
+```
+
+#### "Tests fail locally but pass in CI"
+**Symptoms**: Local tests fail with different results than CI
+**Solutions**:
+```bash
+# Use CI test plan
+./scripts/test-local-ci.sh
+
+# Check environment variables
+echo $CI_OFFLINE_MODE
+echo $NETWORK_TESTING_DISABLED
+```
+
 ## 🏗️ Build Issues
 
 ### Build Failures
