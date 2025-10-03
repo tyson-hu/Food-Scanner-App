@@ -106,6 +106,12 @@ export SWIFT_STRICT_CONCURRENCY=complete
 export OTHER_SWIFT_FLAGS='-warnings-as-errors'
 ```
 
+### iOS 26 Development Resources
+- **Xcode Intelligence Chat Resources**: `/Applications/Xcode.app/Contents/PlugIns/IDEIntelligenceChat.framework/Versions/A/Resources`
+- **Usage**: Reference these resources when implementing iOS 26 specific features
+- **API Documentation**: Contains latest iOS 26 APIs, frameworks, and development patterns
+- **Troubleshooting**: Use for iOS 26 compatibility issues and new feature implementation
+
 ## Documentation Standards
 
 ### Comprehensive Documentation
@@ -194,12 +200,18 @@ let url = try apiConfig.url(for: "/endpoint")
 - **Build Failures**: Xcode version, simulator issues
 - **Test Failures**: Environment differences between local and CI
 - **Linting Errors**: SwiftLint/SwiftFormat conflicts
+- **iOS 26 Features**: Check Xcode Intelligence resources for latest APIs and patterns
 
 ### Debugging Techniques
 - **MainActor Isolation**: Debug cross-actor access issues
 - **Error Conversion**: Trace error flow through the system
 - **Configuration**: Verify API configuration and environment variables
 - **Build Settings**: Check Swift concurrency and build flags
+
+### iOS 26 Feature Reference
+- **Xcode Intelligence Resources**: Check `/Applications/Xcode.app/Contents/PlugIns/IDEIntelligenceChat.framework/Versions/A/Resources` for iOS 26 specific features and APIs
+- **Framework Documentation**: Use these resources when implementing new iOS 26 features or troubleshooting compatibility issues
+- **API Reference**: Reference these resources for the latest iOS 26 APIs, frameworks, and development patterns
 
 ## Performance Considerations
 
