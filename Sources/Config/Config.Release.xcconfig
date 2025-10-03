@@ -13,3 +13,11 @@ FEATURE_FDC_REMOTE = 1
 
 // Emit the flag to Info.plist via INFOPLIST_KEY
 INFOPLIST_KEY_FeatureFDCRemoteDefault = $(FEATURE_FDC_REMOTE)
+
+// API Configuration
+API_BASE_URL = https://api.calry.org
+API_BASE_PATH = /v1
+
+// Emit API config to Info.plist
+INFOPLIST_KEY_APIBaseURL = $(API_BASE_URL)
+INFOPLIST_KEY_APIBasePath = $(API_BASE_PATH)

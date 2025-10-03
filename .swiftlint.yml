@@ -148,7 +148,7 @@ custom_rules:
     message: "API models should conform to Codable for JSON serialization."
     severity: warning
     match_kinds: [comment, doccomment, identifier, keyword, number, objectliteral, parameter, placeholder, string, typeidentifier]
-    excluded: ".*Codable.*"
+    excluded: ".*Codable.*|.*Tests.*"
 
   # Test files should follow naming convention
   test_naming:

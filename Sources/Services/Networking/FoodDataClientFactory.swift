@@ -9,13 +9,6 @@
 import Foundation
 
 enum FoodDataClientFactory {
-    private static let defaultBaseURL: URL = {
-        guard let url = URL(string: "https://api.calry.org") else {
-            fatalError("Invalid default base URL")
-        }
-        return url
-    }()
-
     static func make(env: AppLaunchEnvironment) -> FoodDataClient {
         // Precedence: runtime override -> build flag -> configuration default (Release)
         let wantsProxy = env.runtimeOverrideRemote || env.buildDefaultRemote || env.isRelease
@@ -43,20 +36,24 @@ enum FoodDataClientFactory {
     // MARK: - Alternative Factory Methods for Testing
 
     static func makeProxyClient(
-        baseURL: URL? = nil,
+        apiConfig: APIConfiguration? = nil,
         authHeader: String? = nil,
         authValue: String? = nil
     ) -> FoodDataClient {
-        let proxyClient = ProxyClientImpl(
-            baseURL: baseURL ?? defaultBaseURL,
-            authHeader: authHeader,
-            authValue: authValue
-        )
+        do {
+            let proxyClient = try ProxyClientImpl(
+                apiConfig: apiConfig,
+                authHeader: authHeader,
+                authValue: authValue
+            )
 
-        return FoodDataClientAdapter(
-            proxyClient: proxyClient,
-            normalizationService: FoodNormalizationServiceImpl()
-        )
+            return FoodDataClientAdapter(
+                proxyClient: proxyClient,
+                normalizationService: FoodNormalizationServiceImpl()
+            )
+        } catch {
+            fatalError("Failed to create ProxyClient: \(error)")
+        }
     }
 
     static func makeMockClient() -> FoodDataClient {

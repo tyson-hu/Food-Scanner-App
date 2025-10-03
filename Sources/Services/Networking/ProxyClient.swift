@@ -51,7 +51,7 @@ public protocol ProxyClient: Sendable {
 // MARK: - Proxy Client Implementation
 
 public struct ProxyClientImpl: ProxyClient {
-    let baseURL: URL
+    let apiConfig: APIConfiguration
     let session: URLSessionProtocol
     let authHeader: String?
     let authValue: String?
@@ -63,22 +63,15 @@ public struct ProxyClientImpl: ProxyClient {
     // Response caching
     private let cache = ResponseCache()
 
-    private static let defaultBaseURL: URL = {
-        guard let url = URL(string: "https://api.calry.org") else {
-            fatalError("Failed to create default base URL")
-        }
-        return url
-    }()
-
     public init(
-        baseURL: URL? = nil,
+        apiConfig: APIConfiguration? = nil,
         session: URLSessionProtocol? = nil,
         authHeader: String? = nil,
         authValue: String? = nil,
         maxRetries: Int = 3,
         baseDelay: TimeInterval = 1.0
-    ) {
-        self.baseURL = baseURL ?? Self.defaultBaseURL
+    ) throws {
+        self.apiConfig = try apiConfig ?? APIConfiguration()
         self.session = session ?? Self.createDefaultSession()
         self.authHeader = authHeader
         self.authValue = authValue
@@ -100,7 +93,7 @@ public struct ProxyClientImpl: ProxyClient {
     // MARK: - Health Check
 
     public func getHealth() async throws -> ProxyHealthResponse {
-        let url = baseURL.appendingPathComponent("v1/health")
+        let url = try apiConfig.url(for: "/health")
         let request = buildRequest(for: url)
 
         return try await performRequestWithRetry {
@@ -119,22 +112,12 @@ public struct ProxyClientImpl: ProxyClient {
     // MARK: - FDC Pass-throughs
 
     public func searchFoods(query: String, pageSize: Int? = nil) async throws -> FdcSearchResponse {
-        var components = URLComponents()
-        components.scheme = baseURL.scheme
-        components.host = baseURL.host
-        components.port = baseURL.port
-        components.path = baseURL.appendingPathComponent("foods/search").path
-
         var queryItems = [URLQueryItem(name: "query", value: query)]
         if let pageSize {
             queryItems.append(URLQueryItem(name: "pageSize", value: String(pageSize)))
         }
-        components.queryItems = queryItems
 
-        guard let url = components.url else {
-            throw ProxyError.invalidURL
-        }
-
+        let url = try apiConfig.url(for: "/foods/search", queryItems: queryItems)
         let request = buildRequest(for: url)
 
         return try await performRequestWithRetry {
@@ -151,7 +134,7 @@ public struct ProxyClientImpl: ProxyClient {
     }
 
     public func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcFood> {
-        let url = baseURL.appendingPathComponent("food/\(fdcId)")
+        let url = try apiConfig.url(for: "/food/\(fdcId)")
         let request = buildRequest(for: url)
 
         return try await performRequestWithRetry {
@@ -182,7 +165,7 @@ public struct ProxyClientImpl: ProxyClient {
             return cachedResponse
         }
 
-        let url = baseURL.appendingPathComponent("v1/gtin/\(barcode)")
+        let url = try apiConfig.url(for: "/gtin/\(barcode)")
         let request = buildRequest(for: url)
 
         let response = try await performRequestWithRetry {
@@ -280,7 +263,7 @@ public struct ProxyClientImpl: ProxyClient {
             return cachedResponse
         }
 
-        let url = baseURL.appendingPathComponent("v1/off/product/\(barcode)")
+        let url = try apiConfig.url(for: "/off/product/\(barcode)")
         let request = buildRequest(for: url)
 
         let response = try await performRequestWithRetry {
@@ -350,7 +333,7 @@ public struct ProxyClientImpl: ProxyClient {
         barcode: String,
         depth: Int
     ) async throws -> Envelope<OffReadResponse> {
-        let url = baseURL.appendingPathComponent("v1/off/product/\(barcode)")
+        let url = try apiConfig.url(for: "/off/product/\(barcode)")
         let request = buildRequest(for: url)
 
         return try await performRequestWithRetry {

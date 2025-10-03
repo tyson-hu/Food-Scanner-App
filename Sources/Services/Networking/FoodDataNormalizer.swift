@@ -184,7 +184,7 @@ public struct FoodDataNormalizer {
         return normalizationService.normalizeOFF(offEnvelope)
     }
 
-    func normalizeFdcEnvelope(_ envelope: Envelope<FdcFood>) -> NormalizedFood {
+    func normalizeFdcEnvelope(_ envelope: FdcEnvelope) -> NormalizedFood {
         normalizationService.normalizeFDC(envelope)
     }
 }

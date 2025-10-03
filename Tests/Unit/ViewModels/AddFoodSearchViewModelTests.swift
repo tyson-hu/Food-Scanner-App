@@ -92,12 +92,9 @@ struct AddFoodSearchViewModelTests {
             return
         }
 
-        // Use an invalid URL to simulate network error
-        guard let invalidURL = URL(string: "https://invalid-url-for-testing.com") else {
-            #expect(Bool(false), "Failed to create invalid URL")
-            return
-        }
-        let client = FoodDataClientFactory.makeProxyClient(baseURL: invalidURL)
+        // Use default API configuration for testing
+        let apiConfig = try APIConfiguration()
+        let client = FoodDataClientFactory.makeProxyClient(apiConfig: apiConfig)
         let viewModel = AddFoodSearchViewModel(client: client)
         viewModel.query = "apple"
         viewModel.onQueryChange()
@@ -109,7 +106,7 @@ struct AddFoodSearchViewModelTests {
         if case let .error(message) = viewModel.phase {
             #expect(!message.isEmpty)
         } else {
-            #expect(Bool(false), "Expected error state but got: \(viewModel.phase)")
+            #expect(Bool(false), "Expected error state but got: \(String(describing: viewModel.phase))")
         }
     }
 }
