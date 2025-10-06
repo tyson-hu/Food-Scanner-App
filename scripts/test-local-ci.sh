@@ -89,9 +89,9 @@ for r in data.get('runtimes', []):
     
     # Grant permissions to prevent test interruptions
     log_info "Granting permissions..."
-    xcrun simctl privacy "$simulator_id" grant camera tysonhu.foodscanner 2>/dev/null || true
-    xcrun simctl privacy "$simulator_id" grant photos tysonhu.foodscanner 2>/dev/null || true
-    xcrun simctl privacy "$simulator_id" grant microphone tysonhu.foodscanner 2>/dev/null || true
+    xcrun simctl privacy "$simulator_id" grant camera app.tysonhu.calry 2>/dev/null || true
+    xcrun simctl privacy "$simulator_id" grant photos app.tysonhu.calry 2>/dev/null || true
+    xcrun simctl privacy "$simulator_id" grant microphone app.tysonhu.calry 2>/dev/null || true
     
     # Update destination to use specific simulator ID
     DESTINATION="id=$simulator_id"

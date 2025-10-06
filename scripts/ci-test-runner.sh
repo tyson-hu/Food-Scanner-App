@@ -41,21 +41,21 @@ grant_permissions() {
     log_info "Granting permissions to prevent test interruptions..."
     
     # Grant camera permission
-    if xcrun simctl privacy "$udid" grant camera tysonhu.foodscanner 2>/dev/null; then
+    if xcrun simctl privacy "$udid" grant camera app.tysonhu.calry 2>/dev/null; then
         log_info "Camera permission granted"
     else
         log_warning "Failed to grant camera permission"
     fi
     
     # Grant photo library permission
-    if xcrun simctl privacy "$udid" grant photos tysonhu.foodscanner 2>/dev/null; then
+    if xcrun simctl privacy "$udid" grant photos app.tysonhu.calry 2>/dev/null; then
         log_info "Photo library permission granted"
     else
         log_warning "Failed to grant photo library permission"
     fi
     
     # Grant microphone permission (in case it's needed)
-    if xcrun simctl privacy "$udid" grant microphone tysonhu.foodscanner 2>/dev/null; then
+    if xcrun simctl privacy "$udid" grant microphone app.tysonhu.calry 2>/dev/null; then
         log_info "Microphone permission granted"
     else
         log_warning "Failed to grant microphone permission"
