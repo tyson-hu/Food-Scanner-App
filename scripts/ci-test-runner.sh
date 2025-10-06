@@ -255,7 +255,7 @@ run_tests_with_monitoring() {
     
     # Count tests for monitoring
     local test_count=$(grep -c "◇ Test.*started" "$log_file" 2>/dev/null || echo "0")
-    if [ "$test_count" -gt 0 ] && [ $((test_count % 10)) -eq 0 ]; then
+    if [ "$test_count" -gt 0 ] && ((test_count % 10 == 0)); then
         log_info "Tests started so far: $test_count"
     fi
             
@@ -267,7 +267,7 @@ run_tests_with_monitoring() {
                 log_info "Progress detected (log size: $current_log_size bytes)"
             else
                 stuck_count=$((stuck_count + 1))
-                if [ $((stuck_count % 2)) -eq 0 ]; then
+                if ((stuck_count % 2 == 0)); then
                     log_warning "No progress detected for $((stuck_count * CHECK_INTERVAL)) seconds"
                 fi
             fi
