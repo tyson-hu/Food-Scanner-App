@@ -2,15 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>APIScheme</key>
-	<string>$(API_SCHEME)</string>
-	<key>APIHost</key>
-	<string>$(API_HOST)</string>
 	<key>APIBasePath</key>
 	<string>$(API_BASE_PATH)</string>
+	<key>APIHost</key>
+	<string>$(API_HOST)</string>
+	<key>APIScheme</key>
+	<string>$(API_SCHEME)</string>
 	<key>FeatureFDCRemoteDefault</key>
 	<string>$(FEATURE_FDC_REMOTE)</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to scan barcodes on food products for nutritional information.</string>
 </dict>
 </plist>
