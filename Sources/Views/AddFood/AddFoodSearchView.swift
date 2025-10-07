@@ -89,7 +89,7 @@ struct AddFoodSearchView: View {
     @ViewBuilder
     private func foodItemRow(_ item: FoodMinimalCard) -> some View {
         Button {
-            // Pass the full GID directly - supports all ID types (fdc:, gtin:, dsld:)
+            // Pass the full GID directly - supports all ID types (fdc:, gtin:)
             onSelect(item.id)
         } label: {
             foodItemContent(item)
@@ -156,10 +156,6 @@ struct AddFoodSearchView: View {
         switch source {
         case .fdc:
             "FDC"
-        case .dsld:
-            "DSLD"
-        case .dsid:
-            "DSID"
         case .off:
             "Open Food Facts"
         }

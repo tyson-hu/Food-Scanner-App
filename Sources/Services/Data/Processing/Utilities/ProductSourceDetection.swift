@@ -22,9 +22,9 @@ enum ProductSourceDetection {
         }
 
         switch source {
-        case .fdc, .dsld:
+        case .fdc:
             return .supported(source)
-        case .dsid, .off:
+        case .off:
             return .unsupported(source)
         }
     }
@@ -33,10 +33,6 @@ enum ProductSourceDetection {
     static func extractSource(from gid: String) -> SourceTag? {
         if gid.hasPrefix("fdc:") {
             return .fdc
-        } else if gid.hasPrefix("dsld:") {
-            return .dsld
-        } else if gid.hasPrefix("dsid:") {
-            return .dsid
         } else if gid.hasPrefix("off:") || gid.hasPrefix("gtin:") {
             return .off
         }

@@ -106,7 +106,7 @@ docs/
 - **Barcode Scanning**: VisionKit-powered barcode recognition
 - **Photo Recognition**: AI-powered food recognition (coming soon)
 - **Nutrition Tracking**: Daily food intake logging
-- **Multi-Source Data**: FDC, OFF, and future DSLD support
+- **Multi-Source Data**: FDC and OFF support
 
 ### 🔧 Technical Features
 - **Proxy Architecture**: Reliable data access through calry.org
@@ -205,7 +205,6 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 
 ### 🚧 In Progress
 - Photo recognition with AI
-- DSLD supplement database integration
 - Enhanced UI/UX improvements
 
 ### 📋 Planned Features

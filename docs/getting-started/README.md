@@ -53,7 +53,6 @@ source .env.ci
 ### Data Sources
 - **🇺🇸 FDC**: USDA Food Data Central (comprehensive nutrition)
 - **🌍 OFF**: Open Food Facts (community data)
-- **💊 DSLD**: Dietary Supplement Label Database (future)
 
 ## 🏗️ Project Structure Overview
 

@@ -64,7 +64,6 @@ This guide walks you through running the Food Scanner app for the first time and
 ### Supported Sources
 - **🇺🇸 FDC**: USDA Food Data Central (comprehensive nutrition)
 - **🌍 OFF**: Open Food Facts (community data)
-- **💊 DSLD**: Dietary Supplement Label Database (future)
 
 ### Data Quality
 - **FDC**: High quality, government data

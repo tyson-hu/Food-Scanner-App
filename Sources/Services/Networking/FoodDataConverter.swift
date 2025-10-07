@@ -109,7 +109,6 @@ public struct FoodDataConverter {
             portions: normalizedFood.portions.map { convertToFoodPortion($0) },
             densityGPerMl: normalizedFood.densityGPerMl,
             nutrients: normalizedFood.nutrients.map { convertToFoodNutrient($0) },
-            dsidPredictions: nil, // Not available in new architecture
             provenance: FoodProvenance(
                 source: convertToSourceTag(normalizedFood.source),
                 id: normalizedFood.gid,

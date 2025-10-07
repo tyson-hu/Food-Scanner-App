@@ -17,8 +17,6 @@ struct FDCMock: FoodDataClient {
             isHealthy: true,
             sources: [
                 "fdc": "https://api.nal.usda.gov/fdc/v1",
-                "dsld": "https://api.ods.od.nih.gov/dsld/v9",
-                "dsid": "https://dsid-api-dev.app.cloud.gov/v1",
                 "off": "https://world.openfoodfacts.org"
             ]
         )
@@ -276,7 +274,6 @@ struct FDCMock: FoodDataClient {
                     portions: [],
                     densityGPerMl: nil,
                     nutrients: mockNutrients,
-                    dsidPredictions: nil,
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
@@ -340,7 +337,6 @@ struct FDCMock: FoodDataClient {
                     portions: [],
                     densityGPerMl: nil,
                     nutrients: mockNutrients,
-                    dsidPredictions: nil,
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
@@ -401,7 +397,6 @@ struct FDCMock: FoodDataClient {
                     portions: [],
                     densityGPerMl: nil,
                     nutrients: mockNutrients,
-                    dsidPredictions: nil,
                     provenance: FoodProvenance(
                         source: .fdc,
                         id: "\(food.id)",
@@ -460,7 +455,6 @@ struct FDCMock: FoodDataClient {
             portions: [],
             densityGPerMl: nil,
             nutrients: fallbackNutrients,
-            dsidPredictions: nil,
             provenance: FoodProvenance(
                 source: .fdc,
                 id: "999999",

@@ -96,7 +96,6 @@ final class AddFoodDetailViewModel {
             portions: [], // No portions available for basic info
             densityGPerMl: foodCard.densityGPerMl,
             nutrients: foodCard.nutrients,
-            dsidPredictions: nil, // No predictions available for basic info
             provenance: foodCard.provenance
         )
     }

@@ -76,7 +76,6 @@ struct AddFoodDetailView: View {
             servingInformationSection(foodDetails: foodDetails)
             portionsSection(foodDetails: foodDetails)
             nutrientsSection(foodDetails: foodDetails, bindableViewModel: bindableViewModel)
-            dsidPredictionsSection(foodDetails: foodDetails)
             sourceInformationSection(foodDetails: foodDetails)
             actionSection(foodDetails: foodDetails, bindableViewModel: bindableViewModel)
         }
@@ -169,17 +168,6 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func dsidPredictionsSection(foodDetails: FoodAuthoritativeDetail) -> some View {
-        if let predictions = foodDetails.dsidPredictions, !predictions.isEmpty {
-            Section("DSID Predictions") {
-                ForEach(predictions, id: \.ingredient) { prediction in
-                    DSIDPredictionRow(prediction: prediction)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
     private func sourceInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
         Section("Source") {
             InfoRow(label: "Source", value: foodDetails.provenance.source.rawValue.uppercased())
@@ -261,45 +249,6 @@ struct NutrientDetailRow: View {
             Text("Per \(nutrient.basis.rawValue.replacingOccurrences(of: "_", with: " "))")
                 .font(.caption)
                 .foregroundColor(.secondary)
-        }
-        .padding(.vertical, 2)
-    }
-}
-
-struct DSIDPredictionRow: View {
-    let prediction: DSIDPrediction
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(prediction.ingredient.capitalized)
-                    .font(.headline)
-                Spacer()
-                Text("Study \(prediction.studyCode)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-
-            HStack {
-                Text("Label: \(String(format: "%.1f", prediction.labelAmount)) \(prediction.unit)")
-                    .font(.subheadline)
-                Spacer()
-                Text("Predicted: \(String(format: "%.1f", prediction.predMeanValue)) \(prediction.unit)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-
-            HStack {
-                Text("Difference: \(String(format: "%.1f", prediction.pctDiffFromLabel))%")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(
-                    "CI: \(String(format: "%.1f", prediction.ci95PredMeanLow))-\(String(format: "%.1f", prediction.ci95PredMeanHigh))"
-                )
-                .font(.caption)
-                .foregroundColor(.secondary)
-            }
         }
         .padding(.vertical, 2)
     }

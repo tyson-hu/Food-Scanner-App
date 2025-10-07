@@ -22,8 +22,6 @@ The Food Scanner app integrates with multiple data sources through a unified pro
 
 - **🇺🇸 FDC (Food Data Central)**: USDA's comprehensive food database
 - **🌍 OFF (Open Food Facts)**: Community-driven food database
-- **💊 DSLD (Dietary Supplement Label Database)**: NIH's supplement database (future)
-- **🧪 DSID (Dietary Supplement Ingredient Database)**: Future support planned
 
 ### Barcode Lookup Architecture
 
@@ -38,9 +36,7 @@ The app uses a union type system for barcode lookups that preserves data source 
 
 All food items are identified using GIDs with source prefixes:
 - `fdc:12345` - FDC food item
-- `off:67890` - OFF food item  
-- `dsld:11111` - DSLD supplement item (future)
-- `dsid:22222` - DSID supplement ingredient (future)
+- `off:67890` - OFF food item
 
 ## 🎯 Data Journey Overview
 

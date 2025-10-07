@@ -75,13 +75,12 @@ final class AddFoodSummaryViewModel {
             }
             print("   Provenance: \(foodCard.provenance)")
 
-            // Check for empty DSLD data and provide better error message
-            if gid.hasPrefix("dsld:"), foodCard.description == nil, foodCard.brand == nil, foodCard.nutrients.isEmpty {
-                print("⚠️ DSLD data is empty - this might be a proxy service issue")
-                phase =
-                    .error(
-                        "DSLD data is currently unavailable. This might be a temporary issue with the supplement database."
-                    )
+            // Check for empty data and provide better error message
+            if foodCard.description == nil, foodCard.brand == nil, foodCard.nutrients.isEmpty {
+                print("⚠️ Food data is empty - this might be a proxy service issue")
+                phase = .error(
+                    "Food data is currently unavailable. This might be a temporary issue with the data source."
+                )
             } else {
                 print("✅ AddFoodSummaryViewModel - Successfully loaded food card, setting phase to loaded")
                 phase = .loaded(foodCard)

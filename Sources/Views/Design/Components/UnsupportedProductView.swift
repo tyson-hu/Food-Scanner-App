@@ -60,12 +60,12 @@ struct UnsupportedProductView: View {
         VStack(alignment: .leading, spacing: 20) {
             QARow(
                 question: "Why can't I see detailed nutrition information?",
-                answer: "This product is not from our supported databases (FDC or DSLD). We only provide detailed nutrition information for products from these official sources."
+                answer: "This product is not from our supported databases (FDC). We only provide detailed nutrition information for products from this official source."
             )
 
             QARow(
                 question: "What databases do we support?",
-                answer: "• FDC (FoodData Central) - USDA's comprehensive food database\n• DSLD (Dietary Supplement Label Database) - NIH's supplement database"
+                answer: "• FDC (FoodData Central) - USDA's comprehensive food database"
             )
 
             QARow(
