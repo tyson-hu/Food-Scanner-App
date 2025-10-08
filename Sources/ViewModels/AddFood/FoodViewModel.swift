@@ -1,5 +1,5 @@
 //
-//  AddFoodSummaryViewModel.swift
+//  FoodViewModel.swift
 //  Food Scanner
 //
 //  Created by Tyson Hu on 10/02/25.
@@ -11,7 +11,7 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodSummaryViewModel {
+final class FoodViewModel {
     enum Phase: Equatable {
         case loading
         case loaded(FoodCard)
@@ -48,13 +48,13 @@ final class AddFoodSummaryViewModel {
             return
         }
 
-        print("🔍 AddFoodSummaryViewModel.load() - Starting load for GID: \(gid)")
+        print("🔍 FoodViewModel.load() - Starting load for GID: \(gid)")
 
         do {
             let foodCard = try await client.getFood(gid: gid)
 
             // Enhanced Debug: Log received food card data
-            print("🔍 AddFoodSummaryViewModel DEBUG - Received Food Card for \(gid):")
+            print("🔍 FoodViewModel DEBUG - Received Food Card for \(gid):")
             print("   Description: \(foodCard.description ?? "nil")")
             print("   Brand: \(foodCard.brand ?? "nil")")
             print("   Kind: \(foodCard.kind)")
@@ -82,11 +82,11 @@ final class AddFoodSummaryViewModel {
                     "Food data is currently unavailable. This might be a temporary issue with the data source."
                 )
             } else {
-                print("✅ AddFoodSummaryViewModel - Successfully loaded food card, setting phase to loaded")
+                print("✅ FoodViewModel - Successfully loaded food card, setting phase to loaded")
                 phase = .loaded(foodCard)
             }
         } catch {
-            print("❌ AddFoodSummaryViewModel ERROR - Failed to load food for \(gid): \(error)")
+            print("❌ FoodViewModel ERROR - Failed to load food for \(gid): \(error)")
             print("   Error type: \(type(of: error))")
             print("   Error description: \(error.localizedDescription)")
             phase = .error(error.localizedDescription)

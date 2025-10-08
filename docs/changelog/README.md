@@ -90,11 +90,13 @@ When updating the Xcode version number:
 changelog/
 ├── README.md                       # This file - Changelog overview
 ├── v0.3.0.md                       # Version 0.3.0 - Initial release + Code quality improvements
+├── v0.3.1.md                       # Version 0.3.1 - Code refactoring and structure improvements
 └── v0.4.0.md                       # Version 0.4.0 - Enhanced food logging and nutrition tracking
 ```
 
 ### Version Files
 - **v0.3.0.md**: Initial release with code quality improvements and tool integration
+- **v0.3.1.md**: Code refactoring and structure improvements for better maintainability
 - **v0.4.0.md**: Enhanced food logging system with comprehensive nutrition tracking
 
 ## 🔄 Changelog Process

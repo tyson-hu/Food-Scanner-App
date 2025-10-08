@@ -1,5 +1,5 @@
 //
-//  AddFoodDetailView.swift
+//  FoodDetailsView.swift
 //  Food Scanner
 //
 //  Created by Tyson Hu on 10/02/25.
@@ -9,12 +9,12 @@
 import SwiftData
 import SwiftUI
 
-struct AddFoodDetailView: View {
+struct FoodDetailsView: View {
     let gid: String
     var onLog: (FoodEntry) -> Void
 
     @Environment(\.appEnv) private var appEnv
-    @State private var viewModel: AddFoodDetailViewModel?
+    @State private var viewModel: FoodDetailsViewModel?
 
     init(gid: String, onLog: @escaping (FoodEntry) -> Void) {
         self.gid = gid
@@ -24,18 +24,18 @@ struct AddFoodDetailView: View {
     var body: some View {
         Group {
             if let viewModel {
-                detailContent(viewModel)
+                detailsContent(viewModel)
             } else {
                 ProgressView()
                     .onAppear {
-                        viewModel = AddFoodDetailViewModel(gid: gid, client: appEnv.fdcClient)
+                        viewModel = FoodDetailsViewModel(gid: gid, client: appEnv.fdcClient)
                     }
             }
         }
     }
 
     @ViewBuilder
-    private func detailContent(_ viewModel: AddFoodDetailViewModel) -> some View {
+    private func detailsContent(_ viewModel: FoodDetailsViewModel) -> some View {
         @Bindable var bindableViewModel = viewModel
 
         Group {
@@ -68,7 +68,7 @@ struct AddFoodDetailView: View {
     @ViewBuilder
     private func loadedFoodDetailsView(
         foodDetails: FoodDetails,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        bindableViewModel: Bindable<FoodDetailsViewModel>
     ) -> some View {
         List {
             servingMultiplierSection(bindableViewModel: bindableViewModel)
@@ -84,7 +84,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func errorView(message: String, viewModel: AddFoodDetailViewModel) -> some View {
+    private func errorView(message: String, viewModel: FoodDetailsViewModel) -> some View {
         VStack {
             Text("Error: \(message)")
                 .foregroundColor(.red)
@@ -95,7 +95,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func servingMultiplierSection(bindableViewModel: Bindable<AddFoodDetailViewModel>) -> some View {
+    private func servingMultiplierSection(bindableViewModel: Bindable<FoodDetailsViewModel>) -> some View {
         Section {
             Stepper(
                 value: bindableViewModel.servingMultiplier,
@@ -153,7 +153,7 @@ struct AddFoodDetailView: View {
     @ViewBuilder
     private func nutrientsSection(
         foodDetails: FoodDetails,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        bindableViewModel: Bindable<FoodDetailsViewModel>
     ) -> some View {
         if !foodDetails.nutrients.isEmpty {
             Section("All Nutrients") {
@@ -179,7 +179,7 @@ struct AddFoodDetailView: View {
     @ViewBuilder
     private func actionSection(
         foodDetails: FoodDetails,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        bindableViewModel: Bindable<FoodDetailsViewModel>
     ) -> some View {
         Section {
             Button("Log Food") {
@@ -254,8 +254,8 @@ struct NutrientDetailRow: View {
     }
 }
 
-#Preview("Sample Food Detail") {
-    AddFoodDetailView(
+#Preview("Sample Food Details") {
+    FoodDetailsView(
         gid: "fdc:123456",
         onLog: { _ in }
     )

@@ -64,8 +64,8 @@ struct BarcodeSearchResultsView: View {
     @ViewBuilder
     private func loadedView(result: FoodCard?, viewModel: BarcodeSearchResultsViewModel) -> some View {
         if let food = result {
-            // Render Summary immediately from envelope data
-            AddFoodSummaryView(
+            // Render Food view immediately from envelope data
+            FoodView(
                 foodCard: food,
                 onLog: { _ in
                     // Handle logging if needed

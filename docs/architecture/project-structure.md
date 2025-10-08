@@ -69,9 +69,9 @@ Food Scanner/
 │   │       └── FDCMock.swift                          # Mock client for testing
 │   ├── ViewModels/                     # 🧠 MVVM ViewModels
 │   │   ├── AddFood/                    # ➕ Add food flow
-│   │   │   ├── AddFoodSearchViewModel.swift           # Search functionality
-│   │   │   ├── AddFoodDetailViewModel.swift           # Detail view logic
-│   │   │   └── AddFoodSummaryViewModel.swift          # Summary and logging
+│   │   │   ├── FoodSearchViewModel.swift              # Search functionality
+│   │   │   ├── FoodDetailsViewModel.swift             # Detail view logic
+│   │   │   └── FoodViewModel.swift                    # Summary and logging
 │   │   ├── Scanner/                    # 📷 Barcode scanning
 │   │   │   └── BarcodeScannerViewModel.swift          # Scanner logic
 │   │   ├── Today/                     # 📅 Today view
@@ -81,11 +81,16 @@ Food Scanner/
 │   └── Views/                          # 🎨 SwiftUI Views
 │       ├── AddFood/                    # ➕ Add food screens
 │       │   ├── AddFoodHomeView.swift                  # Add food home screen
-│       │   ├── AddFoodSearchView.swift                # Search screen
-│       │   ├── AddFoodDetailView.swift                # Detail screen
-│       │   ├── AddFoodSummaryView.swift               # Summary screen
-│       │   └── BarcodeSearchResultsView.swift         # Barcode results
-│       ├── Scanner/                    # 📷 Scanner screens
+│       │   ├── FoodView.swift                         # Main food display (shared)
+│       │   ├── FoodDetailsView.swift                  # Detailed food display (shared)
+│       │   ├── Scanner/                               # 📷 Scanner screens
+│       │   │   ├── BarcodeScannerView.swift           # Scanner screen
+│       │   │   └── BarcodeSearchResultsView.swift     # Barcode results
+│       │   ├── PhotoIntake/                           # 📸 Photo recognition
+│       │   │   └── PhotoIntakeView.swift              # Photo intake screen
+│       │   └── Search/                                # 🔍 Text search
+│       │       └── FoodSearchView.swift               # Search screen
+│       ├── Scanner/                    # 📷 Scanner screens (legacy)
 │       │   └── BarcodeScannerView.swift                # Scanner screen
 │       ├── Today/                     # 📅 Today screens
 │       │   └── TodayView.swift                        # Today view screen
@@ -93,8 +98,6 @@ Food Scanner/
 │       │   └── SettingsView.swift                     # Settings screen
 │       ├── Profile/                   # 👤 Profile screens
 │       │   └── ProfileView.swift                      # Profile screen
-│       ├── PhotoIntake/               # 📸 Photo recognition
-│       │   └── PhotoIntakeView.swift                  # Photo intake screen
 │       └── Design/                     # 🎨 Design system
 │           └── Components/             # 🧩 UI components
 │               └── UnsupportedProductView.swift        # Unsupported product UI
@@ -112,8 +115,8 @@ Food Scanner/
 │   │   │           ├── FDCMockTests.swift                      # Mock tests
 │   │   │           └── FDCDISelectionTests.swift               # Selection tests
 │   │   ├── ViewModels/                 # 🧠 ViewModel tests
-│   │   │   ├── AddFoodSearchViewModelTests.swift               # Search tests
-│   │   │   ├── AddFoodDetailViewModelTests.swift               # Detail tests
+│   │   │   ├── FoodSearchViewModelTests.swift                  # Search tests
+│   │   │   ├── FoodDetailsViewModelTests.swift                 # Detail tests
 │   │   │   └── BarcodeScannerViewModelTests.swift              # Scanner tests
 │   │   ├── BaseUnitTests.swift                                 # Unit test base
 │   │   └── FoodScannerTests.swift                              # Main test file

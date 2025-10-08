@@ -1,5 +1,5 @@
 //
-//  AddFoodSearchViewModel.swift
+//  FoodSearchViewModel.swift
 //  Food Scanner
 //
 //  Created by Tyson Hu on 10/02/25.
@@ -11,7 +11,7 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodSearchViewModel {
+final class FoodSearchViewModel {
     enum Phase: Equatable {
         case idle
         case searching

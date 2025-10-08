@@ -121,27 +121,36 @@ The app follows a clean iOS-focused MVVM architecture:
 
 ```
 Sources/                           # 📱 All source code
-├── Models/                        # 📋 Data Models
-│   ├── API/                       # 🌐 API models + converters
-│   │   ├── Common/               # 🔄 Shared API structures
-│   │   ├── FDC/                  # 🇺🇸 USDA Food Data Central
-│   │   └── OFF/                  # 🌍 Open Food Facts
-│   └── Services/                 # 🔧 Business Logic
-│       ├── Data/                 # 💾 Data services + processing
-│       │   ├── Caching/         # 🗄️ Cache services
-│       │   ├── Persistence/     # 💿 Database layer
-│       │   └── Processing/      # ⚙️ Data processing
-│       └── External/            # 🌍 External services
-│           └── Networking/      # 🌍 Network services
-├── Platform/                     # 📱 Platform-specific code
-│   ├── iOS/                     # 🍎 iOS-specific implementation
-│   │   ├── App/                 # 🚀 App configuration
-│   │   ├── ViewModels/          # 🧠 MVVM ViewModels
-│   │   └── Views/               # 🎨 SwiftUI Views
-│   └── Shared/                  # 🔄 Shared platform code
-└── UI/                          # 🎨 UI Layer
-    ├── Components/              # 🧩 Reusable components
-    └── Screens/                 # 📱 Screen implementations
+├── App/                          # 🚀 App configuration
+├── Models/                       # 📋 Data Models
+│   ├── API/                      # 🌐 API models + converters
+│   │   ├── Common/              # 🔄 Shared API structures
+│   │   ├── FDC/                 # 🇺🇸 USDA Food Data Central
+│   │   └── OFF/                 # 🌍 Open Food Facts
+│   └── Core/                    # 🏛️ Core business models
+├── Services/                     # 🔧 Business Logic
+│   ├── Data/                    # 💾 Data services + processing
+│   │   ├── Caching/            # 🗄️ Cache services
+│   │   ├── Persistence/        # 💿 Database layer
+│   │   └── Processing/         # ⚙️ Data processing
+│   └── Networking/             # 🌍 Network services
+├── ViewModels/                  # 🧠 MVVM ViewModels
+│   ├── AddFood/                # ➕ Add food flow
+│   ├── Scanner/                # 📷 Barcode scanning
+│   ├── Today/                  # 📅 Today view
+│   └── PhotoIntake/            # 📸 Photo recognition
+└── Views/                       # 🎨 SwiftUI Views
+    ├── AddFood/                 # ➕ Add food screens
+    │   ├── FoodView.swift       # Main food display (shared)
+    │   ├── FoodDetailsView.swift # Detailed food display (shared)
+    │   ├── Scanner/             # 📷 Scanner screens
+    │   ├── PhotoIntake/         # 📸 Photo recognition
+    │   └── Search/              # 🔍 Text search
+    ├── Today/                   # 📅 Today screens
+    ├── Settings/                # ⚙️ Settings screens
+    ├── Profile/                 # 👤 Profile screens
+    └── Design/                  # 🎨 Design system
+        └── Components/          # 🧩 UI components
 ```
 
 ## 🧪 Testing Structure

@@ -234,17 +234,17 @@ Public models get processed by ViewModels for UI consumption.
 
 **Key ViewModels**:
 ```swift
-// AddFoodSearchViewModel.swift
+// FoodSearchViewModel.swift
 // Handles search functionality and result processing
 func searchFoods(query: String) async
 func loadMoreResults() async
 
-// AddFoodDetailViewModel.swift  
+// FoodDetailsViewModel.swift  
 // Manages detailed food information display
 func loadFoodDetails(gid: String) async
 func calculateNutrients(for serving: Double) -> [FoodNutrient]
 
-// AddFoodSummaryViewModel.swift
+// FoodViewModel.swift
 // Handles food summary and logging preparation
 func load() async
 func prepareForLogging() -> FoodEntry

@@ -1,5 +1,5 @@
 //
-//  AddFoodSearchView.swift
+//  FoodSearchView.swift
 //  Food Scanner
 //
 //  Created by Tyson Hu on 10/02/25.
@@ -9,12 +9,12 @@
 import SwiftData
 import SwiftUI
 
-struct AddFoodSearchView: View {
+struct FoodSearchView: View {
     /// Parent provides selection handler (push to detail).
     var onSelect: (String) -> Void
 
     @Environment(\.appEnv) private var appEnv
-    @State private var viewModel: AddFoodSearchViewModel?
+    @State private var viewModel: FoodSearchViewModel?
 
     init(onSelect: @escaping (String) -> Void) {
         self.onSelect = onSelect
@@ -27,14 +27,14 @@ struct AddFoodSearchView: View {
             } else {
                 ProgressView()
                     .onAppear {
-                        viewModel = AddFoodSearchViewModel(client: appEnv.fdcClient)
+                        viewModel = FoodSearchViewModel(client: appEnv.fdcClient)
                     }
             }
         }
     }
 
     @ViewBuilder
-    private func searchContent(_ viewModel: AddFoodSearchViewModel) -> some View {
+    private func searchContent(_ viewModel: FoodSearchViewModel) -> some View {
         @Bindable var bindableViewModel = viewModel
 
         List {
@@ -172,6 +172,6 @@ struct AddFoodSearchView: View {
 }
 
 #Preview {
-    AddFoodSearchView(onSelect: { _ in })
+    FoodSearchView(onSelect: { _ in })
         .environment(\.appEnv, .preview)
 }

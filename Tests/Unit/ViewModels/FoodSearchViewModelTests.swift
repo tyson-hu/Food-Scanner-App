@@ -1,5 +1,5 @@
 //
-//  AddFoodSearchViewModelTests.swift
+//  FoodSearchViewModelTests.swift
 //  Food Scanner
 //
 //  Created by Tyson Hu on 10/02/25.
@@ -10,11 +10,11 @@
 import Foundation
 import Testing
 
-struct AddFoodSearchViewModelTests {
+struct FoodSearchViewModelTests {
     // MARK: - Mock Client Tests (Fast, Reliable)
 
     @Test @MainActor func typing_query_debounces_and_populates_results() async throws {
-        let viewModel = AddFoodSearchViewModel(client: FDCMock())
+        let viewModel = FoodSearchViewModel(client: FDCMock())
         viewModel.query = "yogurt"
         viewModel.onQueryChange()
 
@@ -29,7 +29,7 @@ struct AddFoodSearchViewModelTests {
     }
 
     @Test @MainActor func clearing_query_resets_to_idle() async throws {
-        let viewModel = AddFoodSearchViewModel(client: FDCMock())
+        let viewModel = FoodSearchViewModel(client: FDCMock())
         viewModel.query = "rice"
         viewModel.onQueryChange()
 
@@ -44,7 +44,7 @@ struct AddFoodSearchViewModelTests {
     }
 
     @Test @MainActor func mock_client_handles_empty_query() async throws {
-        let viewModel = AddFoodSearchViewModel(client: FDCMock())
+        let viewModel = FoodSearchViewModel(client: FDCMock())
         viewModel.query = ""
         viewModel.onQueryChange()
 
@@ -53,7 +53,7 @@ struct AddFoodSearchViewModelTests {
     }
 
     @Test @MainActor func mock_client_handles_short_query() async throws {
-        let viewModel = AddFoodSearchViewModel(client: FDCMock())
+        let viewModel = FoodSearchViewModel(client: FDCMock())
         viewModel.query = "a"
         viewModel.onQueryChange()
 
@@ -70,7 +70,7 @@ struct AddFoodSearchViewModelTests {
         }
 
         let client = FoodDataClientFactory.makeProxyClient()
-        let viewModel = AddFoodSearchViewModel(client: client)
+        let viewModel = FoodSearchViewModel(client: client)
         viewModel.query = "oatmeal"
         viewModel.onQueryChange()
 
@@ -95,7 +95,7 @@ struct AddFoodSearchViewModelTests {
         // Use default API configuration for testing
         let apiConfig = try APIConfiguration()
         let client = FoodDataClientFactory.makeProxyClient(apiConfig: apiConfig)
-        let viewModel = AddFoodSearchViewModel(client: client)
+        let viewModel = FoodSearchViewModel(client: client)
         viewModel.query = "apple"
         viewModel.onQueryChange()
 

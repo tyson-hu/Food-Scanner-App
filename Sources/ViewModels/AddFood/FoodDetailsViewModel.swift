@@ -1,5 +1,5 @@
 //
-//  AddFoodDetailViewModel.swift
+//  FoodDetailsViewModel.swift
 //  Food Scanner
 //
 //  Created by Tyson Hu on 10/02/25.
@@ -11,7 +11,7 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodDetailViewModel {
+final class FoodDetailsViewModel {
     enum Phase: Equatable {
         case loading
         case loaded(FoodDetails)
