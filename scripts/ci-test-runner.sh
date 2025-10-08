@@ -267,7 +267,7 @@ run_tests_with_monitoring() {
                 log_info "Progress detected (log size: $current_log_size bytes)"
             else
                 stuck_count=$((stuck_count + 1))
-                if ((stuck_count % 2 == 0)); then
+                if [ $((stuck_count % 2)) -eq 0 ]; then
                     log_warning "No progress detected for $((stuck_count * CHECK_INTERVAL)) seconds"
                 fi
             fi
