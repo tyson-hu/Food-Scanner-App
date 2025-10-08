@@ -33,7 +33,7 @@ enum ProductSourceDetection {
     static func extractSource(from gid: String) -> SourceTag? {
         if gid.hasPrefix("fdc:") {
             return .fdc
-        } else if gid.hasPrefix("off:") || gid.hasPrefix("gtin:") {
+        } else if gid.hasPrefix("off:") {
             return .off
         }
         return nil

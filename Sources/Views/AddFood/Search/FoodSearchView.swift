@@ -89,7 +89,7 @@ struct FoodSearchView: View {
     @ViewBuilder
     private func foodItemRow(_ item: FoodCard) -> some View {
         Button {
-            // Pass the full GID directly - supports all ID types (fdc:, gtin:)
+            // Pass the full GID directly - supports all ID types (fdc:, off:)
             onSelect(item.id)
         } label: {
             foodItemContent(item)

@@ -13,7 +13,7 @@ import Foundation
 // MARK: - Minimal Card (for /food/* and /barcode/* endpoints)
 
 public struct FoodCard: Sendable, Codable, Equatable, Hashable {
-    public let id: String // GID: "gtin:<14>" | "fdc:<id>"
+    public let id: String // GID: "fdc:<id>" | "off:<id>"
     public let kind: FoodKind
     public let code: String? // raw barcode when known (no padding)
     public let description: String?

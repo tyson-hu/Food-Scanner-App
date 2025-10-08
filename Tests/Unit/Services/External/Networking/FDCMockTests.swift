@@ -57,36 +57,36 @@ struct FDCMockTests {
 
     // MARK: - Barcode GID Tests
 
-    // Test that barcode search returns GTIN GID
-    @Test @MainActor func barcode_search_returns_gtin_gid() async throws {
+    // Test that barcode search returns FDC GID
+    @Test @MainActor func barcode_search_returns_fdc_gid() async throws {
         let result = try await client.getFoodByBarcode(code: "031604031121")
-        #expect(result.id.hasPrefix("gtin:"))
+        #expect(result.id.hasPrefix("fdc:"))
         #expect(result.description == "Greek Yogurt, Strawberry")
         #expect(result.brand == "Chobani")
     }
 
-    // Test that GTIN GID can be resolved back to food details
-    @Test @MainActor func gtin_gid_resolves_to_food_details() async throws {
+    // Test that FDC GID can be resolved back to food details
+    @Test @MainActor func fdc_gid_resolves_to_food_details() async throws {
         // First get a barcode result
         let barcodeResult = try await client.getFoodByBarcode(code: "031604031121")
-        let gtinGid = barcodeResult.id
+        let fdcGid = barcodeResult.id
 
-        // Then resolve the GTIN GID
-        let foodResult = try await client.getFood(gid: gtinGid)
-        #expect(foodResult.id == gtinGid)
+        // Then resolve the FDC GID
+        let foodResult = try await client.getFood(gid: fdcGid)
+        #expect(foodResult.id == fdcGid)
         #expect(foodResult.description == "Greek Yogurt, Strawberry")
         #expect(foodResult.brand == "Chobani")
     }
 
-    // Test that GTIN GID can be resolved to detailed food information
-    @Test @MainActor func gtin_gid_resolves_to_detailed_food() async throws {
+    // Test that FDC GID can be resolved to detailed food information
+    @Test @MainActor func fdc_gid_resolves_to_detailed_food() async throws {
         // First get a barcode result
         let barcodeResult = try await client.getFoodByBarcode(code: "031604031121")
-        let gtinGid = barcodeResult.id
+        let fdcGid = barcodeResult.id
 
         // Then get detailed food information
-        let detailedResult = try await client.getFoodDetails(gid: gtinGid)
-        #expect(detailedResult.id == gtinGid)
+        let detailedResult = try await client.getFoodDetails(gid: fdcGid)
+        #expect(detailedResult.id == fdcGid)
         #expect(detailedResult.description == "Greek Yogurt, Strawberry")
         #expect(detailedResult.brand == "Chobani")
         #expect(!detailedResult.nutrients.isEmpty)
