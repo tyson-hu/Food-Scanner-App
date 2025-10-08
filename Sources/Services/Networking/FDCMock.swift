@@ -102,7 +102,7 @@ struct FDCMock: FoodDataClient {
         // Mock barcode lookup - return first branded food with UPC
         if let food = Self.catalog.first(where: { $0.gtinUpc == code && $0.brand != nil }) {
             return FoodCard(
-                id: "gtin:\(code)",
+                id: "fdc:\(food.id)",
                 kind: .branded,
                 code: food.gtinUpc,
                 description: food.name,
@@ -131,36 +131,7 @@ struct FDCMock: FoodDataClient {
     func getFood(gid: String) async throws -> FoodCard {
         try? await Task.sleep(nanoseconds: 150_000_000)
 
-        // Handle gtin: GIDs (from barcode lookups)
-        if gid.hasPrefix("gtin:") {
-            let barcodeString = String(gid.dropFirst(5))
-            if let food = Self.catalog.first(where: { $0.gtinUpc == barcodeString && $0.brand != nil }) {
-                return FoodCard(
-                    id: gid,
-                    kind: .branded,
-                    code: food.gtinUpc,
-                    description: food.name,
-                    brand: food.brand,
-                    baseUnit: .grams, // Default to grams for mock data
-                    per100Base: [],
-                    serving: FoodServing(
-                        amount: food.servingSize,
-                        unit: food.servingSizeUnit,
-                        household: food.householdServingFullText
-                    ),
-                    portions: nil,
-                    densityGPerMl: nil,
-                    nutrients: [],
-                    provenance: FoodProvenance(
-                        source: .fdc,
-                        id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
-                )
-            }
-        }
-
-        // Handle fdc: GIDs (from search results)
+        // Handle fdc: GIDs (from search results and barcode lookups)
         if gid.hasPrefix("fdc:"), let fdcId = Int(gid.dropFirst(4)) {
             if let food = Self.catalog.first(where: { $0.id == fdcId }) {
                 return FoodCard(
@@ -194,69 +165,7 @@ struct FDCMock: FoodDataClient {
     func getFoodDetails(gid: String) async throws -> FoodDetails {
         try? await Task.sleep(nanoseconds: 200_000_000)
 
-        // Handle gtin: GIDs (from barcode lookups)
-        if gid.hasPrefix("gtin:") {
-            let barcodeString = String(gid.dropFirst(5))
-            if let food = Self.catalog.first(where: { $0.gtinUpc == barcodeString && $0.brand != nil }) {
-                // Create mock nutrients based on the food data
-                let mockNutrients = [
-                    FoodNutrient(
-                        id: 1_008,
-                        name: "Energy",
-                        unit: "kcal",
-                        amount: Double(food.calories),
-                        basis: .perServing
-                    ),
-                    FoodNutrient(
-                        id: 1_003,
-                        name: "Protein",
-                        unit: "g",
-                        amount: Double(food.protein),
-                        basis: .perServing
-                    ),
-                    FoodNutrient(
-                        id: 1_004,
-                        name: "Total lipid (fat)",
-                        unit: "g",
-                        amount: Double(food.fat),
-                        basis: .perServing
-                    ),
-                    FoodNutrient(
-                        id: 1_005,
-                        name: "Carbohydrate, by difference",
-                        unit: "g",
-                        amount: Double(food.carbs),
-                        basis: .perServing
-                    )
-                ]
-
-                return FoodDetails(
-                    id: gid,
-                    kind: .branded,
-                    code: food.gtinUpc,
-                    description: food.name,
-                    brand: food.brand,
-                    ingredientsText: food.ingredients,
-                    baseUnit: .grams, // Default to grams for mock data
-                    per100Base: [],
-                    serving: FoodServing(
-                        amount: food.servingSize ?? 100.0,
-                        unit: food.servingSizeUnit ?? "g",
-                        household: food.householdServingFullText ?? "1 serving"
-                    ),
-                    portions: [],
-                    densityGPerMl: nil,
-                    nutrients: mockNutrients,
-                    provenance: FoodProvenance(
-                        source: .fdc,
-                        id: "\(food.id)",
-                        fetchedAt: "2025-09-26T21:00:00Z"
-                    )
-                )
-            }
-        }
-
-        // Handle fdc: GIDs (from search results)
+        // Handle fdc: GIDs (from search results and barcode lookups)
         if gid.hasPrefix("fdc:"), let fdcId = Int(gid.dropFirst(4)) {
             if let food = Self.catalog.first(where: { $0.id == fdcId }) {
                 // Create mock nutrients based on the food data
