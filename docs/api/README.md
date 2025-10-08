@@ -121,8 +121,8 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 ### Data Models
 - **Envelope<T>**: Generic wrapper for raw data
 - **NormalizedFood**: Canonical internal model
-- **FoodMinimalCard**: Public search result model
-- **FoodAuthoritativeDetail**: Public detail model
+- **FoodCard**: Public search result model
+- **FoodDetails**: Public detail model
 
 ### Processing Pipeline
 1. **Fetch**: Raw data from proxy service

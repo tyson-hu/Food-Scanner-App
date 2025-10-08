@@ -58,7 +58,7 @@ Tests/
 #### Model Tests
 ```swift
 // Test data structures and business logic
-@Test func testFoodMinimalCardInitialization()
+@Test func testFoodCardInitialization()
 @Test func testNutrientCalculation()
 @Test func testDataValidation()
 ```
@@ -236,8 +236,8 @@ enum TestEnvironment {
 ### Test Data Management
 ```swift
 class TestDataManager {
-    static func createTestFood() -> FoodMinimalCard {
-        return FoodMinimalCard(
+    static func createTestFood() -> FoodCard {
+        return FoodCard(
             id: "test:123456",
             description: "Test Food",
             nutrients: createTestNutrients()

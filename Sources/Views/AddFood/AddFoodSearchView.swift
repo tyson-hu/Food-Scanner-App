@@ -87,7 +87,7 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func foodItemRow(_ item: FoodMinimalCard) -> some View {
+    private func foodItemRow(_ item: FoodCard) -> some View {
         Button {
             // Pass the full GID directly - supports all ID types (fdc:, gtin:)
             onSelect(item.id)
@@ -97,7 +97,7 @@ struct AddFoodSearchView: View {
         .buttonStyle(PlainButtonStyle())
     }
 
-    private func foodItemContent(_ item: FoodMinimalCard) -> some View {
+    private func foodItemContent(_ item: FoodCard) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             foodDescription(item)
             foodDetails(item)
@@ -107,14 +107,14 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func foodDescription(_ item: FoodMinimalCard) -> some View {
+    private func foodDescription(_ item: FoodCard) -> some View {
         Text(item.description ?? "Unknown Food")
             .font(.body)
             .foregroundStyle(.primary)
     }
 
     @ViewBuilder
-    private func foodDetails(_ item: FoodMinimalCard) -> some View {
+    private func foodDetails(_ item: FoodCard) -> some View {
         HStack(spacing: 8) {
             if let brand = item.brand, !brand.isEmpty {
                 Text(brand)
@@ -134,7 +134,7 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func sourceInformation(_ item: FoodMinimalCard) -> some View {
+    private func sourceInformation(_ item: FoodCard) -> some View {
         HStack {
             Text("Source:")
                 .font(.caption2)

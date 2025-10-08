@@ -131,7 +131,7 @@ final class DebugViewModel {
         }
     }
     
-    var searchResults: [FoodMinimalCard] = [] {
+    var searchResults: [FoodCard] = [] {
         didSet {
             print("📋 Results updated: \(searchResults.count) items")
         }

@@ -84,7 +84,7 @@ struct AddFoodSearchView: View {
 @MainActor
 @Observable
 final class AddFoodSearchViewModel {
-    var searchResults: [FoodMinimalCard] = []
+    var searchResults: [FoodCard] = []
     var isLoading: Bool = false
     var errorMessage: String?
     
@@ -113,7 +113,7 @@ final class AddFoodSearchViewModel {
 
 **Example Structure**:
 ```swift
-struct FoodMinimalCard: Sendable, Codable, Equatable {
+struct FoodCard: Sendable, Codable, Equatable {
     let id: String
     let description: String
     let brand: String?

@@ -113,7 +113,7 @@ struct BaseUnitTests {
         #expect(FoodEntryBuilder.convertToBaseUnit(amount: 1.0, unit: "l", targetBaseUnit: "g") == 1_000.0)
     }
 
-    // MARK: - FoodMinimalCard Tests
+    // MARK: - FoodCard Tests
 
     @Test func foodMinimalCardWithBaseUnit() {
         let nutrients = [
@@ -125,7 +125,7 @@ struct BaseUnitTests {
             FoodPortion(label: "can", amount: 1.0, unit: "can", household: "1 can", massG: 368.0, volMl: 355.0)
         ]
 
-        let foodCard = FoodMinimalCard(
+        let foodCard = FoodCard(
             id: "fdc:123456",
             kind: .branded,
             code: "1234567890123",
@@ -150,13 +150,13 @@ struct BaseUnitTests {
 
     // MARK: - FoodEntry Creation Tests
 
-    @Test func foodEntryFromFoodMinimalCard() {
+    @Test func foodEntryFromFoodCard() {
         let nutrients = [
             FoodNutrient(id: 1_008, name: "Energy", unit: "kcal", amount: 42.0, basis: .per100Base),
             FoodNutrient(id: 1_003, name: "Protein", unit: "g", amount: 0.0, basis: .per100Base)
         ]
 
-        let foodCard = FoodMinimalCard(
+        let foodCard = FoodCard(
             id: "fdc:123456",
             kind: .branded,
             code: "1234567890123",

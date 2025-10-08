@@ -30,7 +30,7 @@ public protocol ProxyClient: Sendable {
     func searchFoods(query: String, pageSize: Int?) async throws -> FdcSearchResponse
 
     /// Get food details by FDC ID (GET /food/:fdcId)
-    func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcFood>
+    func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcProduct>
 
     // MARK: - OFF Direct Product
 
@@ -133,7 +133,7 @@ public struct ProxyClientImpl: ProxyClient {
         }
     }
 
-    public func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcFood> {
+    public func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcProduct> {
         let url = try apiConfig.url(for: "/food/\(fdcId)")
         let request = buildRequest(for: url)
 
@@ -146,7 +146,7 @@ public struct ProxyClientImpl: ProxyClient {
 
             try throwIfNeeded(httpResponse: httpResponse, data: data)
 
-            return try JSONDecoder().decode(Envelope<FdcFood>.self, from: data)
+            return try JSONDecoder().decode(Envelope<FdcProduct>.self, from: data)
         }
     }
 

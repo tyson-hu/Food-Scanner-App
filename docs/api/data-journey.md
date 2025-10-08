@@ -208,10 +208,10 @@ Internal normalized data gets converted to public API models for UI consumption.
 **Key Functions**:
 ```swift
 // Converts to search result model
-func convertToFoodMinimalCard(_ normalizedFood: NormalizedFood) -> FoodMinimalCard
+func convertToFoodCard(_ normalizedFood: NormalizedFood) -> FoodCard
 
 // Converts to detail view model
-func convertToFoodAuthoritativeDetail(_ normalizedFood: NormalizedFood) -> FoodAuthoritativeDetail
+func convertToFoodDetails(_ normalizedFood: NormalizedFood) -> FoodDetails
 
 // Converts serving information
 func convertToFoodServing(_ serving: NormalizedServing?) -> FoodServing?
@@ -223,7 +223,7 @@ func convertToFoodPortion(_ portion: NormalizedPortion) -> FoodPortion
 func convertToFoodNutrient(_ nutrient: NormalizedNutrient) -> FoodNutrient
 ```
 
-**What happens**: `NormalizedFood` becomes clean public models (`FoodMinimalCard`, `FoodAuthoritativeDetail`) ready for UI.
+**What happens**: `NormalizedFood` becomes clean public models (`FoodCard`, `FoodDetails`) ready for UI.
 
 ---
 
@@ -281,7 +281,7 @@ func prepareForLogging() -> FoodEntry
    }
 
 4. Public Model:
-   FoodMinimalCard {
+   FoodCard {
      id: "fdc:123456",
      description: "Apple, raw, with skin",
      nutrients: [FoodNutrient(id: 1008, name: "Energy", amount: 52.0, unit: "kcal")]
@@ -315,7 +315,7 @@ func prepareForLogging() -> FoodEntry
    }
 
 4. Public Model:
-   FoodMinimalCard {
+   FoodCard {
      id: "off:0123456789012",
      description: "Coca-Cola", 
      brand: "Coca-Cola",

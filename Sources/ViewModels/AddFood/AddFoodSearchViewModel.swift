@@ -23,8 +23,8 @@ final class AddFoodSearchViewModel {
 
     var query: String = ""
     var phase: Phase = .idle
-    var genericResults: [FoodMinimalCard] = []
-    var brandedResults: [FoodMinimalCard] = []
+    var genericResults: [FoodCard] = []
+    var brandedResults: [FoodCard] = []
 
     // MARK: - Non-observed Dependencies & Internals
 

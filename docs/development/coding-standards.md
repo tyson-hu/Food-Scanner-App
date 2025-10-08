@@ -38,7 +38,7 @@ This document defines the coding standards and style guidelines for the Food Sca
 ```swift
 // Classes and Structs
 class FoodDataClient { }
-struct FoodMinimalCard { }
+struct FoodCard { }
 
 // Protocols
 protocol FoodDataClientProtocol { }
@@ -51,7 +51,7 @@ enum RawSource { }
 ### Variables and Functions
 ```swift
 // Variables (camelCase)
-var searchResults: [FoodMinimalCard] = []
+var searchResults: [FoodCard] = []
 var isLoading: Bool = false
 
 // Functions (camelCase)
@@ -69,7 +69,7 @@ let timeoutInterval: TimeInterval = 30.0
 public func searchFoods(query: String) async throws -> FoodSearchResponse
 
 // Internal implementation
-private func processSearchResults(_ results: [SearchResult]) -> [FoodMinimalCard]
+private func processSearchResults(_ results: [SearchResult]) -> [FoodCard]
 
 // File-private
 fileprivate func validateInput(_ input: String) -> Bool
@@ -112,7 +112,7 @@ public struct FoodDataClient: FoodDataClientProtocol {
 ```swift
 // MARK: - Properties
 private let client: FoodDataClient
-private var searchResults: [FoodMinimalCard] = []
+private var searchResults: [FoodCard] = []
 
 // MARK: - Initialization
 init(client: FoodDataClient) {
@@ -175,7 +175,7 @@ struct FoodSearchView: View {
 @Observable
 final class FoodSearchViewModel {
     // MARK: - Published Properties
-    var searchResults: [FoodMinimalCard] = []
+    var searchResults: [FoodCard] = []
     var isLoading: Bool = false
     var errorMessage: String?
     

@@ -17,14 +17,14 @@ public protocol FoodDataClient: Sendable {
     /// Search foods by text query (returns both generic and branded)
     func searchFoods(query: String, limit: Int?) async throws -> FoodSearchResponse
 
-    /// Get minimal food card by barcode
-    func getFoodByBarcode(code: String) async throws -> FoodMinimalCard
+    /// Get food card by barcode
+    func getFoodByBarcode(code: String) async throws -> FoodCard
 
-    /// Get minimal food card by GID
-    func getFood(gid: String) async throws -> FoodMinimalCard
+    /// Get food card by GID
+    func getFood(gid: String) async throws -> FoodCard
 
-    /// Get authoritative food details by GID
-    func getFoodDetails(gid: String) async throws -> FoodAuthoritativeDetail
+    /// Get detailed food information by GID
+    func getFoodDetails(gid: String) async throws -> FoodDetails
 
     // MARK: - Legacy Methods (for backward compatibility)
 

@@ -27,7 +27,7 @@ public struct Envelope<T: Codable>: Codable {
 }
 
 // Convenience aliases
-public typealias FdcEnvelope = Envelope<FdcFood>
+public typealias FdcEnvelope = Envelope<FdcProduct>
 public typealias OffEnvelope = Envelope<OffProduct>
 
 // Union type for barcode lookup results (can be either FDC or OFF)
@@ -82,7 +82,7 @@ public enum FdcDataType: String, Codable {
     // Some APIs may return "Experimental Foods" in the future; treat unknowns as nil via optional decode.
 }
 
-public struct FdcFood: Codable {
+public struct FdcProduct: Codable {
     // Common
     public let dataType: FdcDataType?
     public let fdcId: Int?
@@ -273,7 +273,7 @@ public struct ProxyErrorResponse: Sendable, Codable, Equatable {
 
 public enum RouteSource {
     case fdcSearch(FdcSearchResponse)
-    case fdcDetail(Envelope<FdcFood>)
+    case fdcDetail(Envelope<FdcProduct>)
     case offProduct(Envelope<OffReadResponse>)
     case redirect(ProxyRedirect)
     case proxyError(ProxyApiError)
@@ -306,7 +306,7 @@ public func decodeRoute(_ data: Data, for path: String) throws -> RouteSource {
 
     if path.hasPrefix("/food/") {
         if let err = try? jsonDecoder.decode(ProxyApiError.self, from: data) { return .proxyError(err) }
-        let env = try jsonDecoder.decode(Envelope<FdcFood>.self, from: data)
+        let env = try jsonDecoder.decode(Envelope<FdcProduct>.self, from: data)
         return .fdcDetail(env)
     }
 

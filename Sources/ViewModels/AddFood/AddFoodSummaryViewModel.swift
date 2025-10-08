@@ -14,7 +14,7 @@ import Observation
 final class AddFoodSummaryViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FoodMinimalCard)
+        case loaded(FoodCard)
         case error(String)
     }
 
@@ -31,7 +31,7 @@ final class AddFoodSummaryViewModel {
     }
 
     // Initializer for when we have the food card directly (barcode scan)
-    init(foodCard: FoodMinimalCard) {
+    init(foodCard: FoodCard) {
         gid = foodCard.id
         client = nil
         phase = .loaded(foodCard)

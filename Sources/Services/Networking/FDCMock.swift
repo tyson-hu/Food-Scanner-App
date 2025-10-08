@@ -40,7 +40,7 @@ struct FDCMock: FoodDataClient {
         let generic = filtered.filter { $0.brand == nil }
 
         let brandedCards = branded.prefix(limit ?? 20).map { food in
-            FoodMinimalCard(
+            FoodCard(
                 id: "fdc:\(food.id)",
                 kind: .branded,
                 code: food.gtinUpc,
@@ -65,7 +65,7 @@ struct FDCMock: FoodDataClient {
         }
 
         let genericCards = generic.prefix(limit ?? 20).map { food in
-            FoodMinimalCard(
+            FoodCard(
                 id: "fdc:\(food.id)",
                 kind: .generic,
                 code: nil,
@@ -96,12 +96,12 @@ struct FDCMock: FoodDataClient {
         )
     }
 
-    func getFoodByBarcode(code: String) async throws -> FoodMinimalCard {
+    func getFoodByBarcode(code: String) async throws -> FoodCard {
         try? await Task.sleep(nanoseconds: 150_000_000)
 
         // Mock barcode lookup - return first branded food with UPC
         if let food = Self.catalog.first(where: { $0.gtinUpc == code && $0.brand != nil }) {
-            return FoodMinimalCard(
+            return FoodCard(
                 id: "gtin:\(food.gtinUpc ?? "")",
                 kind: .branded,
                 code: food.gtinUpc,
@@ -128,13 +128,13 @@ struct FDCMock: FoodDataClient {
         throw FoodDataError.noResults
     }
 
-    func getFood(gid: String) async throws -> FoodMinimalCard {
+    func getFood(gid: String) async throws -> FoodCard {
         try? await Task.sleep(nanoseconds: 150_000_000)
 
         // Extract FDC ID from GID
         if gid.hasPrefix("fdc:"), let fdcId = Int(gid.dropFirst(4)) {
             if let food = Self.catalog.first(where: { $0.id == fdcId }) {
-                return FoodMinimalCard(
+                return FoodCard(
                     id: gid,
                     kind: food.brand != nil ? .branded : .generic,
                     code: food.gtinUpc,
@@ -164,7 +164,7 @@ struct FDCMock: FoodDataClient {
             let gtinCode = String(gid.dropFirst(5))
             // Try to find food by exact GTIN match first
             if let food = Self.catalog.first(where: { $0.gtinUpc == gtinCode && $0.brand != nil }) {
-                return FoodMinimalCard(
+                return FoodCard(
                     id: gid,
                     kind: .branded,
                     code: food.gtinUpc,
@@ -191,7 +191,7 @@ struct FDCMock: FoodDataClient {
             // If no exact match, try removing leading zeros
             let originalBarcode = gtinCode.replacingOccurrences(of: "^0+", with: "", options: .regularExpression)
             if let food = Self.catalog.first(where: { $0.gtinUpc == originalBarcode && $0.brand != nil }) {
-                return FoodMinimalCard(
+                return FoodCard(
                     id: gid,
                     kind: .branded,
                     code: food.gtinUpc,
@@ -219,7 +219,7 @@ struct FDCMock: FoodDataClient {
         throw FoodDataError.noResults
     }
 
-    func getFoodDetails(gid: String) async throws -> FoodAuthoritativeDetail {
+    func getFoodDetails(gid: String) async throws -> FoodDetails {
         try? await Task.sleep(nanoseconds: 200_000_000)
 
         // Extract FDC ID from GID
@@ -257,7 +257,7 @@ struct FDCMock: FoodDataClient {
                     )
                 ]
 
-                return FoodAuthoritativeDetail(
+                return FoodDetails(
                     id: gid,
                     kind: food.brand != nil ? .branded : .generic,
                     code: food.gtinUpc,
@@ -320,7 +320,7 @@ struct FDCMock: FoodDataClient {
                     )
                 ]
 
-                return FoodAuthoritativeDetail(
+                return FoodDetails(
                     id: gid,
                     kind: .branded,
                     code: food.gtinUpc,
@@ -380,7 +380,7 @@ struct FDCMock: FoodDataClient {
                     )
                 ]
 
-                return FoodAuthoritativeDetail(
+                return FoodDetails(
                     id: gid,
                     kind: .branded,
                     code: food.gtinUpc,
@@ -438,7 +438,7 @@ struct FDCMock: FoodDataClient {
             )
         ]
 
-        return FoodAuthoritativeDetail(
+        return FoodDetails(
             id: gid,
             kind: .generic,
             code: nil,

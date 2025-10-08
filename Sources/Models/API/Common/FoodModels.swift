@@ -12,7 +12,7 @@ import Foundation
 
 // MARK: - Minimal Card (for /food/* and /barcode/* endpoints)
 
-public struct FoodMinimalCard: Sendable, Codable, Equatable, Hashable {
+public struct FoodCard: Sendable, Codable, Equatable, Hashable {
     public let id: String // GID: "gtin:<14>" | "fdc:<id>"
     public let kind: FoodKind
     public let code: String? // raw barcode when known (no padding)
@@ -29,7 +29,7 @@ public struct FoodMinimalCard: Sendable, Codable, Equatable, Hashable {
 
 // MARK: - Authoritative Detail (for /foodDetails/* endpoint)
 
-public struct FoodAuthoritativeDetail: Sendable, Codable, Equatable {
+public struct FoodDetails: Sendable, Codable, Equatable {
     public let id: String // GID
     public let kind: FoodKind
     public let code: String?
@@ -49,8 +49,8 @@ public struct FoodAuthoritativeDetail: Sendable, Codable, Equatable {
 
 public struct FoodSearchResponse: Sendable, Codable, Equatable {
     public let query: String
-    public let generic: [FoodMinimalCard]
-    public let branded: [FoodMinimalCard]
+    public let generic: [FoodCard]
+    public let branded: [FoodCard]
 }
 
 // MARK: - Health Response (for /health endpoint)

@@ -36,29 +36,29 @@ public struct FoodDataNormalizer {
 
                 // Create unique GID for each food item
                 let foodGid = "fdc:\(fdcId)"
-                // Convert FdcSearchItem to FdcFood for normalization
-                let fdcFoodData = FdcFood(
+                // Convert FdcSearchItem to FdcProduct for normalization
+                let fdcFoodData = FdcProduct(
                     dataType: fdcFood.dataType.flatMap { FdcDataType(rawValue: $0) },
                     fdcId: fdcFood.fdcId,
                     description: fdcFood.description,
-                    publicationDate: nil,
-                    foodClass: nil,
+                    publicationDate: nil as String?,
+                    foodClass: nil as String?,
                     brandOwner: fdcFood.brandOwner,
-                    brandName: nil,
+                    brandName: nil as String?,
                     gtinUpc: fdcFood.gtinUpc,
                     ingredients: fdcFood.ingredients,
                     servingSize: fdcFood.servingSize,
                     servingSizeUnit: fdcFood.servingSizeUnit,
-                    householdServingFullText: nil,
-                    brandedFoodCategory: nil,
-                    marketCountry: nil,
-                    tradeChannels: nil,
+                    householdServingFullText: nil as String?,
+                    brandedFoodCategory: nil as String?,
+                    marketCountry: nil as String?,
+                    tradeChannels: nil as [String]?,
                     labelNutrients: fdcFood.labelNutrients,
-                    foodNutrients: nil,
-                    foodPortions: nil,
+                    foodNutrients: nil as [FdcFoodNutrient]?,
+                    foodPortions: nil as [FdcFoodPortion]?,
                     wweiaFoodCategory: fdcFood.wweiaFoodCategory,
-                    inputFoods: nil,
-                    nutrientConversionFactors: nil
+                    inputFoods: nil as [FdcInputFood]?,
+                    nutrientConversionFactors: nil as [FdcNutrientConversionFactor]?
                 )
                 let fdcEnvelope = FdcEnvelope(
                     gid: foodGid,
@@ -106,29 +106,29 @@ public struct FoodDataNormalizer {
 
             // Create unique GID for each food item
             let foodGid = "fdc:\(fdcId)"
-            // Convert FdcSearchItem to FdcFood for normalization
-            let fdcFoodData = FdcFood(
+            // Convert FdcSearchItem to FdcProduct for normalization
+            let fdcFoodData = FdcProduct(
                 dataType: fdcFood.dataType.flatMap { FdcDataType(rawValue: $0) },
                 fdcId: fdcFood.fdcId,
                 description: fdcFood.description,
-                publicationDate: nil,
-                foodClass: nil,
+                publicationDate: nil as String?,
+                foodClass: nil as String?,
                 brandOwner: fdcFood.brandOwner,
-                brandName: nil,
+                brandName: nil as String?,
                 gtinUpc: fdcFood.gtinUpc,
                 ingredients: fdcFood.ingredients,
                 servingSize: fdcFood.servingSize,
                 servingSizeUnit: fdcFood.servingSizeUnit,
-                householdServingFullText: nil,
-                brandedFoodCategory: nil,
-                marketCountry: nil,
-                tradeChannels: nil,
+                householdServingFullText: nil as String?,
+                brandedFoodCategory: nil as String?,
+                marketCountry: nil as String?,
+                tradeChannels: nil as [String]?,
                 labelNutrients: fdcFood.labelNutrients,
-                foodNutrients: nil,
-                foodPortions: nil,
+                foodNutrients: nil as [FdcFoodNutrient]?,
+                foodPortions: nil as [FdcFoodPortion]?,
                 wweiaFoodCategory: fdcFood.wweiaFoodCategory,
-                inputFoods: nil,
-                nutrientConversionFactors: nil
+                inputFoods: nil as [FdcInputFood]?,
+                nutrientConversionFactors: nil as [FdcNutrientConversionFactor]?
             )
 
             let fdcEnvelope = FdcEnvelope(

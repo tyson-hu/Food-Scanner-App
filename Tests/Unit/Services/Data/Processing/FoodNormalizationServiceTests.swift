@@ -45,7 +45,7 @@ struct FoodNormalizationServiceTests {
         }
         """.utf8)
 
-        let fdcFood = try JSONDecoder().decode(FdcFood.self, from: fdcData)
+        let fdcFood = try JSONDecoder().decode(FdcProduct.self, from: fdcData)
         let envelope = FdcEnvelope(
             gid: "fdc:2_451_234",
             source: .fdc,

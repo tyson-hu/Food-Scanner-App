@@ -62,7 +62,7 @@ struct BarcodeSearchResultsView: View {
     }
 
     @ViewBuilder
-    private func loadedView(result: FoodMinimalCard?, viewModel: BarcodeSearchResultsViewModel) -> some View {
+    private func loadedView(result: FoodCard?, viewModel: BarcodeSearchResultsViewModel) -> some View {
         if let food = result {
             // Render Summary immediately from envelope data
             AddFoodSummaryView(
@@ -148,7 +148,7 @@ struct BarcodeSearchResultsView: View {
 final class BarcodeSearchResultsViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FoodMinimalCard?)
+        case loaded(FoodCard?)
         case error(String)
     }
 

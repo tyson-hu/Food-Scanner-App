@@ -74,8 +74,8 @@ public struct FoodDataConverter {
 
     // MARK: - Conversion to public models
 
-    func convertToFoodMinimalCard(_ normalizedFood: NormalizedFood) -> FoodMinimalCard {
-        FoodMinimalCard(
+    func convertToFoodCard(_ normalizedFood: NormalizedFood) -> FoodCard {
+        FoodCard(
             id: normalizedFood.gid,
             kind: normalizedFood.kind,
             code: normalizedFood.barcode,
@@ -95,8 +95,8 @@ public struct FoodDataConverter {
         )
     }
 
-    func convertToFoodAuthoritativeDetail(_ normalizedFood: NormalizedFood) -> FoodAuthoritativeDetail {
-        FoodAuthoritativeDetail(
+    func convertToFoodDetails(_ normalizedFood: NormalizedFood) -> FoodDetails {
+        FoodDetails(
             id: normalizedFood.gid,
             kind: normalizedFood.kind,
             code: normalizedFood.barcode,
@@ -117,7 +117,7 @@ public struct FoodDataConverter {
         )
     }
 
-    func convertToFDCFoodSummary(_ foodCard: FoodMinimalCard) -> FDCFoodSummary {
+    func convertToFDCFoodSummary(_ foodCard: FoodCard) -> FDCFoodSummary {
         FDCFoodSummary(
             id: extractFDCId(from: foodCard.id),
             name: foodCard.description ?? "Unknown Food",

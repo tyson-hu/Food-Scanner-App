@@ -11,7 +11,7 @@ import SwiftUI
 
 struct AddFoodSummaryView: View {
     let gid: String?
-    let foodCard: FoodMinimalCard?
+    let foodCard: FoodCard?
     var onLog: (FoodEntry) -> Void
     var onShowDetails: (String) -> Void
 
@@ -28,7 +28,7 @@ struct AddFoodSummaryView: View {
     }
 
     // Initializer for when we have the food card directly (barcode scan)
-    init(foodCard: FoodMinimalCard, onLog: @escaping (FoodEntry) -> Void, onShowDetails: @escaping (String) -> Void) {
+    init(foodCard: FoodCard, onLog: @escaping (FoodEntry) -> Void, onShowDetails: @escaping (String) -> Void) {
         gid = nil
         self.foodCard = foodCard
         self.onLog = onLog
@@ -64,7 +64,7 @@ struct AddFoodSummaryView: View {
                 .task { await viewModel.load() }
 
         case let .loaded(foodCard):
-            loadedFoodMinimalCardView(foodCard, Binding(
+            loadedFoodCardView(foodCard, Binding(
                 get: { bindableViewModel },
                 set: { bindableViewModel = $0 }
             ))
@@ -75,8 +75,8 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func loadedFoodMinimalCardView(
-        _ foodCard: FoodMinimalCard,
+    private func loadedFoodCardView(
+        _ foodCard: FoodCard,
         _ bindableViewModel: Binding<AddFoodSummaryViewModel>
     ) -> some View {
         List {
@@ -101,7 +101,7 @@ struct AddFoodSummaryView: View {
 
     @ViewBuilder
     private func servingMultiplierSection(
-        _ foodCard: FoodMinimalCard,
+        _ foodCard: FoodCard,
         _ bindableViewModel: Binding<AddFoodSummaryViewModel>
     ) -> some View {
         Section {
@@ -120,7 +120,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func basicInformationSection(_ foodCard: FoodMinimalCard) -> some View {
+    private func basicInformationSection(_ foodCard: FoodCard) -> some View {
         Section("Food Information") {
             InfoRow(label: "Name", value: foodCard.description)
             InfoRow(label: "Brand", value: foodCard.brand)
@@ -132,7 +132,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func servingInformationSection(_ foodCard: FoodMinimalCard) -> some View {
+    private func servingInformationSection(_ foodCard: FoodCard) -> some View {
         if let serving = foodCard.serving {
             Section("Serving Information") {
                 if let amount = serving.amount {
@@ -150,7 +150,7 @@ struct AddFoodSummaryView: View {
 
     @ViewBuilder
     private func nutritionSection(
-        _ foodCard: FoodMinimalCard,
+        _ foodCard: FoodCard,
         _ bindableViewModel: Binding<AddFoodSummaryViewModel>
     ) -> some View {
         Section("Nutrition (\(foodCard.baseUnit.per100DisplayName))") {
@@ -215,7 +215,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func sourceInformationSection(_ foodCard: FoodMinimalCard) -> some View {
+    private func sourceInformationSection(_ foodCard: FoodCard) -> some View {
         Section("Source") {
             InfoRow(label: "Source", value: foodCard.provenance.source.rawValue.uppercased())
             InfoRow(label: "ID", value: foodCard.provenance.id)
@@ -225,7 +225,7 @@ struct AddFoodSummaryView: View {
 
     @ViewBuilder
     private func actionSection(
-        _ foodCard: FoodMinimalCard,
+        _ foodCard: FoodCard,
         _ bindableViewModel: Binding<AddFoodSummaryViewModel>
     ) -> some View {
         Section {

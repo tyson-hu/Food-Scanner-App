@@ -166,7 +166,7 @@ The complete data journey from raw proxy data to cooked display data:
 ```
 Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → Merging → Conversion → Display Models
      ↓              ↓                    ↓              ↓            ↓         ↓           ↓
-  JSON Response  Envelope<T>         RawSource      NormalizedFood  Merged   FoodMinimalCard  UI Display
+  JSON Response  Envelope<T>         RawSource      NormalizedFood  Merged   FoodCard  UI Display
 ```
 
 **📖 See [Complete Data Journey](api/data-journey.md)** for detailed technical flow with function headers and visual diagrams.

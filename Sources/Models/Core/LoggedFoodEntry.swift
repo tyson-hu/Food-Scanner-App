@@ -71,7 +71,7 @@ extension FoodEntry {
     }
 
     nonisolated static func from(
-        foodCard: FoodMinimalCard,
+        foodCard: FoodCard,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {
@@ -79,7 +79,7 @@ extension FoodEntry {
     }
 
     nonisolated static func from(
-        foodDetails: FoodAuthoritativeDetail,
+        foodDetails: FoodDetails,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {

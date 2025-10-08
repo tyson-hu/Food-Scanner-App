@@ -151,14 +151,14 @@ xcodebuild test \
 
 ### Model Testing
 ```swift
-@Test func testFoodMinimalCardInitialization() {
+@Test func testFoodCardInitialization() {
     // Arrange
     let id = "fdc:123456"
     let description = "Apple"
     let nutrients = [FoodNutrient(id: 1008, name: "Energy", amount: 52.0, unit: "kcal")]
     
     // Act
-    let foodCard = FoodMinimalCard(
+    let foodCard = FoodCard(
         id: id,
         description: description,
         nutrients: nutrients
@@ -232,7 +232,7 @@ xcodebuild test \
     
     let response = try await client.searchFoods(query: "apple")
     let normalized = service.normalize(response.results.first!)
-    let publicModel = converter.convertToFoodMinimalCard(normalized)
+    let publicModel = converter.convertToFoodCard(normalized)
     
     #expect(publicModel.id != nil)
     #expect(publicModel.description != nil)

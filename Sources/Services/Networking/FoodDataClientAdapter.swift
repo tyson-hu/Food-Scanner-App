@@ -46,11 +46,11 @@ public struct FoodDataClientAdapter: FoodDataClient {
 
             let generic = results
                 .filter { $0.kind == .generic }
-                .map(converter.convertToFoodMinimalCard)
+                .map(converter.convertToFoodCard)
 
             let branded = results
                 .filter { $0.kind == .branded }
-                .map(converter.convertToFoodMinimalCard)
+                .map(converter.convertToFoodCard)
 
             return FoodSearchResponse(
                 query: query,
@@ -64,7 +64,7 @@ public struct FoodDataClientAdapter: FoodDataClient {
         }
     }
 
-    public func getFoodByBarcode(code: String) async throws -> FoodMinimalCard {
+    public func getFoodByBarcode(code: String) async throws -> FoodCard {
         do {
             let result = try await proxyClient.lookupByBarcode(barcode: code)
             let normalizedFood: NormalizedFood = switch result {
@@ -73,7 +73,7 @@ public struct FoodDataClientAdapter: FoodDataClient {
             case let .off(offEnvelope):
                 normalizer.normalizeOffEnvelope(offEnvelope)
             }
-            return converter.convertToFoodMinimalCard(normalizedFood)
+            return converter.convertToFoodCard(normalizedFood)
         } catch let error as ProxyError {
             // If GTIN lookup fails, try searching by barcode as text
             if case .invalidResponse = error {
@@ -90,7 +90,7 @@ public struct FoodDataClientAdapter: FoodDataClient {
         }
     }
 
-    public func getFood(gid: String) async throws -> FoodMinimalCard {
+    public func getFood(gid: String) async throws -> FoodCard {
         do {
             // Parse GID to determine source and ID
             if gid.hasPrefix("fdc:") {
@@ -100,12 +100,12 @@ public struct FoodDataClientAdapter: FoodDataClient {
                 }
                 let envelope = try await proxyClient.getFoodDetails(fdcId: fdcId)
                 let normalizedFood = normalizer.normalizeFdcEnvelope(envelope)
-                return converter.convertToFoodMinimalCard(normalizedFood)
+                return converter.convertToFoodCard(normalizedFood)
             } else if gid.hasPrefix("off:") {
                 let barcode = String(gid.dropFirst(4))
                 let envelope = try await proxyClient.getOFFProduct(barcode: barcode)
                 let normalizedFood = normalizer.normalizeOffEnvelope(envelope)
-                return converter.convertToFoodMinimalCard(normalizedFood)
+                return converter.convertToFoodCard(normalizedFood)
             } else {
                 throw FoodDataError.invalidURL
             }
@@ -114,7 +114,7 @@ public struct FoodDataClientAdapter: FoodDataClient {
         }
     }
 
-    public func getFoodDetails(gid: String) async throws -> FoodAuthoritativeDetail {
+    public func getFoodDetails(gid: String) async throws -> FoodDetails {
         do {
             // Parse GID to determine source and ID
             if gid.hasPrefix("fdc:") {
@@ -124,12 +124,12 @@ public struct FoodDataClientAdapter: FoodDataClient {
                 }
                 let envelope = try await proxyClient.getFoodDetails(fdcId: fdcId)
                 let normalizedFood = normalizer.normalizeFdcEnvelope(envelope)
-                return converter.convertToFoodAuthoritativeDetail(normalizedFood)
+                return converter.convertToFoodDetails(normalizedFood)
             } else if gid.hasPrefix("off:") {
                 let barcode = String(gid.dropFirst(4))
                 let envelope = try await proxyClient.getOFFProduct(barcode: barcode)
                 let normalizedFood = normalizer.normalizeOffEnvelope(envelope)
-                return converter.convertToFoodAuthoritativeDetail(normalizedFood)
+                return converter.convertToFoodDetails(normalizedFood)
             } else {
                 throw FoodDataError.invalidURL
             }

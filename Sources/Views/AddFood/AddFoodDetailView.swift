@@ -45,7 +45,7 @@ struct AddFoodDetailView: View {
                     .task { await viewModel.load() }
 
             case let .loaded(foodDetails):
-                loadedFoodAuthoritativeDetailView(foodDetails: foodDetails, bindableViewModel: $bindableViewModel)
+                loadedFoodDetailsView(foodDetails: foodDetails, bindableViewModel: $bindableViewModel)
 
             case let .unsupported(source):
                 UnsupportedProductView(
@@ -66,8 +66,8 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func loadedFoodAuthoritativeDetailView(
-        foodDetails: FoodAuthoritativeDetail,
+    private func loadedFoodDetailsView(
+        foodDetails: FoodDetails,
         bindableViewModel: Bindable<AddFoodDetailViewModel>
     ) -> some View {
         List {
@@ -108,7 +108,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func basicInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func basicInformationSection(foodDetails: FoodDetails) -> some View {
         Section("Food Information") {
             InfoRow(label: "Name", value: foodDetails.description)
             InfoRow(label: "Brand", value: foodDetails.brand)
@@ -123,7 +123,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func servingInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func servingInformationSection(foodDetails: FoodDetails) -> some View {
         if let serving = foodDetails.serving {
             Section("Serving Information") {
                 if let amount = serving.amount {
@@ -140,7 +140,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func portionsSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func portionsSection(foodDetails: FoodDetails) -> some View {
         if !foodDetails.portions.isEmpty {
             Section("Available Portions") {
                 ForEach(Array(foodDetails.portions.enumerated()), id: \.offset) { _, portion in
@@ -152,7 +152,7 @@ struct AddFoodDetailView: View {
 
     @ViewBuilder
     private func nutrientsSection(
-        foodDetails: FoodAuthoritativeDetail,
+        foodDetails: FoodDetails,
         bindableViewModel: Bindable<AddFoodDetailViewModel>
     ) -> some View {
         if !foodDetails.nutrients.isEmpty {
@@ -168,7 +168,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func sourceInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func sourceInformationSection(foodDetails: FoodDetails) -> some View {
         Section("Source") {
             InfoRow(label: "Source", value: foodDetails.provenance.source.rawValue.uppercased())
             InfoRow(label: "ID", value: foodDetails.provenance.id)
@@ -178,7 +178,7 @@ struct AddFoodDetailView: View {
 
     @ViewBuilder
     private func actionSection(
-        foodDetails: FoodAuthoritativeDetail,
+        foodDetails: FoodDetails,
         bindableViewModel: Bindable<AddFoodDetailViewModel>
     ) -> some View {
         Section {
