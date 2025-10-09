@@ -378,13 +378,13 @@ struct ProxyClientParsingTests {
         let errorData = Data("""
         {
             "error": "NOT_FOUND",
-            "id": "fdc:123456"
+            "id": "0885909950800"
         }
         """.utf8)
 
         let errorResponse = try JSONDecoder().decode(ProxyErrorResponse.self, from: errorData)
         #expect(errorResponse.error == "NOT_FOUND")
-        #expect(errorResponse.id == "fdc:123456")
+        #expect(errorResponse.id == "0885909950800")
     }
 
     // MARK: - Safe Decoding Tests

@@ -26,9 +26,9 @@
 /* Begin PBXFileReference section */
 		842FD2BF2E82E2D300CD2A5F /* Calry.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Calry.xctestplan; sourceTree = "<group>"; };
 		846281442E88875C00BBEBF6 /* Calry-CI-Offline.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Calry-CI-Offline.xctestplan"; sourceTree = "<group>"; };
-		84C3F1F02E97633A00DA765F /* CalryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = CalryTests.xctest; path = "/Users/tysonhu/Documents/XcodeProjects/Food Scanner/build/Debug-iphoneos/Calry.app/PlugIns/CalryTests.xctest"; sourceTree = "<absolute>"; };
-		84C3F1FD2E97634500DA765F /* CalryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = CalryUITests.xctest; path = "/Users/tysonhu/Documents/XcodeProjects/Food Scanner/build/Debug-iphoneos/CalryUITests-Runner.app/PlugIns/CalryUITests.xctest"; sourceTree = "<absolute>"; };
-		84F634A82E8F0C8600516D5F /* Calry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Calry.app; path = "/Users/tysonhu/Documents/XcodeProjects/Food Scanner/build/Debug-iphoneos/Calry.app"; sourceTree = "<absolute>"; };
+		84C3F1F02E97633A00DA765F /* CalryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = CalryTests.xctest; path = build/Debug-iphoneos/Calry.app/PlugIns/CalryTests.xctest; sourceTree = "<group>"; };
+		84C3F1FD2E97634500DA765F /* CalryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = CalryUITests.xctest; path = build/Debug-iphoneos/CalryUITests-Runner.app/PlugIns/CalryUITests.xctest; sourceTree = "<group>"; };
+		84F634A82E8F0C8600516D5F /* Calry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Calry.app; path = build/Debug-iphoneos/Calry.app; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */

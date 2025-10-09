@@ -28,7 +28,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "842FD0C02E7E072C00CD2A5F"
+               BlueprintIdentifier = "84C3F1EF2E97633A00DA765F"
                BuildableName = "CalryTests.xctest"
                BlueprintName = "CalryTests"
                ReferencedContainer = "container:Calry.xcodeproj">
@@ -42,7 +42,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "842FD0CD2E7E073700CD2A5F"
+               BlueprintIdentifier = "84C3F1FC2E97634500DA765F"
                BuildableName = "CalryUITests.xctest"
                BlueprintName = "CalryUITests"
                ReferencedContainer = "container:Calry.xcodeproj">
@@ -70,7 +70,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "842FD0C02E7E072C00CD2A5F"
+               BlueprintIdentifier = "84C3F1EF2E97633A00DA765F"
                BuildableName = "CalryTests.xctest"
                BlueprintName = "CalryTests"
                ReferencedContainer = "container:Calry.xcodeproj">
@@ -81,7 +81,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "842FD0CD2E7E073700CD2A5F"
+               BlueprintIdentifier = "84C3F1FC2E97634500DA765F"
                BuildableName = "CalryUITests.xctest"
                BlueprintName = "CalryUITests"
                ReferencedContainer = "container:Calry.xcodeproj">
