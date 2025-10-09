@@ -2,7 +2,7 @@
 
 ## 📝 Code Style and Standards
 
-This document defines the coding standards and style guidelines for the Food Scanner iOS app.
+This document defines the coding standards and style guidelines for the Calry iOS app.
 
 ## 🎯 General Principles
 
@@ -638,4 +638,4 @@ let array = [String]() // For ordered collections
 let filteredResults = results.lazy.filter { $0.isValid }
 ```
 
-This coding standards guide ensures consistent, maintainable, and high-quality code across the Food Scanner app.
+This coding standards guide ensures consistent, maintainable, and high-quality code across the Calry app.

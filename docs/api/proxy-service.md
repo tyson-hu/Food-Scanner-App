@@ -2,11 +2,11 @@
 
 ## 🔌 Proxy Service Details
 
-This document explains the calry.org proxy service architecture and how it integrates with the Food Scanner app.
+This document explains the calry.org proxy service architecture and how it integrates with the Calry app.
 
 ## 🎯 Proxy Service Overview
 
-The **calry.org proxy service** acts as a unified gateway to multiple food data sources, providing a consistent API interface for the Food Scanner app.
+The **calry.org proxy service** acts as a unified gateway to multiple food data sources, providing a consistent API interface for the Calry app.
 
 ### Key Benefits
 - **Unified API**: Single endpoint for multiple data sources
@@ -19,7 +19,7 @@ The **calry.org proxy service** acts as a unified gateway to multiple food data 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Food Scanner App                             │
+│                    Calry App                             │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
 │  │   Search    │ │   Scanner   │ │   Today     │ │  Settings   │ │
 │  │    UI       │ │     UI      │ │     UI      │ │     UI      │ │
@@ -495,4 +495,4 @@ func logResponse(_ response: URLResponse, data: Data) {
 - **Use timeouts** to prevent hanging
 - **Monitor service health**
 
-This proxy service architecture provides a robust foundation for the Food Scanner app's data integration needs.
+This proxy service architecture provides a robust foundation for the Calry app's data integration needs.

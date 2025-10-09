@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "842FCEB82E7B365000CD2A5F"
-               BuildableName = "Food Scanner.app"
-               BlueprintName = "Food Scanner"
-               ReferencedContainer = "container:Food Scanner.xcodeproj">
+               BuildableName = "Calry.app"
+               BlueprintName = "Calry"
+               ReferencedContainer = "container:Calry.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "842FD0C02E7E072C00CD2A5F"
-               BuildableName = "FoodScannerTests.xctest"
-               BlueprintName = "FoodScannerTests"
-               ReferencedContainer = "container:Food Scanner.xcodeproj">
+               BuildableName = "CalryTests.xctest"
+               BlueprintName = "CalryTests"
+               ReferencedContainer = "container:Calry.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "842FD0CD2E7E073700CD2A5F"
-               BuildableName = "FoodScannerUITests.xctest"
-               BlueprintName = "FoodScannerUITests"
-               ReferencedContainer = "container:Food Scanner.xcodeproj">
+               BuildableName = "CalryUITests.xctest"
+               BlueprintName = "CalryUITests"
+               ReferencedContainer = "container:Calry.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -57,11 +57,11 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:FoodScanner.xctestplan"
+            reference = "container:Calry.xctestplan"
             default = "YES">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:FoodScanner-CI-Offline.xctestplan">
+            reference = "container:Calry-CI-Offline.xctestplan">
          </TestPlanReference>
       </TestPlans>
       <Testables>
@@ -71,9 +71,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "842FD0C02E7E072C00CD2A5F"
-               BuildableName = "FoodScannerTests.xctest"
-               BlueprintName = "FoodScannerTests"
-               ReferencedContainer = "container:Food Scanner.xcodeproj">
+               BuildableName = "CalryTests.xctest"
+               BlueprintName = "CalryTests"
+               ReferencedContainer = "container:Calry.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -82,9 +82,31 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "842FD0CD2E7E073700CD2A5F"
-               BuildableName = "FoodScannerUITests.xctest"
-               BlueprintName = "FoodScannerUITests"
-               ReferencedContainer = "container:Food Scanner.xcodeproj">
+               BuildableName = "CalryUITests.xctest"
+               BlueprintName = "CalryUITests"
+               ReferencedContainer = "container:Calry.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "84C3F1EF2E97633A00DA765F"
+               BuildableName = "CalryTests.xctest"
+               BlueprintName = "CalryTests"
+               ReferencedContainer = "container:Calry.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "84C3F1FC2E97634500DA765F"
+               BuildableName = "CalryUITests.xctest"
+               BlueprintName = "CalryUITests"
+               ReferencedContainer = "container:Calry.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -104,9 +126,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "842FCEB82E7B365000CD2A5F"
-            BuildableName = "Food Scanner.app"
-            BlueprintName = "Food Scanner"
-            ReferencedContainer = "container:Food Scanner.xcodeproj">
+            BuildableName = "Calry.app"
+            BlueprintName = "Calry"
+            ReferencedContainer = "container:Calry.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -120,9 +142,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "842FCEB82E7B365000CD2A5F"
-            BuildableName = "Food Scanner.app"
-            BlueprintName = "Food Scanner"
-            ReferencedContainer = "container:Food Scanner.xcodeproj">
+            BuildableName = "Calry.app"
+            BlueprintName = "Calry"
+            ReferencedContainer = "container:Calry.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

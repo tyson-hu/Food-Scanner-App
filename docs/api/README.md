@@ -16,7 +16,7 @@ api/
 
 ## 🌐 Multi-Source API Integration
 
-The Food Scanner app integrates with multiple data sources through a unified proxy API to provide comprehensive food and supplement information.
+The Calry app integrates with multiple data sources through a unified proxy API to provide comprehensive food and supplement information.
 
 ### Supported Data Sources
 
@@ -153,4 +153,4 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 5. **Track data sources** for debugging
 6. **Validate GID format** before processing
 
-This documentation provides everything needed to understand and work with the Food Scanner API integration system.
+This documentation provides everything needed to understand and work with the Calry API integration system.

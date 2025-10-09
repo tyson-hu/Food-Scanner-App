@@ -1,4 +1,4 @@
-# Food Scanner
+# Calry
 
 A modern iOS app for tracking nutrition and food intake, built with SwiftUI, SwiftData, and Swift 6.2 with strict concurrency.
 
@@ -73,7 +73,7 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI, Swi
 
 ### Installation
 1. Clone the repository
-2. Open `Food Scanner.xcodeproj` in Xcode
+2. Open `Calry.xcodeproj` in Xcode
 3. Build and run on simulator or device
 
 ### Local Development Environment
@@ -118,13 +118,13 @@ UserDefaults.standard.set(true, forKey: "feature.fdcRemote")
 
 ### Unit Tests
 ```bash
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16"
 ```
 
 ### Integration Tests
 To run integration tests that make live API calls:
 ```bash
-RUN_INTEGRATION_TESTS=1 xcodebuild test -scheme "Food Scanner"
+RUN_INTEGRATION_TESTS=1 xcodebuild test -scheme "Calry"
 ```
 
 ### Test Categories

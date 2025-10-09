@@ -1,6 +1,6 @@
 //
-//  FoodScannerUITestsLaunchTests.swift
-//  Food Scanner
+//  CalryUITestsLaunchTests.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -9,7 +9,7 @@
 @preconcurrency import XCTest
 
 /// Measures a clean cold start without auto-launch from BaseUITestCase.
-final class FoodScannerUITestsLaunchTests: BaseUITestCase {
+final class CalryUITestsLaunchTests: BaseUITestCase {
     override var autoLaunch: Bool { false }
 
     func testLaunchPerformance() throws {

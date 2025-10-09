@@ -35,7 +35,7 @@ DESTINATION="platform=iOS Simulator,name=iPhone 16"
 # Clean derived data
 clean_derived_data() {
     log_info "Cleaning derived data..."
-    rm -rf ~/Library/Developer/Xcode/DerivedData/Food_Scanner-*
+    rm -rf ~/Library/Developer/Xcode/DerivedData/Calry-*
     rm -rf "$DERIVED_DATA_PATH"
     log_success "Derived data cleaned"
 }
@@ -86,7 +86,7 @@ build_project() {
     
     # Build with CI settings
     xcodebuild build \
-        -scheme "Food Scanner" \
+        -scheme "Calry" \
         -destination "$DESTINATION" \
         -derivedDataPath "$DERIVED_DATA_PATH" \
         CODE_SIGNING_ALLOWED=NO \
@@ -115,8 +115,8 @@ main() {
     echo
     
     # Check if we're in the right directory
-    if [[ ! -f "Food Scanner.xcodeproj/project.pbxproj" ]]; then
-        log_error "Food Scanner.xcodeproj not found. Run this script from the project root."
+    if [[ ! -f "Calry.xcodeproj/project.pbxproj" ]]; then
+        log_error "Calry.xcodeproj not found. Run this script from the project root."
         exit 1
     fi
     

@@ -2,7 +2,7 @@
 
 ## 🚀 Running the App for First Time
 
-This guide walks you through running the Food Scanner app for the first time and understanding its core features.
+This guide walks you through running the Calry app for the first time and understanding its core features.
 
 ## ⚡ Quick Start
 
@@ -183,4 +183,4 @@ If you've successfully:
 - ✅ **Added food to log**
 - ✅ **Viewed daily totals**
 
-You're ready to start developing with the Food Scanner app! The system is working correctly and you can begin exploring the codebase and adding new features.
+You're ready to start developing with the Calry app! The system is working correctly and you can begin exploring the codebase and adding new features.

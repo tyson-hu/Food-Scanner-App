@@ -1,6 +1,6 @@
 //
 //  TodayViewModel.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 9/19/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.

@@ -2,7 +2,7 @@
 
 ## 📝 Change Logs
 
-This document provides an overview of the changelog system for the Food Scanner iOS app.
+This document provides an overview of the changelog system for the Calry iOS app.
 
 ## 🎯 Changelog Purpose
 

@@ -110,7 +110,7 @@ jobs:
             ${{ runner.os }}-dd-
 
       - name: Resolve packages
-        run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
+        run: xcodebuild -resolvePackageDependencies -scheme "Calry"
       
       - name: Preboot iOS 26 (create fresh iPhone 16; robust detection)
         id: preboot
@@ -273,12 +273,12 @@ jobs:
   #         languages: swift
   #         build-mode: manual
   #     - name: Resolve packages
-  #       run: xcodebuild -resolvePackageDependencies -scheme "Food Scanner"
+  #       run: xcodebuild -resolvePackageDependencies -scheme "Calry"
   #     - name: Build for CodeQL (compile only)
   #       run: |
   #         set -eo pipefail
   #         xcodebuild \
-  #           -scheme "Food Scanner" \
+  #           -scheme "Calry" \
   #           -sdk iphonesimulator \
   #           -destination 'generic/platform=iOS Simulator' \
   #           -destination-timeout 60 \

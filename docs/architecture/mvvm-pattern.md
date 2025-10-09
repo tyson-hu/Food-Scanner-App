@@ -2,7 +2,7 @@
 
 ## 🧠 MVVM Implementation Details
 
-This document explains how the MVVM (Model-View-ViewModel) pattern is implemented in the Food Scanner app.
+This document explains how the MVVM (Model-View-ViewModel) pattern is implemented in the Calry app.
 
 ## 🎯 MVVM Overview
 
@@ -292,4 +292,4 @@ struct View: SwiftUI.View {
 }
 ```
 
-This MVVM implementation provides a solid foundation for the Food Scanner app with clear separation of concerns, excellent testability, and seamless SwiftUI integration.
+This MVVM implementation provides a solid foundation for the Calry app with clear separation of concerns, excellent testability, and seamless SwiftUI integration.

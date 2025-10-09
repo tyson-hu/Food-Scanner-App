@@ -188,8 +188,8 @@ run_tests_with_monitoring() {
     # Filter out AppIntents metadata extraction warning that's harmless but CI-blocking
     (
         xcodebuild \
-            -scheme "Food Scanner" \
-            -testPlan "FoodScanner-CI-Offline" \
+            -scheme "Calry" \
+            -testPlan "Calry-CI-Offline" \
             -destination "id=$dest_id" \
             -destination-timeout 60 \
             -derivedDataPath "$derived_data_path" \
@@ -202,7 +202,7 @@ run_tests_with_monitoring() {
             -skipPackagePluginValidation \
             -skipMacroValidation \
             -disableAutomaticPackageResolution \
-            -skip-testing:FoodScannerUITests \
+            -skip-testing:CalryUITests \
             -parallel-testing-enabled NO \
             -maximum-concurrent-test-simulator-destinations 1 \
             -test-timeouts-enabled YES \

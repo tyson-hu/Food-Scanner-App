@@ -1,6 +1,6 @@
-# Food Scanner App Documentation
+# Calry App Documentation
 
-Welcome to the comprehensive documentation for the Food Scanner iOS app. This documentation covers all aspects of the project including architecture, API integration, development workflows, and CI/CD.
+Welcome to the comprehensive documentation for the Calry iOS app. This documentation covers all aspects of the project including architecture, API integration, development workflows, and CI/CD.
 
 ## 📁 Documentation Structure
 
@@ -247,4 +247,4 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 - **API questions**: Check [Data Journey](api/data-journey.md)
 - **Architecture questions**: Review [Architecture Overview](architecture/README.md)
 
-This documentation provides everything needed to understand, develop, and maintain the Food Scanner iOS app.
+This documentation provides everything needed to understand, develop, and maintain the Calry iOS app.

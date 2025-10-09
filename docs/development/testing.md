@@ -2,7 +2,7 @@
 
 ## 🧪 Testing Strategy
 
-This document provides comprehensive testing guidelines for the Food Scanner iOS app.
+This document provides comprehensive testing guidelines for the Calry iOS app.
 
 ## 🎯 Testing Philosophy
 
@@ -47,8 +47,8 @@ Tests/
 - **Mock classes**: `Mock*`
 
 ### Test Target Configuration
-- **FoodScannerTests**: Unit tests only (excludes UI test files)
-- **FoodScannerUITests**: UI tests only (includes all UI test files)
+- **CalryTests**: Unit tests only (excludes UI test files)
+- **CalryUITests**: UI tests only (includes all UI test files)
 - **Proper Separation**: UI tests isolated from unit tests to prevent configuration issues
 
 ### Test Plans
@@ -124,9 +124,9 @@ final class MyUITests: BaseUITestCase {
 
 # Or use xcodebuild directly
 xcodebuild test \
-    -scheme "Food Scanner" \
+    -scheme "Calry" \
     -destination "platform=iOS Simulator,name=iPhone 16" \
-    -testPlan "FoodScanner-CI-Offline" \
+    -testPlan "Calry-CI-Offline" \
     SWIFT_STRICT_CONCURRENCY=complete \
     OTHER_SWIFT_FLAGS='-warnings-as-errors'
 ```
@@ -376,7 +376,7 @@ func createMockSearchResult() -> SearchResult {
 ### Coverage Measurement
 ```bash
 # Generate coverage report
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16" -enableCodeCoverage YES
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16" -enableCodeCoverage YES
 
 # View coverage report
 xcrun xccov view DerivedData/Logs/Test/*.xcresult
@@ -385,8 +385,8 @@ xcrun xccov view DerivedData/Logs/Test/*.xcresult
 ## 🔧 Test Configuration
 
 ### Test Plans
-- **FoodScanner.xctestplan**: Full test coverage
-- **FoodScanner-CI-Offline.xctestplan**: CI-optimized offline tests
+- **Calry.xctestplan**: Full test coverage
+- **Calry-CI-Offline.xctestplan**: CI-optimized offline tests
 
 ### Test Environment
 ```swift
@@ -462,4 +462,4 @@ func testWithLogging() {
 }
 ```
 
-This testing guide ensures comprehensive test coverage and reliable testing practices for the Food Scanner app.
+This testing guide ensures comprehensive test coverage and reliable testing practices for the Calry app.

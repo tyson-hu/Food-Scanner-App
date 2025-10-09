@@ -2,7 +2,7 @@
 
 ## 🧪 Testing Strategy
 
-This document outlines the comprehensive testing strategy for the Food Scanner iOS app.
+This document outlines the comprehensive testing strategy for the Calry iOS app.
 
 ## 🎯 Testing Philosophy
 
@@ -37,12 +37,12 @@ Tests/
 ```
 
 ### Test Plans
-- **FoodScanner.xctestplan**: Full test coverage (default test plan)
-- **FoodScanner-CI-Offline.xctestplan**: CI-optimized offline tests
+- **Calry.xctestplan**: Full test coverage (default test plan)
+- **Calry-CI-Offline.xctestplan**: CI-optimized offline tests
 
 ### Test Target Configuration
-- **FoodScannerTests**: Unit tests only (excludes UI test files)
-- **FoodScannerUITests**: UI tests only (includes all UI test files)
+- **CalryTests**: Unit tests only (excludes UI test files)
+- **CalryUITests**: UI tests only (includes all UI test files)
 - **Target Separation**: UI tests properly isolated from unit tests
 
 ## 🔬 Unit Testing Strategy
@@ -269,10 +269,10 @@ class TestDataManager {
 ### Test Execution
 ```bash
 # Unit tests (CI-friendly)
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-CI-Offline"
+xcodebuild test -scheme "Calry" -testPlan "Calry-CI-Offline"
 
 # Integration tests (Local only)
-xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner"
+xcodebuild test -scheme "Calry" -testPlan "Calry"
 ```
 
 ## 📈 Test Metrics
@@ -344,4 +344,4 @@ func testWithLogging() {
 }
 ```
 
-This testing strategy ensures comprehensive test coverage and reliable testing practices for the Food Scanner app.
+This testing strategy ensures comprehensive test coverage and reliable testing practices for the Calry app.

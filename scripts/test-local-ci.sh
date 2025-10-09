@@ -30,13 +30,13 @@ log_error() {
 
 # Configuration
 DERIVED_DATA_PATH="./DerivedData"
-TEST_PLAN="FoodScanner-CI-Offline"
+TEST_PLAN="Calry-CI-Offline"
 DESTINATION="platform=iOS Simulator,name=iPhone 16"
 
 # Clean derived data
 clean_derived_data() {
     log_info "Cleaning derived data..."
-    rm -rf ~/Library/Developer/Xcode/DerivedData/Food_Scanner-*
+    rm -rf ~/Library/Developer/Xcode/DerivedData/Calry-*
     rm -rf "$DERIVED_DATA_PATH"
     log_success "Derived data cleaned"
 }
@@ -106,7 +106,7 @@ run_tests() {
     
     # Run tests with CI settings
     xcodebuild test \
-        -scheme "Food Scanner" \
+        -scheme "Calry" \
         -testPlan "$TEST_PLAN" \
         -destination "$DESTINATION" \
         -destination-timeout 60 \
@@ -120,7 +120,7 @@ run_tests() {
         -skipPackagePluginValidation \
         -skipMacroValidation \
         -disableAutomaticPackageResolution \
-        -skip-testing:FoodScannerUITests \
+        -skip-testing:CalryUITests \
         -parallel-testing-enabled NO \
         -maximum-concurrent-test-simulator-destinations 1 \
         -test-timeouts-enabled YES \
@@ -166,8 +166,8 @@ main() {
     echo
     
     # Check if we're in the right directory
-    if [[ ! -f "Food Scanner.xcodeproj/project.pbxproj" ]]; then
-        log_error "Food Scanner.xcodeproj not found. Run this script from the project root."
+    if [[ ! -f "Calry.xcodeproj/project.pbxproj" ]]; then
+        log_error "Calry.xcodeproj not found. Run this script from the project root."
         exit 1
     fi
     

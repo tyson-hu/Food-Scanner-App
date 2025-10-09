@@ -12,7 +12,7 @@ architecture/
 
 ## 🏗️ Architecture Overview
 
-The Food Scanner app follows a clean iOS-focused MVVM architecture with clear separation of concerns and modular design.
+The Calry app follows a clean iOS-focused MVVM architecture with clear separation of concerns and modular design.
 
 ## 🎯 Key Architectural Principles
 
@@ -222,4 +222,4 @@ Tests/
 - **Documentation**: Comprehensive documentation for each component
 - **Testing**: Good test coverage for reliability
 
-This architecture provides a solid foundation for the Food Scanner app with clear separation of concerns, good testability, and maintainable design.
+This architecture provides a solid foundation for the Calry app with clear separation of concerns, good testability, and maintainable design.

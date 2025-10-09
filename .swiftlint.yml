@@ -108,7 +108,7 @@ file_header:
   required_pattern: |
                     \/\/
                     \/\/  .*\.swift
-                    \/\/  Food Scanner
+                    \/\/  Calry
                     \/\/
                     \/\/  Created by .* on .*\.
                     \/\/  Copyright © .*\. All rights reserved\.
