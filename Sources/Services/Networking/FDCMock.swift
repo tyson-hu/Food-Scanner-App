@@ -178,21 +178,21 @@ struct FDCMock: FoodDataClient {
                         basis: .perServing
                     ),
                     FoodNutrient(
-                        id: 1003,
+                        id: 1_003,
                         name: "Protein",
                         unit: "g",
                         amount: Double(food.protein),
                         basis: .perServing
                     ),
                     FoodNutrient(
-                        id: 1004,
+                        id: 1_004,
                         name: "Total lipid (fat)",
                         unit: "g",
                         amount: Double(food.fat),
                         basis: .perServing
                     ),
                     FoodNutrient(
-                        id: 1005,
+                        id: 1_005,
                         name: "Carbohydrate, by difference",
                         unit: "g",
                         amount: Double(food.carbs),
@@ -236,21 +236,21 @@ struct FDCMock: FoodDataClient {
                 basis: .perServing
             ),
             FoodNutrient(
-                id: 1003,
+                id: 1_003,
                 name: "Protein",
                 unit: "g",
                 amount: 2.0,
                 basis: .perServing
             ),
             FoodNutrient(
-                id: 1004,
+                id: 1_004,
                 name: "Total lipid (fat)",
                 unit: "g",
                 amount: 1.0,
                 basis: .perServing
             ),
             FoodNutrient(
-                id: 1005,
+                id: 1_005,
                 name: "Carbohydrate, by difference",
                 unit: "g",
                 amount: 22.0,
@@ -286,7 +286,7 @@ struct FDCMock: FoodDataClient {
     // Canonical mock catalog (details first; summaries derived from this)
     private static let catalog: [FDCFoodDetails] = [
         .init(
-            id: 1234,
+            id: 1_234,
             name: "Greek Yogurt, Plain",
             brand: "Fage",
             calories: 100,
@@ -312,7 +312,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 5678,
+            id: 5_678,
             name: "Peanut Butter",
             brand: "Jif",
             calories: 190,
@@ -338,7 +338,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 9012,
+            id: 9_012,
             name: "Brown Rice, cooked",
             brand: nil,
             calories: 216,
@@ -365,7 +365,7 @@ struct FDCMock: FoodDataClient {
         ),
         // extras for nicer search feel
         .init(
-            id: 1001,
+            id: 1_001,
             name: "Banana, raw",
             brand: nil,
             calories: 90,
@@ -391,7 +391,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 1002,
+            id: 1_002,
             name: "Chicken Breast, cooked",
             brand: nil,
             calories: 165,
@@ -417,7 +417,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 1003,
+            id: 1_003,
             name: "Oatmeal, rolled oats",
             brand: nil,
             calories: 150,
@@ -443,7 +443,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 1004,
+            id: 1_004,
             name: "Greek Yogurt, Strawberry",
             brand: "Chobani",
             calories: 140,
@@ -469,7 +469,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 1005,
+            id: 1_005,
             name: "Coca-Cola Classic",
             brand: "Coca-Cola",
             calories: 140,
@@ -495,7 +495,7 @@ struct FDCMock: FoodDataClient {
             foodNutrients: nil
         ),
         .init(
-            id: 1006,
+            id: 1_006,
             name: "Lay's Classic Potato Chips",
             brand: "Lay's",
             calories: 160,
@@ -782,11 +782,11 @@ struct FDCMock: FoodDataClient {
             finalFoodInputFoods: nil
         )
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func createMockNutrients(for food: FDCFoodDetails) -> [FoodNutrient] {
-        return [
+        [
             FoodNutrient(
                 id: 1_008,
                 name: "Energy",
@@ -795,21 +795,21 @@ struct FDCMock: FoodDataClient {
                 basis: .per100g
             ),
             FoodNutrient(
-                id: 1003,
+                id: 1_003,
                 name: "Protein",
                 unit: "g",
                 amount: Double(food.protein),
                 basis: .per100g
             ),
             FoodNutrient(
-                id: 1004,
+                id: 1_004,
                 name: "Total lipid (fat)",
                 unit: "g",
                 amount: Double(food.fat),
                 basis: .per100g
             ),
             FoodNutrient(
-                id: 1005,
+                id: 1_005,
                 name: "Carbohydrate, by difference",
                 unit: "g",
                 amount: Double(food.carbs),
