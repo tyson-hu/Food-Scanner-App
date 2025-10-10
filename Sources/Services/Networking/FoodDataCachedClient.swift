@@ -1,6 +1,6 @@
 //
 //  FoodDataCachedClient.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -34,15 +34,15 @@ struct FoodDataCachedClient: FoodDataClient {
         try await underlyingClient.searchFoods(query: query, limit: limit)
     }
 
-    func getFoodByBarcode(code: String) async throws -> FoodMinimalCard {
+    func getFoodByBarcode(code: String) async throws -> FoodCard {
         try await underlyingClient.getFoodByBarcode(code: code)
     }
 
-    func getFood(gid: String) async throws -> FoodMinimalCard {
+    func getFood(gid: String) async throws -> FoodCard {
         try await underlyingClient.getFood(gid: gid)
     }
 
-    func getFoodDetails(gid: String) async throws -> FoodAuthoritativeDetail {
+    func getFoodDetails(gid: String) async throws -> FoodDetails {
         try await underlyingClient.getFoodDetails(gid: gid)
     }
 

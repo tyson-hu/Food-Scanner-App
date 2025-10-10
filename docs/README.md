@@ -1,6 +1,6 @@
-# Food Scanner App Documentation
+# Calry App Documentation
 
-Welcome to the comprehensive documentation for the Food Scanner iOS app. This documentation covers all aspects of the project including architecture, API integration, development workflows, and CI/CD.
+Welcome to the comprehensive documentation for the Calry iOS app. This documentation covers all aspects of the project including architecture, API integration, development workflows, and CI/CD.
 
 ## 📁 Documentation Structure
 
@@ -106,7 +106,7 @@ docs/
 - **Barcode Scanning**: VisionKit-powered barcode recognition
 - **Photo Recognition**: AI-powered food recognition (coming soon)
 - **Nutrition Tracking**: Daily food intake logging
-- **Multi-Source Data**: FDC, OFF, and future DSLD support
+- **Multi-Source Data**: FDC and OFF support
 
 ### 🔧 Technical Features
 - **Proxy Architecture**: Reliable data access through calry.org
@@ -121,27 +121,36 @@ The app follows a clean iOS-focused MVVM architecture:
 
 ```
 Sources/                           # 📱 All source code
-├── Models/                        # 📋 Data Models
-│   ├── API/                       # 🌐 API models + converters
-│   │   ├── Common/               # 🔄 Shared API structures
-│   │   ├── FDC/                  # 🇺🇸 USDA Food Data Central
-│   │   └── OFF/                  # 🌍 Open Food Facts
-│   └── Services/                 # 🔧 Business Logic
-│       ├── Data/                 # 💾 Data services + processing
-│       │   ├── Caching/         # 🗄️ Cache services
-│       │   ├── Persistence/     # 💿 Database layer
-│       │   └── Processing/      # ⚙️ Data processing
-│       └── External/            # 🌍 External services
-│           └── Networking/      # 🌍 Network services
-├── Platform/                     # 📱 Platform-specific code
-│   ├── iOS/                     # 🍎 iOS-specific implementation
-│   │   ├── App/                 # 🚀 App configuration
-│   │   ├── ViewModels/          # 🧠 MVVM ViewModels
-│   │   └── Views/               # 🎨 SwiftUI Views
-│   └── Shared/                  # 🔄 Shared platform code
-└── UI/                          # 🎨 UI Layer
-    ├── Components/              # 🧩 Reusable components
-    └── Screens/                 # 📱 Screen implementations
+├── App/                          # 🚀 App configuration
+├── Models/                       # 📋 Data Models
+│   ├── API/                      # 🌐 API models + converters
+│   │   ├── Common/              # 🔄 Shared API structures
+│   │   ├── FDC/                 # 🇺🇸 USDA Food Data Central
+│   │   └── OFF/                 # 🌍 Open Food Facts
+│   └── Core/                    # 🏛️ Core business models
+├── Services/                     # 🔧 Business Logic
+│   ├── Data/                    # 💾 Data services + processing
+│   │   ├── Caching/            # 🗄️ Cache services
+│   │   ├── Persistence/        # 💿 Database layer
+│   │   └── Processing/         # ⚙️ Data processing
+│   └── Networking/             # 🌍 Network services
+├── ViewModels/                  # 🧠 MVVM ViewModels
+│   ├── AddFood/                # ➕ Add food flow
+│   ├── Scanner/                # 📷 Barcode scanning
+│   ├── Today/                  # 📅 Today view
+│   └── PhotoIntake/            # 📸 Photo recognition
+└── Views/                       # 🎨 SwiftUI Views
+    ├── AddFood/                 # ➕ Add food screens
+    │   ├── FoodView.swift       # Main food display (shared)
+    │   ├── FoodDetailsView.swift # Detailed food display (shared)
+    │   ├── Scanner/             # 📷 Scanner screens
+    │   ├── PhotoIntake/         # 📸 Photo recognition
+    │   └── Search/              # 🔍 Text search
+    ├── Today/                   # 📅 Today screens
+    ├── Settings/                # ⚙️ Settings screens
+    ├── Profile/                 # 👤 Profile screens
+    └── Design/                  # 🎨 Design system
+        └── Components/          # 🧩 UI components
 ```
 
 ## 🧪 Testing Structure
@@ -166,7 +175,7 @@ The complete data journey from raw proxy data to cooked display data:
 ```
 Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → Merging → Conversion → Display Models
      ↓              ↓                    ↓              ↓            ↓         ↓           ↓
-  JSON Response  Envelope<T>         RawSource      NormalizedFood  Merged   FoodMinimalCard  UI Display
+  JSON Response  Envelope<T>         RawSource      NormalizedFood  Merged   FoodCard  UI Display
 ```
 
 **📖 See [Complete Data Journey](api/data-journey.md)** for detailed technical flow with function headers and visual diagrams.
@@ -205,7 +214,6 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 
 ### 🚧 In Progress
 - Photo recognition with AI
-- DSLD supplement database integration
 - Enhanced UI/UX improvements
 
 ### 📋 Planned Features
@@ -239,4 +247,4 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 - **API questions**: Check [Data Journey](api/data-journey.md)
 - **Architecture questions**: Review [Architecture Overview](architecture/README.md)
 
-This documentation provides everything needed to understand, develop, and maintain the Food Scanner iOS app.
+This documentation provides everything needed to understand, develop, and maintain the Calry iOS app.

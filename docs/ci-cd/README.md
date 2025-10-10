@@ -12,7 +12,7 @@ ci-cd/
 
 ## 🔧 CI/CD Overview
 
-The Food Scanner app uses a robust CI/CD pipeline with offline mode support for reliable builds and testing.
+The Calry app uses a robust CI/CD pipeline with offline mode support for reliable builds and testing.
 
 ## 🎯 Key Features
 
@@ -93,12 +93,12 @@ Tests/
 - **`test-local-network.sh`**: Local network testing
 
 ### Test Plans
-- **`FoodScanner.xctestplan`**: Full test coverage (default test plan)
-- **`FoodScanner-CI-Offline.xctestplan`**: CI-optimized offline tests
+- **`Calry.xctestplan`**: Full test coverage (default test plan)
+- **`Calry-CI-Offline.xctestplan`**: CI-optimized offline tests
 
 ### Test Target Configuration
-- **FoodScannerTests**: Unit tests only (excludes UI test files)
-- **FoodScannerUITests**: UI tests only (includes all UI test files)
+- **CalryTests**: Unit tests only (excludes UI test files)
+- **CalryUITests**: UI tests only (includes all UI test files)
 - **Target Separation**: UI tests properly isolated from unit tests
 
 ## 🚀 Best Practices
@@ -118,4 +118,4 @@ Tests/
 - **Incremental builds**
 - **Cache build artifacts**
 
-This CI/CD system ensures reliable builds and comprehensive testing for the Food Scanner app.
+This CI/CD system ensures reliable builds and comprehensive testing for the Calry app.

@@ -1,6 +1,6 @@
 //
 //  FDCNutrientParser.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 9/30/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  LoggedFoodEntry.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -71,7 +71,7 @@ extension FoodEntry {
     }
 
     nonisolated static func from(
-        foodCard: FoodMinimalCard,
+        foodCard: FoodCard,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {
@@ -79,7 +79,7 @@ extension FoodEntry {
     }
 
     nonisolated static func from(
-        foodDetails: FoodAuthoritativeDetail,
+        foodDetails: FoodDetails,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {

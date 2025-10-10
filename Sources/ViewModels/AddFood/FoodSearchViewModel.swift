@@ -1,6 +1,6 @@
 //
-//  AddFoodSearchViewModel.swift
-//  Food Scanner
+//  FoodSearchViewModel.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -11,7 +11,7 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodSearchViewModel {
+final class FoodSearchViewModel {
     enum Phase: Equatable {
         case idle
         case searching
@@ -23,8 +23,8 @@ final class AddFoodSearchViewModel {
 
     var query: String = ""
     var phase: Phase = .idle
-    var genericResults: [FoodMinimalCard] = []
-    var brandedResults: [FoodMinimalCard] = []
+    var genericResults: [FoodCard] = []
+    var brandedResults: [FoodCard] = []
 
     // MARK: - Non-observed Dependencies & Internals
 

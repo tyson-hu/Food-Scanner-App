@@ -1,12 +1,12 @@
 //
 //  FoodDataClientAdapterTests.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
 //
 
-@testable import Food_Scanner
+@testable import Calry
 import Foundation
 import Testing
 
@@ -16,7 +16,7 @@ struct FoodDataClientAdapterTests {
     private final class MockProxyClient: ProxyClient {
         var healthResponse: ProxyHealthResponse?
         var searchResponse: FdcSearchResponse?
-        var foodDetailsResponse: Envelope<FdcFood>?
+        var foodDetailsResponse: Envelope<FdcProduct>?
         var offProductResponse: Envelope<OffReadResponse>?
         var barcodeLookupResponse: Envelope<OffReadResponse>?
         var error: Error?
@@ -37,7 +37,7 @@ struct FoodDataClientAdapterTests {
             )
         }
 
-        func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcFood> {
+        func getFoodDetails(fdcId: Int) async throws -> Envelope<FdcProduct> {
             if let error { throw error }
             return foodDetailsResponse ?? createEmptyFdcEnvelope()
         }
@@ -57,13 +57,13 @@ struct FoodDataClientAdapterTests {
             return .off(createEmptyOffEnvelope())
         }
 
-        private func createEmptyFdcEnvelope() -> Envelope<FdcFood> {
-            Envelope<FdcFood>(
+        private func createEmptyFdcEnvelope() -> Envelope<FdcProduct> {
+            Envelope<FdcProduct>(
                 gid: "test:empty",
                 source: .fdc,
                 barcode: nil,
                 fetchedAt: "2025-09-30T12:00:00Z",
-                raw: FdcFood(
+                raw: FdcProduct(
                     dataType: nil,
                     fdcId: 0,
                     description: "Test Food",
@@ -218,12 +218,12 @@ struct FoodDataClientAdapterTests {
 
         // Create FDC envelope with sample data
 
-        let envelope = Envelope<FdcFood>(
+        let envelope = Envelope<FdcProduct>(
             gid: "fdc:2451234",
             source: .fdc,
             barcode: nil,
             fetchedAt: "2025-09-30T18:23:45Z",
-            raw: FdcFood(
+            raw: FdcProduct(
                 dataType: .branded,
                 fdcId: 2_451_234,
                 description: "Greek Nonfat Yogurt, Plain",

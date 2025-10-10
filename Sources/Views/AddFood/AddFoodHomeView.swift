@@ -1,6 +1,6 @@
 //
 //  AddFoodHomeView.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -42,7 +42,7 @@ struct AddFoodHomeView: View {
                 Group {
                     switch mode {
                     case .search:
-                        AddFoodSearchView { gid in
+                        FoodSearchView { gid in
                             path.append(.summary(gid: gid))
                         }
                     case .barcode:
@@ -79,7 +79,7 @@ struct AddFoodHomeView: View {
     private func destinationView(for route: AddFoodRoute) -> some View {
         switch route {
         case let .summary(gid):
-            AddFoodSummaryView(
+            FoodView(
                 gid: gid,
                 onLog: { entry in
                     onLogged(entry)
@@ -98,7 +98,7 @@ struct AddFoodHomeView: View {
                 }
             )
         case let .detail(gid):
-            AddFoodDetailView(gid: gid) { entry in
+            FoodDetailsView(gid: gid) { entry in
                 onLogged(entry)
             }
         case let .barcodeSearch(upc):

@@ -1,6 +1,6 @@
 //
-//  AddFoodSearchView.swift
-//  Food Scanner
+//  FoodSearchView.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -9,12 +9,12 @@
 import SwiftData
 import SwiftUI
 
-struct AddFoodSearchView: View {
+struct FoodSearchView: View {
     /// Parent provides selection handler (push to detail).
     var onSelect: (String) -> Void
 
     @Environment(\.appEnv) private var appEnv
-    @State private var viewModel: AddFoodSearchViewModel?
+    @State private var viewModel: FoodSearchViewModel?
 
     init(onSelect: @escaping (String) -> Void) {
         self.onSelect = onSelect
@@ -27,14 +27,14 @@ struct AddFoodSearchView: View {
             } else {
                 ProgressView()
                     .onAppear {
-                        viewModel = AddFoodSearchViewModel(client: appEnv.fdcClient)
+                        viewModel = FoodSearchViewModel(client: appEnv.fdcClient)
                     }
             }
         }
     }
 
     @ViewBuilder
-    private func searchContent(_ viewModel: AddFoodSearchViewModel) -> some View {
+    private func searchContent(_ viewModel: FoodSearchViewModel) -> some View {
         @Bindable var bindableViewModel = viewModel
 
         List {
@@ -87,9 +87,9 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func foodItemRow(_ item: FoodMinimalCard) -> some View {
+    private func foodItemRow(_ item: FoodCard) -> some View {
         Button {
-            // Pass the full GID directly - supports all ID types (fdc:, gtin:, dsld:)
+            // Pass the full GID directly - supports all ID types (fdc:, off:)
             onSelect(item.id)
         } label: {
             foodItemContent(item)
@@ -97,7 +97,7 @@ struct AddFoodSearchView: View {
         .buttonStyle(PlainButtonStyle())
     }
 
-    private func foodItemContent(_ item: FoodMinimalCard) -> some View {
+    private func foodItemContent(_ item: FoodCard) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             foodDescription(item)
             foodDetails(item)
@@ -107,14 +107,14 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func foodDescription(_ item: FoodMinimalCard) -> some View {
+    private func foodDescription(_ item: FoodCard) -> some View {
         Text(item.description ?? "Unknown Food")
             .font(.body)
             .foregroundStyle(.primary)
     }
 
     @ViewBuilder
-    private func foodDetails(_ item: FoodMinimalCard) -> some View {
+    private func foodDetails(_ item: FoodCard) -> some View {
         HStack(spacing: 8) {
             if let brand = item.brand, !brand.isEmpty {
                 Text(brand)
@@ -134,7 +134,7 @@ struct AddFoodSearchView: View {
     }
 
     @ViewBuilder
-    private func sourceInformation(_ item: FoodMinimalCard) -> some View {
+    private func sourceInformation(_ item: FoodCard) -> some View {
         HStack {
             Text("Source:")
                 .font(.caption2)
@@ -156,10 +156,6 @@ struct AddFoodSearchView: View {
         switch source {
         case .fdc:
             "FDC"
-        case .dsld:
-            "DSLD"
-        case .dsid:
-            "DSID"
         case .off:
             "Open Food Facts"
         }
@@ -176,6 +172,6 @@ struct AddFoodSearchView: View {
 }
 
 #Preview {
-    AddFoodSearchView(onSelect: { _ in })
+    FoodSearchView(onSelect: { _ in })
         .environment(\.appEnv, .preview)
 }

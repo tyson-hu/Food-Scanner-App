@@ -128,8 +128,8 @@ main() {
     echo
     
     # Check if we're in the right directory
-    if [[ ! -f "Food Scanner.xcodeproj/project.pbxproj" ]]; then
-        log_error "Food Scanner.xcodeproj not found. Run this script from the project root."
+    if [[ ! -f "Calry.xcodeproj/project.pbxproj" ]]; then
+        log_error "Calry.xcodeproj not found. Run this script from the project root."
         exit 1
     fi
     

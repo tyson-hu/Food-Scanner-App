@@ -4,7 +4,7 @@ info:
   description: Open Food Facts API accessed through calry.org proxy service
   version: 1.0.0
   contact:
-    name: Food Scanner App
+    name: Calry App
     url: https://github.com/food-scanner
 servers:
   - url: https://api.calry.org

@@ -1,6 +1,6 @@
 //
 //  FoodNormalizationService.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -35,9 +35,9 @@ public struct FoodNormalizationServiceImpl: FoodNormalizationService {
         switch envelope.source {
         case .fdc:
             do {
-                // Convert AnyCodable to FdcFood by decoding the raw data
+                // Convert AnyCodable to FdcProduct by decoding the raw data
                 let rawData = try JSONEncoder().encode(envelope.raw)
-                let fdcFood = try JSONDecoder().decode(FdcFood.self, from: rawData)
+                let fdcFood = try JSONDecoder().decode(FdcProduct.self, from: rawData)
                 let fdcEnvelope = FdcEnvelope(
                     gid: envelope.gid ?? "unknown",
                     source: envelope.source,

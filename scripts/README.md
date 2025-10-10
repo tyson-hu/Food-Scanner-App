@@ -90,7 +90,7 @@ This directory contains scripts to replicate the CI environment locally, ensurin
 - Cleans derived data
 - Sets up iPhone 16 simulator
 - Grants necessary permissions
-- Runs `FoodScanner-CI-Offline` test plan
+- Runs `Calry-CI-Offline` test plan
 - Skips UI tests (for faster execution)
 - Uses strict concurrency settings
 
@@ -100,7 +100,7 @@ This directory contains scripts to replicate the CI environment locally, ensurin
 ```
 
 **Test Configuration**:
-- Test Plan: `FoodScanner-CI-Offline`
+- Test Plan: `Calry-CI-Offline`
 - Destination: iPhone 16 simulator
 - Parallel testing: Disabled
 - UI tests: Skipped

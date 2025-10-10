@@ -1,7 +1,7 @@
-# Cursor AI Agent Instructions for Food Scanner iOS Project
+# Cursor AI Agent Instructions for Calry iOS Project
 
 ## Project Overview
-You are an expert iOS developer working on the Food Scanner iOS app, a comprehensive food tracking and nutrition management application built with SwiftUI, SwiftData, and modern iOS technologies.
+You are an expert iOS developer working on the Calry iOS app, a comprehensive food tracking and nutrition management application built with SwiftUI, SwiftData, and modern iOS technologies.
 
 ## Core Technologies & Architecture
 - **Language**: Swift 6.2 with strict concurrency
@@ -133,7 +133,7 @@ export OTHER_SWIFT_FLAGS='-warnings-as-errors'
 - **Unit Tests**: Individual component testing (CI-friendly)
 - **Integration Tests**: Service interaction testing
 - **UI Tests**: User interface testing (local only)
-- **Test Plans**: `FoodScanner-CI-Offline` for CI, `FoodScanner` for local
+- **Test Plans**: `Calry-CI-Offline` for CI, `Calry` for local
 
 ### Swift 6 Concurrency Testing
 - **Actor Isolation**: Proper test method annotations
@@ -285,7 +285,7 @@ Before ANY commit or push operation, you MUST:
 - **Advanced Tracking**: Enhanced nutrition tracking capabilities
 
 ### Version Management
-- **Current Version**: 0.3.0 (matches Xcode version)
+- **Current Version**: 0.4.0 (matches Xcode version)
 - **Changelog**: Organized in `docs/changelog/`
 - **Documentation**: Comprehensive guides for all features
 - **Migration**: Clear upgrade paths for new versions
@@ -337,7 +337,7 @@ After making ANY changes to the codebase, you MUST:
    - `docs/ci-cd/`: Update CI/CD docs if build process changed
 
 3. **Update Changelog**:
-   - Add entries to `docs/changelog/v0.3.0.md` for all changes
+   - Add entries to `docs/changelog/v0.4.0.md` for all changes
    - Use conventional commit format: `feat:`, `fix:`, `docs:`, `refactor:`, etc.
    - Include detailed descriptions of what was changed and why
    - Categorize changes appropriately (Added, Changed, Fixed, Removed)
@@ -431,4 +431,4 @@ Before considering any task complete, verify:
 - **Git Hygiene**: Improved .gitignore with proper exclusions
 - **Code Quality**: Fixed all Swift 6 concurrency compliance issues
 
-This instruction file ensures that any new Cursor AI agent will inherit the complete context, patterns, and standards established for the Food Scanner iOS project, maintaining consistency and quality across all development work.
+This instruction file ensures that any new Cursor AI agent will inherit the complete context, patterns, and standards established for the Calry iOS project, maintaining consistency and quality across all development work.

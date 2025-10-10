@@ -1,6 +1,6 @@
 //
 //  BarcodeSearchResultsView.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -62,10 +62,10 @@ struct BarcodeSearchResultsView: View {
     }
 
     @ViewBuilder
-    private func loadedView(result: FoodMinimalCard?, viewModel: BarcodeSearchResultsViewModel) -> some View {
+    private func loadedView(result: FoodCard?, viewModel: BarcodeSearchResultsViewModel) -> some View {
         if let food = result {
-            // Render Summary immediately from envelope data
-            AddFoodSummaryView(
+            // Render Food view immediately from envelope data
+            FoodView(
                 foodCard: food,
                 onLog: { _ in
                     // Handle logging if needed
@@ -148,7 +148,7 @@ struct BarcodeSearchResultsView: View {
 final class BarcodeSearchResultsViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FoodMinimalCard?)
+        case loaded(FoodCard?)
         case error(String)
     }
 

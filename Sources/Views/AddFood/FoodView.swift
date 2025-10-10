@@ -1,6 +1,6 @@
 //
-//  AddFoodSummaryView.swift
-//  Food Scanner
+//  FoodView.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -9,14 +9,14 @@
 import SwiftData
 import SwiftUI
 
-struct AddFoodSummaryView: View {
+struct FoodView: View {
     let gid: String?
-    let foodCard: FoodMinimalCard?
+    let foodCard: FoodCard?
     var onLog: (FoodEntry) -> Void
     var onShowDetails: (String) -> Void
 
     @Environment(\.appEnv) private var appEnv
-    @State private var viewModel: AddFoodSummaryViewModel?
+    @State private var viewModel: FoodViewModel?
     @State private var showUnsupportedProduct = false
 
     // Initializer for when we have a GID (text search, photo recognition)
@@ -28,7 +28,7 @@ struct AddFoodSummaryView: View {
     }
 
     // Initializer for when we have the food card directly (barcode scan)
-    init(foodCard: FoodMinimalCard, onLog: @escaping (FoodEntry) -> Void, onShowDetails: @escaping (String) -> Void) {
+    init(foodCard: FoodCard, onLog: @escaping (FoodEntry) -> Void, onShowDetails: @escaping (String) -> Void) {
         gid = nil
         self.foodCard = foodCard
         self.onLog = onLog
@@ -38,16 +38,16 @@ struct AddFoodSummaryView: View {
     var body: some View {
         Group {
             if let viewModel {
-                summaryContent(viewModel)
+                foodContent(viewModel)
             } else {
                 ProgressView()
                     .onAppear {
                         if let gid {
                             // Load from GID (text search, photo recognition)
-                            viewModel = AddFoodSummaryViewModel(gid: gid, client: appEnv.fdcClient)
+                            viewModel = FoodViewModel(gid: gid, client: appEnv.fdcClient)
                         } else if let foodCard {
                             // Use food card directly (barcode scan)
-                            viewModel = AddFoodSummaryViewModel(foodCard: foodCard)
+                            viewModel = FoodViewModel(foodCard: foodCard)
                         }
                     }
             }
@@ -55,7 +55,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func summaryContent(_ viewModel: AddFoodSummaryViewModel) -> some View {
+    private func foodContent(_ viewModel: FoodViewModel) -> some View {
         @Bindable var bindableViewModel = viewModel
 
         switch bindableViewModel.phase {
@@ -64,7 +64,7 @@ struct AddFoodSummaryView: View {
                 .task { await viewModel.load() }
 
         case let .loaded(foodCard):
-            loadedFoodMinimalCardView(foodCard, Binding(
+            loadedFoodCardView(foodCard, Binding(
                 get: { bindableViewModel },
                 set: { bindableViewModel = $0 }
             ))
@@ -75,9 +75,9 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func loadedFoodMinimalCardView(
-        _ foodCard: FoodMinimalCard,
-        _ bindableViewModel: Binding<AddFoodSummaryViewModel>
+    private func loadedFoodCardView(
+        _ foodCard: FoodCard,
+        _ bindableViewModel: Binding<FoodViewModel>
     ) -> some View {
         List {
             servingMultiplierSection(foodCard, bindableViewModel)
@@ -87,7 +87,7 @@ struct AddFoodSummaryView: View {
             sourceInformationSection(foodCard)
             actionSection(foodCard, bindableViewModel)
         }
-        .navigationTitle("Food Summary")
+        .navigationTitle("Food")
         .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $showUnsupportedProduct) {
             unsupportedProductSheet()
@@ -101,8 +101,8 @@ struct AddFoodSummaryView: View {
 
     @ViewBuilder
     private func servingMultiplierSection(
-        _ foodCard: FoodMinimalCard,
-        _ bindableViewModel: Binding<AddFoodSummaryViewModel>
+        _ foodCard: FoodCard,
+        _ bindableViewModel: Binding<FoodViewModel>
     ) -> some View {
         Section {
             Stepper(
@@ -120,7 +120,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func basicInformationSection(_ foodCard: FoodMinimalCard) -> some View {
+    private func basicInformationSection(_ foodCard: FoodCard) -> some View {
         Section("Food Information") {
             InfoRow(label: "Name", value: foodCard.description)
             InfoRow(label: "Brand", value: foodCard.brand)
@@ -132,7 +132,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func servingInformationSection(_ foodCard: FoodMinimalCard) -> some View {
+    private func servingInformationSection(_ foodCard: FoodCard) -> some View {
         if let serving = foodCard.serving {
             Section("Serving Information") {
                 if let amount = serving.amount {
@@ -150,8 +150,8 @@ struct AddFoodSummaryView: View {
 
     @ViewBuilder
     private func nutritionSection(
-        _ foodCard: FoodMinimalCard,
-        _ bindableViewModel: Binding<AddFoodSummaryViewModel>
+        _ foodCard: FoodCard,
+        _ bindableViewModel: Binding<FoodViewModel>
     ) -> some View {
         Section("Nutrition (\(foodCard.baseUnit.per100DisplayName))") {
             let nutrients = foodCard.per100Base.isEmpty ? foodCard.nutrients : foodCard.per100Base
@@ -215,7 +215,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func sourceInformationSection(_ foodCard: FoodMinimalCard) -> some View {
+    private func sourceInformationSection(_ foodCard: FoodCard) -> some View {
         Section("Source") {
             InfoRow(label: "Source", value: foodCard.provenance.source.rawValue.uppercased())
             InfoRow(label: "ID", value: foodCard.provenance.id)
@@ -225,8 +225,8 @@ struct AddFoodSummaryView: View {
 
     @ViewBuilder
     private func actionSection(
-        _ foodCard: FoodMinimalCard,
-        _ bindableViewModel: Binding<AddFoodSummaryViewModel>
+        _ foodCard: FoodCard,
+        _ bindableViewModel: Binding<FoodViewModel>
     ) -> some View {
         Section {
             Button("Log Food") {
@@ -281,7 +281,7 @@ struct AddFoodSummaryView: View {
     }
 
     @ViewBuilder
-    private func errorView(_ message: String, _ viewModel: AddFoodSummaryViewModel) -> some View {
+    private func errorView(_ message: String, _ viewModel: FoodViewModel) -> some View {
         VStack {
             Text("Error: \(message)")
                 .foregroundColor(.red)
@@ -437,8 +437,8 @@ struct BasicNutrientRow: View {
     }
 }
 
-#Preview("Sample Food Summary") {
-    AddFoodSummaryView(
+#Preview("Sample Food View") {
+    FoodView(
         gid: "fdc:123456",
         onLog: { _ in },
         onShowDetails: { _ in }

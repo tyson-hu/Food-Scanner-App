@@ -1,6 +1,6 @@
 //
-//  AddFoodDetailView.swift
-//  Food Scanner
+//  FoodDetailsView.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -9,12 +9,12 @@
 import SwiftData
 import SwiftUI
 
-struct AddFoodDetailView: View {
+struct FoodDetailsView: View {
     let gid: String
     var onLog: (FoodEntry) -> Void
 
     @Environment(\.appEnv) private var appEnv
-    @State private var viewModel: AddFoodDetailViewModel?
+    @State private var viewModel: FoodDetailsViewModel?
 
     init(gid: String, onLog: @escaping (FoodEntry) -> Void) {
         self.gid = gid
@@ -24,18 +24,18 @@ struct AddFoodDetailView: View {
     var body: some View {
         Group {
             if let viewModel {
-                detailContent(viewModel)
+                detailsContent(viewModel)
             } else {
                 ProgressView()
                     .onAppear {
-                        viewModel = AddFoodDetailViewModel(gid: gid, client: appEnv.fdcClient)
+                        viewModel = FoodDetailsViewModel(gid: gid, client: appEnv.fdcClient)
                     }
             }
         }
     }
 
     @ViewBuilder
-    private func detailContent(_ viewModel: AddFoodDetailViewModel) -> some View {
+    private func detailsContent(_ viewModel: FoodDetailsViewModel) -> some View {
         @Bindable var bindableViewModel = viewModel
 
         Group {
@@ -45,7 +45,7 @@ struct AddFoodDetailView: View {
                     .task { await viewModel.load() }
 
             case let .loaded(foodDetails):
-                loadedFoodAuthoritativeDetailView(foodDetails: foodDetails, bindableViewModel: $bindableViewModel)
+                loadedFoodDetailsView(foodDetails: foodDetails, bindableViewModel: $bindableViewModel)
 
             case let .unsupported(source):
                 UnsupportedProductView(
@@ -66,9 +66,9 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func loadedFoodAuthoritativeDetailView(
-        foodDetails: FoodAuthoritativeDetail,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+    private func loadedFoodDetailsView(
+        foodDetails: FoodDetails,
+        bindableViewModel: Bindable<FoodDetailsViewModel>
     ) -> some View {
         List {
             servingMultiplierSection(bindableViewModel: bindableViewModel)
@@ -76,7 +76,6 @@ struct AddFoodDetailView: View {
             servingInformationSection(foodDetails: foodDetails)
             portionsSection(foodDetails: foodDetails)
             nutrientsSection(foodDetails: foodDetails, bindableViewModel: bindableViewModel)
-            dsidPredictionsSection(foodDetails: foodDetails)
             sourceInformationSection(foodDetails: foodDetails)
             actionSection(foodDetails: foodDetails, bindableViewModel: bindableViewModel)
         }
@@ -85,7 +84,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func errorView(message: String, viewModel: AddFoodDetailViewModel) -> some View {
+    private func errorView(message: String, viewModel: FoodDetailsViewModel) -> some View {
         VStack {
             Text("Error: \(message)")
                 .foregroundColor(.red)
@@ -96,7 +95,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func servingMultiplierSection(bindableViewModel: Bindable<AddFoodDetailViewModel>) -> some View {
+    private func servingMultiplierSection(bindableViewModel: Bindable<FoodDetailsViewModel>) -> some View {
         Section {
             Stepper(
                 value: bindableViewModel.servingMultiplier,
@@ -109,7 +108,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func basicInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func basicInformationSection(foodDetails: FoodDetails) -> some View {
         Section("Food Information") {
             InfoRow(label: "Name", value: foodDetails.description)
             InfoRow(label: "Brand", value: foodDetails.brand)
@@ -124,7 +123,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func servingInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func servingInformationSection(foodDetails: FoodDetails) -> some View {
         if let serving = foodDetails.serving {
             Section("Serving Information") {
                 if let amount = serving.amount {
@@ -141,7 +140,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func portionsSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func portionsSection(foodDetails: FoodDetails) -> some View {
         if !foodDetails.portions.isEmpty {
             Section("Available Portions") {
                 ForEach(Array(foodDetails.portions.enumerated()), id: \.offset) { _, portion in
@@ -153,8 +152,8 @@ struct AddFoodDetailView: View {
 
     @ViewBuilder
     private func nutrientsSection(
-        foodDetails: FoodAuthoritativeDetail,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        foodDetails: FoodDetails,
+        bindableViewModel: Bindable<FoodDetailsViewModel>
     ) -> some View {
         if !foodDetails.nutrients.isEmpty {
             Section("All Nutrients") {
@@ -169,18 +168,7 @@ struct AddFoodDetailView: View {
     }
 
     @ViewBuilder
-    private func dsidPredictionsSection(foodDetails: FoodAuthoritativeDetail) -> some View {
-        if let predictions = foodDetails.dsidPredictions, !predictions.isEmpty {
-            Section("DSID Predictions") {
-                ForEach(predictions, id: \.ingredient) { prediction in
-                    DSIDPredictionRow(prediction: prediction)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func sourceInformationSection(foodDetails: FoodAuthoritativeDetail) -> some View {
+    private func sourceInformationSection(foodDetails: FoodDetails) -> some View {
         Section("Source") {
             InfoRow(label: "Source", value: foodDetails.provenance.source.rawValue.uppercased())
             InfoRow(label: "ID", value: foodDetails.provenance.id)
@@ -190,8 +178,8 @@ struct AddFoodDetailView: View {
 
     @ViewBuilder
     private func actionSection(
-        foodDetails: FoodAuthoritativeDetail,
-        bindableViewModel: Bindable<AddFoodDetailViewModel>
+        foodDetails: FoodDetails,
+        bindableViewModel: Bindable<FoodDetailsViewModel>
     ) -> some View {
         Section {
             Button("Log Food") {
@@ -266,47 +254,8 @@ struct NutrientDetailRow: View {
     }
 }
 
-struct DSIDPredictionRow: View {
-    let prediction: DSIDPrediction
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(prediction.ingredient.capitalized)
-                    .font(.headline)
-                Spacer()
-                Text("Study \(prediction.studyCode)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-
-            HStack {
-                Text("Label: \(String(format: "%.1f", prediction.labelAmount)) \(prediction.unit)")
-                    .font(.subheadline)
-                Spacer()
-                Text("Predicted: \(String(format: "%.1f", prediction.predMeanValue)) \(prediction.unit)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-
-            HStack {
-                Text("Difference: \(String(format: "%.1f", prediction.pctDiffFromLabel))%")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(
-                    "CI: \(String(format: "%.1f", prediction.ci95PredMeanLow))-\(String(format: "%.1f", prediction.ci95PredMeanHigh))"
-                )
-                .font(.caption)
-                .foregroundColor(.secondary)
-            }
-        }
-        .padding(.vertical, 2)
-    }
-}
-
-#Preview("Sample Food Detail") {
-    AddFoodDetailView(
+#Preview("Sample Food Details") {
+    FoodDetailsView(
         gid: "fdc:123456",
         onLog: { _ in }
     )

@@ -1,6 +1,6 @@
 //
-//  AddFoodSummaryViewModel.swift
-//  Food Scanner
+//  FoodViewModel.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -11,10 +11,10 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodSummaryViewModel {
+final class FoodViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FoodMinimalCard)
+        case loaded(FoodCard)
         case error(String)
     }
 
@@ -31,7 +31,7 @@ final class AddFoodSummaryViewModel {
     }
 
     // Initializer for when we have the food card directly (barcode scan)
-    init(foodCard: FoodMinimalCard) {
+    init(foodCard: FoodCard) {
         gid = foodCard.id
         client = nil
         phase = .loaded(foodCard)
@@ -48,13 +48,13 @@ final class AddFoodSummaryViewModel {
             return
         }
 
-        print("🔍 AddFoodSummaryViewModel.load() - Starting load for GID: \(gid)")
+        print("🔍 FoodViewModel.load() - Starting load for GID: \(gid)")
 
         do {
             let foodCard = try await client.getFood(gid: gid)
 
             // Enhanced Debug: Log received food card data
-            print("🔍 AddFoodSummaryViewModel DEBUG - Received Food Card for \(gid):")
+            print("🔍 FoodViewModel DEBUG - Received Food Card for \(gid):")
             print("   Description: \(foodCard.description ?? "nil")")
             print("   Brand: \(foodCard.brand ?? "nil")")
             print("   Kind: \(foodCard.kind)")
@@ -75,19 +75,18 @@ final class AddFoodSummaryViewModel {
             }
             print("   Provenance: \(foodCard.provenance)")
 
-            // Check for empty DSLD data and provide better error message
-            if gid.hasPrefix("dsld:"), foodCard.description == nil, foodCard.brand == nil, foodCard.nutrients.isEmpty {
-                print("⚠️ DSLD data is empty - this might be a proxy service issue")
-                phase =
-                    .error(
-                        "DSLD data is currently unavailable. This might be a temporary issue with the supplement database."
-                    )
+            // Check for empty data and provide better error message
+            if foodCard.description == nil, foodCard.brand == nil, foodCard.nutrients.isEmpty {
+                print("⚠️ Food data is empty - this might be a proxy service issue")
+                phase = .error(
+                    "Food data is currently unavailable. This might be a temporary issue with the data source."
+                )
             } else {
-                print("✅ AddFoodSummaryViewModel - Successfully loaded food card, setting phase to loaded")
+                print("✅ FoodViewModel - Successfully loaded food card, setting phase to loaded")
                 phase = .loaded(foodCard)
             }
         } catch {
-            print("❌ AddFoodSummaryViewModel ERROR - Failed to load food for \(gid): \(error)")
+            print("❌ FoodViewModel ERROR - Failed to load food for \(gid): \(error)")
             print("   Error type: \(type(of: error))")
             print("   Error description: \(error.localizedDescription)")
             phase = .error(error.localizedDescription)

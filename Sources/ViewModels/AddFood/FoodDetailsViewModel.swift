@@ -1,6 +1,6 @@
 //
-//  AddFoodDetailViewModel.swift
-//  Food Scanner
+//  FoodDetailsViewModel.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -11,10 +11,10 @@ import Observation
 
 @MainActor
 @Observable
-final class AddFoodDetailViewModel {
+final class FoodDetailsViewModel {
     enum Phase: Equatable {
         case loading
-        case loaded(FoodAuthoritativeDetail)
+        case loaded(FoodDetails)
         case unsupported(SourceTag?)
         case error(String)
     }
@@ -44,7 +44,7 @@ final class AddFoodDetailViewModel {
                 // If details API fails, fall back to basic food API
                 do {
                     let foodCard = try await client.getFood(gid: gid)
-                    let foodDetails = convertToFoodAuthoritativeDetail(foodCard: foodCard)
+                    let foodDetails = convertToFoodDetails(foodCard: foodCard)
                     phase = .loaded(foodDetails)
                 } catch {
                     phase = .error("Unable to process food data. Please try again.")
@@ -54,8 +54,8 @@ final class AddFoodDetailViewModel {
             // For unsupported products, try to get basic food info instead of details
             do {
                 let foodCard = try await client.getFood(gid: gid)
-                // Convert FoodMinimalCard to FoodAuthoritativeDetail for display
-                let foodDetails = convertToFoodAuthoritativeDetail(foodCard: foodCard)
+                // Convert FoodCard to FoodDetails for display
+                let foodDetails = convertToFoodDetails(foodCard: foodCard)
                 phase = .loaded(foodDetails)
             } catch {
                 phase = .unsupported(source)
@@ -70,7 +70,7 @@ final class AddFoodDetailViewModel {
                 // If details API fails, try basic food API
                 do {
                     let foodCard = try await client.getFood(gid: gid)
-                    let foodDetails = convertToFoodAuthoritativeDetail(foodCard: foodCard)
+                    let foodDetails = convertToFoodDetails(foodCard: foodCard)
                     phase = .loaded(foodDetails)
                 } catch {
                     phase = .error("Unable to process food data. Please try again.")
@@ -79,11 +79,11 @@ final class AddFoodDetailViewModel {
         }
     }
 
-    // Helper function to convert FoodMinimalCard to FoodAuthoritativeDetail
-    private func convertToFoodAuthoritativeDetail(foodCard: FoodMinimalCard) -> FoodAuthoritativeDetail {
-        // Create a basic FoodAuthoritativeDetail from FoodMinimalCard
+    // Helper function to convert FoodCard to FoodDetails
+    private func convertToFoodDetails(foodCard: FoodCard) -> FoodDetails {
+        // Create a basic FoodDetails from FoodCard
         // This is a simplified conversion for unsupported products
-        FoodAuthoritativeDetail(
+        FoodDetails(
             id: foodCard.id,
             kind: foodCard.kind,
             code: foodCard.code,
@@ -96,7 +96,6 @@ final class AddFoodDetailViewModel {
             portions: [], // No portions available for basic info
             densityGPerMl: foodCard.densityGPerMl,
             nutrients: foodCard.nutrients,
-            dsidPredictions: nil, // No predictions available for basic info
             provenance: foodCard.provenance
         )
     }

@@ -71,8 +71,8 @@ Create a script to apply CI-equivalent build settings:
 echo "🔧 Setting up local environment to match CI..."
 
 # Set build settings to match CI
-xcodebuild -project "Food Scanner.xcodeproj" \
-    -scheme "Food Scanner" \
+xcodebuild -project "Calry.xcodeproj" \
+    -scheme "Calry" \
     -configuration Debug \
     -showBuildSettings | grep -E "(SWIFT_STRICT_CONCURRENCY|DEFAULT_ISOLATION|OTHER_SWIFT_FLAGS)"
 
@@ -120,7 +120,7 @@ set -euo pipefail
 echo "🧪 Running tests with CI-equivalent settings..."
 
 # Clean derived data
-rm -rf ~/Library/Developer/Xcode/DerivedData/Food_Scanner-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/Calry-*
 
 # Create iPhone 16 simulator if it doesn't exist
 SIMULATOR_ID=$(xcrun simctl list devices | grep "iPhone 16" | grep "Booted" | head -1 | grep -o '[A-F0-9-]\{36\}' || echo "")
@@ -136,8 +136,8 @@ echo "📱 Using simulator: $SIMULATOR_ID"
 
 # Run tests with CI settings
 xcodebuild test \
-    -scheme "Food Scanner" \
-    -testPlan "FoodScanner-CI-Offline" \
+    -scheme "Calry" \
+    -testPlan "Calry-CI-Offline" \
     -destination "id=$SIMULATOR_ID" \
     -destination-timeout 60 \
     -derivedDataPath "./DerivedData" \
@@ -150,7 +150,7 @@ xcodebuild test \
     -skipPackagePluginValidation \
     -skipMacroValidation \
     -disableAutomaticPackageResolution \
-    -skip-testing:FoodScannerUITests \
+    -skip-testing:CalryUITests \
     -parallel-testing-enabled NO \
     -maximum-concurrent-test-simulator-destinations 1 \
     -test-timeouts-enabled YES \
@@ -172,11 +172,11 @@ set -euo pipefail
 echo "🔨 Building with CI-equivalent settings..."
 
 # Clean derived data
-rm -rf ~/Library/Developer/Xcode/DerivedData/Food_Scanner-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/Calry-*
 
 # Build with CI settings
 xcodebuild build \
-    -scheme "Food Scanner" \
+    -scheme "Calry" \
     -destination "platform=iOS Simulator,name=iPhone 16" \
     -derivedDataPath "./DerivedData" \
     CODE_SIGNING_ALLOWED=NO \
@@ -281,7 +281,7 @@ export DEFAULT_ISOLATION=MainActor
    - Use `MainActor.run` for cross-actor access
 
 5. **"Tests fail locally but pass in CI"**
-   - Ensure you're using the same test plan: `FoodScanner-CI-Offline`
+   - Ensure you're using the same test plan: `Calry-CI-Offline`
    - Check environment variables are set correctly
 
 ### Performance Tips
@@ -302,7 +302,7 @@ export DEFAULT_ISOLATION=MainActor
 3. **Skip UI tests** (for faster iteration):
    ```bash
    # Skip UI tests during development
-   -skip-testing:FoodScannerUITests
+   -skip-testing:CalryUITests
    ```
 
 ## 📚 Additional Resources

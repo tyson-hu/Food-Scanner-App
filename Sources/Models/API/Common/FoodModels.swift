@@ -1,6 +1,6 @@
 //
 //  FoodModels.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -12,8 +12,8 @@ import Foundation
 
 // MARK: - Minimal Card (for /food/* and /barcode/* endpoints)
 
-public struct FoodMinimalCard: Sendable, Codable, Equatable, Hashable {
-    public let id: String // GID: "gtin:<14>" | "fdc:<id>" | "dsld:<id>"
+public struct FoodCard: Sendable, Codable, Equatable, Hashable {
+    public let id: String // GID: "fdc:<id>" | "off:<id>"
     public let kind: FoodKind
     public let code: String? // raw barcode when known (no padding)
     public let description: String?
@@ -29,7 +29,7 @@ public struct FoodMinimalCard: Sendable, Codable, Equatable, Hashable {
 
 // MARK: - Authoritative Detail (for /foodDetails/* endpoint)
 
-public struct FoodAuthoritativeDetail: Sendable, Codable, Equatable {
+public struct FoodDetails: Sendable, Codable, Equatable {
     public let id: String // GID
     public let kind: FoodKind
     public let code: String?
@@ -42,7 +42,6 @@ public struct FoodAuthoritativeDetail: Sendable, Codable, Equatable {
     public let portions: [FoodPortion]
     public let densityGPerMl: Double? // optional; only when we can compute from portions
     public let nutrients: [FoodNutrient] // legacy field for backward compatibility
-    public let dsidPredictions: [DSIDPrediction]?
     public let provenance: FoodProvenance
 }
 
@@ -50,8 +49,8 @@ public struct FoodAuthoritativeDetail: Sendable, Codable, Equatable {
 
 public struct FoodSearchResponse: Sendable, Codable, Equatable {
     public let query: String
-    public let generic: [FoodMinimalCard]
-    public let branded: [FoodMinimalCard]
+    public let generic: [FoodCard]
+    public let branded: [FoodCard]
 }
 
 // MARK: - Health Response (for /health endpoint)
@@ -129,31 +128,7 @@ public struct FoodProvenance: Sendable, Codable, Equatable, Hashable {
 
 public enum SourceTag: String, Sendable, Codable, CaseIterable {
     case fdc
-    case dsld
-    case dsid
     case off
-}
-
-public struct DSIDPrediction: Sendable, Codable, Equatable, Hashable {
-    public let studyCode: String
-    public let ingredient: String
-    public let labelAmount: Double
-    public let unit: String
-    public let pctDiffFromLabel: Double
-    public let predMeanValue: Double
-    public let ci95PredMeanLow: Double
-    public let ci95PredMeanHigh: Double
-
-    enum CodingKeys: String, CodingKey {
-        case studyCode = "study_code"
-        case ingredient
-        case labelAmount = "label_amount"
-        case unit
-        case pctDiffFromLabel = "pct_diff_from_label"
-        case predMeanValue = "pred_mean_value"
-        case ci95PredMeanLow = "ci95_pred_mean_low"
-        case ci95PredMeanHigh = "ci95_pred_mean_high"
-    }
 }
 
 // MARK: - Legacy Models (for backward compatibility)

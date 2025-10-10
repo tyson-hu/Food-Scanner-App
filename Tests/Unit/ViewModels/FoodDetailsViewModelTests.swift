@@ -1,18 +1,18 @@
 //
-//  AddFoodDetailViewModelTests.swift
-//  Food Scanner
+//  FoodDetailsViewModelTests.swift
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
 //
 
-@testable import Food_Scanner
+@testable import Calry
 import Foundation
 import Testing
 
-struct AddFoodDetailViewModelTests {
+struct FoodDetailsViewModelTests {
     @Test @MainActor func load_fetches_details_and_allows_scaling() async throws {
-        let viewModel = AddFoodDetailViewModel(gid: "fdc:5678", client: FDCMock()) // Peanut Butter
+        let viewModel = FoodDetailsViewModel(gid: "fdc:5678", client: FDCMock()) // Peanut Butter
         await viewModel.load()
 
         guard case let .loaded(response) = viewModel.phase else {
@@ -28,7 +28,7 @@ struct AddFoodDetailViewModelTests {
     }
 
     @Test @MainActor func load_unknown_id_still_succeeds_with_fallback() async throws {
-        let viewModel = AddFoodDetailViewModel(gid: "fdc:999999", client: FDCMock())
+        let viewModel = FoodDetailsViewModel(gid: "fdc:999999", client: FDCMock())
         await viewModel.load()
         guard case let .loaded(response) = viewModel.phase else {
             Issue.record("Expected loaded state")
@@ -46,7 +46,7 @@ struct AddFoodDetailViewModelTests {
         }
 
         let client = FoodDataClientFactory.makeProxyClient()
-        let viewModel = AddFoodDetailViewModel(gid: "fdc:2503998", client: client)
+        let viewModel = FoodDetailsViewModel(gid: "fdc:2503998", client: client)
         await viewModel.load()
 
         guard case let .loaded(response) = viewModel.phase else {
@@ -72,7 +72,7 @@ struct AddFoodDetailViewModelTests {
         }
 
         let client = FoodDataClientFactory.makeProxyClient()
-        let viewModel = AddFoodDetailViewModel(gid: "fdc:1995469", client: client)
+        let viewModel = FoodDetailsViewModel(gid: "fdc:1995469", client: client)
         await viewModel.load()
 
         guard case let .loaded(response) = viewModel.phase else {
@@ -92,7 +92,7 @@ struct AddFoodDetailViewModelTests {
         }
 
         let client = FoodDataClientFactory.makeProxyClient()
-        let viewModel = AddFoodDetailViewModel(gid: "fdc:2055229", client: client)
+        let viewModel = FoodDetailsViewModel(gid: "fdc:2055229", client: client)
         await viewModel.load()
 
         guard case let .loaded(response) = viewModel.phase else {
@@ -112,7 +112,7 @@ struct AddFoodDetailViewModelTests {
         }
 
         let client = FoodDataClientFactory.makeProxyClient()
-        let viewModel = AddFoodDetailViewModel(gid: "fdc:2090362", client: client)
+        let viewModel = FoodDetailsViewModel(gid: "fdc:2090362", client: client)
         await viewModel.load()
 
         guard case let .loaded(response) = viewModel.phase else {

@@ -1,14 +1,15 @@
-# Food Scanner
+# Calry
 
 A modern iOS app for tracking nutrition and food intake, built with SwiftUI, SwiftData, and Swift 6.2 with strict concurrency.
 
 ## 🚀 Project Status
 
-**Current Version**: 0.3.0  
+**Current Version**: 0.4.0  
 **Swift Version**: 6.2 with strict concurrency  
 **Xcode Version**: 26.0.0  
 **iOS Target**: 26.0+  
-**Architecture**: MVVM with comprehensive service layer
+**Architecture**: MVVM with comprehensive service layer  
+**Focus**: Enhanced food logging and nutrition tracking
 
 ### ⚠️ CodeQL Security Scanning
 
@@ -24,11 +25,12 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI, Swi
 ## Features
 
 ### 🍎 Core Functionality
+- **Enhanced Food Logging**: Comprehensive food entry system with detailed nutrition tracking
 - **Food Search**: Search for foods using text queries with real-time results
 - **Barcode Scanning**: Scan product barcodes using VisionKit for instant food lookup
 - **Photo Recognition**: AI-powered food recognition from photos (coming soon)
 - **Nutrition Tracking**: Log daily food intake with detailed nutrition information
-- **Today View**: View daily nutrition totals and food entries
+- **Today View**: View daily nutrition totals and food entries with enhanced analytics
 - **Smart Caching**: Intelligent caching system for improved performance and offline support
 
 ### 🔧 Technical Features
@@ -71,7 +73,7 @@ A modern iOS app for tracking nutrition and food intake, built with SwiftUI, Swi
 
 ### Installation
 1. Clone the repository
-2. Open `Food Scanner.xcodeproj` in Xcode
+2. Open `Calry.xcodeproj` in Xcode
 3. Build and run on simulator or device
 
 ### Local Development Environment
@@ -116,13 +118,13 @@ UserDefaults.standard.set(true, forKey: "feature.fdcRemote")
 
 ### Unit Tests
 ```bash
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16"
 ```
 
 ### Integration Tests
 To run integration tests that make live API calls:
 ```bash
-RUN_INTEGRATION_TESTS=1 xcodebuild test -scheme "Food Scanner"
+RUN_INTEGRATION_TESTS=1 xcodebuild test -scheme "Calry"
 ```
 
 ### Test Categories

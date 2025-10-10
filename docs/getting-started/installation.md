@@ -2,7 +2,7 @@
 
 ## 🛠️ Setup and Installation
 
-This guide provides detailed setup instructions for the Food Scanner iOS app development environment.
+This guide provides detailed setup instructions for the Calry iOS app development environment.
 
 ## 📋 Prerequisites
 
@@ -34,12 +34,12 @@ xcode-select --install
 ### 3. **Clone Repository**
 ```bash
 git clone <repository-url>
-cd "Food Scanner"
+cd "Calry"
 ```
 
 ### 4. **Open Project**
 ```bash
-open "Food Scanner.xcodeproj"
+open "Calry.xcodeproj"
 ```
 
 ### 5. **Verify Setup**
@@ -147,13 +147,13 @@ After successful installation:
 ### Useful Commands
 ```bash
 # Build project
-xcodebuild -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16"
 
 # Run tests
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16"
 
 # Clean build
-xcodebuild clean -scheme "Food Scanner"
+xcodebuild clean -scheme "Calry"
 ```
 
 ## 📞 Support
@@ -168,4 +168,4 @@ xcodebuild clean -scheme "Food Scanner"
 - **Check deployment target** settings
 - **Verify simulator** availability
 
-This installation guide ensures you have everything needed to start developing with the Food Scanner app!
+This installation guide ensures you have everything needed to start developing with the Calry app!

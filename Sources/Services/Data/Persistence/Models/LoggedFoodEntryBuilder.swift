@@ -1,6 +1,6 @@
 //
 //  LoggedFoodEntryBuilder.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -59,7 +59,7 @@ public struct FoodEntryBuilder {
     // MARK: - Builder from new API models
 
     public nonisolated static func from(
-        foodCard: FoodMinimalCard,
+        foodCard: FoodCard,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {
@@ -120,7 +120,7 @@ public struct FoodEntryBuilder {
     }
 
     public nonisolated static func from(
-        foodDetails: FoodAuthoritativeDetail,
+        foodDetails: FoodDetails,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {
