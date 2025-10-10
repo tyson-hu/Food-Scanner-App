@@ -47,7 +47,7 @@ struct FDCMock: FoodDataClient {
                 description: food.name,
                 brand: food.brand,
                 baseUnit: .grams, // Default to grams for mock data
-                per100Base: [],
+                per100Base: createMockNutrientsPer100Base(for: food),
                 serving: FoodServing(
                     amount: food.servingSize,
                     unit: food.servingSizeUnit,
@@ -72,7 +72,7 @@ struct FDCMock: FoodDataClient {
                 description: food.name,
                 brand: nil,
                 baseUnit: .grams, // Default to grams for mock data
-                per100Base: [],
+                per100Base: createMockNutrientsPer100Base(for: food),
                 serving: FoodServing(
                     amount: food.servingSize,
                     unit: food.servingSizeUnit,
@@ -108,7 +108,7 @@ struct FDCMock: FoodDataClient {
                 description: food.name,
                 brand: food.brand,
                 baseUnit: .grams, // Default to grams for mock data
-                per100Base: [],
+                per100Base: createMockNutrientsPer100Base(for: food),
                 serving: FoodServing(
                     amount: food.servingSize,
                     unit: food.servingSizeUnit,
@@ -141,7 +141,7 @@ struct FDCMock: FoodDataClient {
                     description: food.name,
                     brand: food.brand,
                     baseUnit: .grams, // Default to grams for mock data
-                    per100Base: [],
+                    per100Base: createMockNutrientsPer100Base(for: food),
                     serving: FoodServing(
                         amount: food.servingSize,
                         unit: food.servingSizeUnit,
@@ -814,6 +814,39 @@ struct FDCMock: FoodDataClient {
                 unit: "g",
                 amount: Double(food.carbs),
                 basis: .per100g
+            )
+        ]
+    }
+
+    private func createMockNutrientsPer100Base(for food: FDCFoodDetails) -> [FoodNutrient] {
+        [
+            FoodNutrient(
+                id: 1_008,
+                name: "Energy",
+                unit: "kcal",
+                amount: Double(food.calories),
+                basis: .per100Base
+            ),
+            FoodNutrient(
+                id: 1_003,
+                name: "Protein",
+                unit: "g",
+                amount: Double(food.protein),
+                basis: .per100Base
+            ),
+            FoodNutrient(
+                id: 1_004,
+                name: "Total lipid (fat)",
+                unit: "g",
+                amount: Double(food.fat),
+                basis: .per100Base
+            ),
+            FoodNutrient(
+                id: 1_005,
+                name: "Carbohydrate, by difference",
+                unit: "g",
+                amount: Double(food.carbs),
+                basis: .per100Base
             )
         ]
     }
