@@ -26,6 +26,8 @@ enum ProductSourceDetection {
             return .supported(source)
         case .off:
             return .unsupported(source)
+        @unknown default:
+            return .unsupported(source)
         }
     }
 
@@ -75,6 +77,8 @@ enum ProductSourceDetection {
         case .fdc:
             return .supported(source)
         case .off:
+            return .unsupported(source)
+        @unknown default:
             return .unsupported(source)
         }
     }
