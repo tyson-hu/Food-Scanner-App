@@ -32,7 +32,7 @@ public final class RecentFood {
     }
 
     // Scoring: 70% recency + 30% frequency
-    public nonisolated var score: Double {
+    public var score: Double {
         let recencyWeight = 0.7
         let frequencyWeight = 0.3
 
