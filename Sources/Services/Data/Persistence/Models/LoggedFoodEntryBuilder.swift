@@ -66,11 +66,10 @@ public struct FoodEntryBuilder {
         at date: Date = .now
     ) async -> FoodEntry {
         // Extract nutrients from FoodRef
-        let nutrients: FoodLoggingNutrients
-        if let existingNutrients = foodRef.foodLoggingNutrients {
-            nutrients = existingNutrients
+        let nutrients: FoodLoggingNutrients = if let existingNutrients = foodRef.foodLoggingNutrients {
+            existingNutrients
         } else {
-            nutrients = await MainActor.run { FoodLoggingNutrients() }
+            await MainActor.run { FoodLoggingNutrients() }
         }
 
         // Calculate snapshot nutrients using SnapshotNutrientCalculator
