@@ -670,4 +670,218 @@ struct FoodLogStoreTests {
         #expect(dto.nutrientsSnapshot["calories"] == 100.0)
         #expect(dto.nutrientsSnapshot["protein"] == 5.0)
     }
+
+    // MARK: - Preferences Operations Tests
+
+    @Test("updatePreferences creates new UserFoodPrefs")
+    func createPrefs() async throws {
+        let container = try createTestContainer()
+        let store = FoodLogStore(container: container)
+
+        try await store.updatePreferences(
+            foodGID: "fdc:123456",
+            unit: .grams,
+            qty: 150.0,
+            meal: .breakfast
+        )
+
+        let prefs = try await store.getPreferences(foodGID: "fdc:123456")
+        #expect(prefs != nil)
+        #expect(prefs?.foodGID == "fdc:123456")
+        #expect(prefs?.defaultUnit == .grams)
+        #expect(prefs?.defaultQty == 150.0)
+        #expect(prefs?.defaultMeal == .breakfast)
+        #expect(prefs?.userId == "default")
+    }
+
+    @Test("updatePreferences updates existing prefs")
+    func updatePrefs() async throws {
+        let container = try createTestContainer()
+        let store = FoodLogStore(container: container)
+
+        // Create initial preferences
+        try await store.updatePreferences(
+            foodGID: "fdc:789012",
+            unit: .serving,
+            qty: 1.0,
+            meal: .lunch
+        )
+
+        let initialPrefs = try await store.getPreferences(foodGID: "fdc:789012")
+        #expect(initialPrefs?.defaultUnit == .serving)
+        #expect(initialPrefs?.defaultQty == 1.0)
+        #expect(initialPrefs?.defaultMeal == .lunch)
+
+        // Update preferences
+        try await store.updatePreferences(
+            foodGID: "fdc:789012",
+            unit: .milliliters,
+            qty: 250.0,
+            meal: .dinner
+        )
+
+        let updatedPrefs = try await store.getPreferences(foodGID: "fdc:789012")
+        #expect(updatedPrefs?.defaultUnit == .milliliters)
+        #expect(updatedPrefs?.defaultQty == 250.0)
+        #expect(updatedPrefs?.defaultMeal == .dinner)
+        #expect(updatedPrefs?.foodGID == "fdc:789012") // Same food
+    }
+
+    @Test("getPreferences returns correct prefs")
+    func getPrefs() async throws {
+        let container = try createTestContainer()
+        let store = FoodLogStore(container: container)
+
+        // Create preferences for multiple foods
+        try await store.updatePreferences(
+            foodGID: "fdc:111111",
+            unit: .grams,
+            qty: 100.0,
+            meal: .breakfast
+        )
+
+        try await store.updatePreferences(
+            foodGID: "fdc:222222",
+            unit: .household(label: "1 cup"),
+            qty: 1.0,
+            meal: .snack
+        )
+
+        // Get specific preferences
+        let prefs1 = try await store.getPreferences(foodGID: "fdc:111111")
+        #expect(prefs1?.foodGID == "fdc:111111")
+        #expect(prefs1?.defaultUnit == .grams)
+        #expect(prefs1?.defaultQty == 100.0)
+        #expect(prefs1?.defaultMeal == .breakfast)
+
+        let prefs2 = try await store.getPreferences(foodGID: "fdc:222222")
+        #expect(prefs2?.foodGID == "fdc:222222")
+        #expect(prefs2?.defaultUnit == .household(label: "1 cup"))
+        #expect(prefs2?.defaultQty == 1.0)
+        #expect(prefs2?.defaultMeal == .snack)
+
+        // Get non-existent preferences
+        let prefs3 = try await store.getPreferences(foodGID: "fdc:999999")
+        #expect(prefs3 == nil)
+    }
+
+    @Test("getAllPreferences returns all user preferences")
+    func getAllPrefs() async throws {
+        let container = try createTestContainer()
+        let store = FoodLogStore(container: container)
+
+        // Create preferences for multiple foods
+        try await store.updatePreferences(
+            foodGID: "fdc:111111",
+            unit: .grams,
+            qty: 100.0,
+            meal: .breakfast
+        )
+
+        try await Task.sleep(for: .milliseconds(10)) // Ensure different timestamps
+
+        try await store.updatePreferences(
+            foodGID: "fdc:222222",
+            unit: .serving,
+            qty: 2.0,
+            meal: .lunch
+        )
+
+        try await Task.sleep(for: .milliseconds(10))
+
+        try await store.updatePreferences(
+            foodGID: "fdc:333333",
+            unit: .milliliters,
+            qty: 200.0,
+            meal: .dinner
+        )
+
+        let allPrefs = try await store.getAllPreferences()
+        #expect(allPrefs.count == 3)
+
+        // Should be sorted by updatedAt (most recent first)
+        #expect(allPrefs[0].foodGID == "fdc:333333") // Most recent
+        #expect(allPrefs[1].foodGID == "fdc:222222")
+        #expect(allPrefs[2].foodGID == "fdc:111111") // Oldest
+
+        // Verify all belong to default user
+        for prefs in allPrefs {
+            #expect(prefs.userId == "default")
+        }
+    }
+
+    @Test("deletePreferences removes specific preferences")
+    func deletePrefs() async throws {
+        let container = try createTestContainer()
+        let store = FoodLogStore(container: container)
+
+        // Create preferences for multiple foods
+        try await store.updatePreferences(
+            foodGID: "fdc:111111",
+            unit: .grams,
+            qty: 100.0,
+            meal: .breakfast
+        )
+
+        try await store.updatePreferences(
+            foodGID: "fdc:222222",
+            unit: .serving,
+            qty: 2.0,
+            meal: .lunch
+        )
+
+        let initialPrefs = try await store.getAllPreferences()
+        #expect(initialPrefs.count == 2)
+
+        // Delete one set of preferences
+        try await store.deletePreferences(foodGID: "fdc:111111")
+
+        let remainingPrefs = try await store.getAllPreferences()
+        #expect(remainingPrefs.count == 1)
+        #expect(remainingPrefs[0].foodGID == "fdc:222222")
+
+        // Verify the deleted preferences are gone
+        let deletedPrefs = try await store.getPreferences(foodGID: "fdc:111111")
+        #expect(deletedPrefs == nil)
+    }
+
+    @Test("preferences support different users")
+    func multiUserPrefs() async throws {
+        let container = try createTestContainer()
+        let store = FoodLogStore(container: container)
+
+        // Create preferences for different users
+        try await store.updatePreferences(
+            foodGID: "fdc:111111",
+            unit: .grams,
+            qty: 100.0,
+            meal: .breakfast,
+            userId: "user1"
+        )
+
+        try await store.updatePreferences(
+            foodGID: "fdc:111111",
+            unit: .serving,
+            qty: 2.0,
+            meal: .lunch,
+            userId: "user2"
+        )
+
+        // Get preferences for each user
+        let user1Prefs = try await store.getPreferences(foodGID: "fdc:111111", userId: "user1")
+        #expect(user1Prefs?.userId == "user1")
+        #expect(user1Prefs?.defaultUnit == .grams)
+        #expect(user1Prefs?.defaultQty == 100.0)
+        #expect(user1Prefs?.defaultMeal == .breakfast)
+
+        let user2Prefs = try await store.getPreferences(foodGID: "fdc:111111", userId: "user2")
+        #expect(user2Prefs?.userId == "user2")
+        #expect(user2Prefs?.defaultUnit == .serving)
+        #expect(user2Prefs?.defaultQty == 2.0)
+        #expect(user2Prefs?.defaultMeal == .lunch)
+
+        // Default user should have no preferences
+        let defaultPrefs = try await store.getPreferences(foodGID: "fdc:111111", userId: "default")
+        #expect(defaultPrefs == nil)
+    }
 }

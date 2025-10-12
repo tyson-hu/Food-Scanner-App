@@ -225,6 +225,73 @@ actor FoodLogStore {
 
         return foodRef.map(FoodRefDTO.from)
     }
+
+    // MARK: - Preferences Operations (UserFoodPrefs)
+
+    /// Update user preferences for a specific food
+    func updatePreferences(
+        foodGID: String,
+        unit: Unit,
+        qty: Double,
+        meal: Meal,
+        userId: String = "default"
+    ) throws {
+        let descriptor = FetchDescriptor<UserFoodPrefs>()
+        let allPrefs = try context.fetch(descriptor)
+        let existing = allPrefs.first { $0.foodGID == foodGID && $0.userId == userId }
+
+        if let existing {
+            // Update existing preferences
+            existing.defaultUnit = unit
+            existing.defaultQty = qty
+            existing.defaultMeal = meal
+        } else {
+            // Create new preferences
+            let prefs = UserFoodPrefs(
+                foodGID: foodGID,
+                defaultUnit: unit,
+                defaultQty: qty,
+                defaultMeal: meal,
+                userId: userId
+            )
+            context.insert(prefs)
+        }
+
+        try context.save()
+    }
+
+    /// Get user preferences for a specific food
+    func getPreferences(foodGID: String, userId: String = "default") throws -> UserFoodPrefsDTO? {
+        let descriptor = FetchDescriptor<UserFoodPrefs>()
+        let allPrefs = try context.fetch(descriptor)
+        let prefs = allPrefs.first { $0.foodGID == foodGID && $0.userId == userId }
+
+        return prefs.map(UserFoodPrefsDTO.from)
+    }
+
+    /// Get all user preferences
+    func getAllPreferences(userId: String = "default") throws -> [UserFoodPrefsDTO] {
+        let descriptor = FetchDescriptor<UserFoodPrefs>(
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
+        let allPrefs = try context.fetch(descriptor)
+        let userPrefs = allPrefs.filter { $0.userId == userId }
+
+        return userPrefs.map(UserFoodPrefsDTO.from)
+    }
+
+    /// Delete preferences for a specific food
+    func deletePreferences(foodGID: String, userId: String = "default") throws {
+        let descriptor = FetchDescriptor<UserFoodPrefs>()
+        let allPrefs = try context.fetch(descriptor)
+        let prefsToDelete = allPrefs.filter { $0.foodGID == foodGID && $0.userId == userId }
+
+        for prefs in prefsToDelete {
+            context.delete(prefs)
+        }
+
+        try context.save()
+    }
 }
 
 // MARK: - Value-type DTOs
@@ -342,6 +409,29 @@ struct FoodRefDTO: Sendable, Equatable {
             gramsPerServing: foodRef.gramsPerServing,
             householdUnits: foodRef.householdUnits,
             foodLoggingNutrients: foodRef.foodLoggingNutrients
+        )
+    }
+}
+
+/// Value-type snapshot of UserFoodPrefs for cross-actor communication
+struct UserFoodPrefsDTO: Sendable, Equatable {
+    let id: UUID
+    let userId: String
+    let foodGID: String
+    let defaultUnit: Unit
+    let defaultQty: Double
+    let defaultMeal: Meal
+    let updatedAt: Date
+
+    nonisolated static func from(_ prefs: UserFoodPrefs) -> UserFoodPrefsDTO {
+        UserFoodPrefsDTO(
+            id: UUID(), // SwiftData uses PersistentIdentifier, but we need UUID for DTO
+            userId: prefs.userId,
+            foodGID: prefs.foodGID,
+            defaultUnit: prefs.defaultUnit,
+            defaultQty: prefs.defaultQty,
+            defaultMeal: prefs.defaultMeal,
+            updatedAt: prefs.updatedAt
         )
     }
 }
