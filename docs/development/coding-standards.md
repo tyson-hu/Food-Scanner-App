@@ -26,6 +26,7 @@ This document defines the coding standards and style guidelines for the Calry iO
 - **Proper actor boundaries** for thread safety
 - **Use `MainActor.run`** for cross-actor access
 - **Avoid `@unchecked Sendable`** when possible
+- **SwiftData Model Safety**: Never use `nonisolated` computed property setters that modify stored properties in SwiftData models
 
 ## 📋 Naming Conventions
 
@@ -405,6 +406,53 @@ func someMethod() async {
     }
 }
 ```
+
+## 🗄️ SwiftData Concurrency Safety
+
+### Computed Property Setters
+SwiftData models are actor-isolated, so computed property setters must respect actor boundaries:
+
+```swift
+// ❌ Incorrect - nonisolated setter bypasses actor isolation
+@Model
+class FoodRef {
+    public var householdUnitsData: Data?
+    
+    public nonisolated var householdUnits: [HouseholdUnit]? {
+        get { /* decode logic */ }
+        set {
+            householdUnitsData = newValue.flatMap { try? JSONEncoder().encode($0) }
+            updatedAt = .now  // ❌ Direct modification of stored property
+        }
+    }
+}
+
+// ✅ Correct - Actor-isolated setter ensures thread safety
+@Model
+class FoodRef {
+    public var householdUnitsData: Data?
+    
+    public var householdUnits: [HouseholdUnit]? {
+        get { /* decode logic */ }
+        set {
+            householdUnitsData = newValue.flatMap { try? JSONEncoder().encode($0) }
+            updatedAt = .now  // ✅ Safe modification within actor context
+        }
+    }
+}
+```
+
+### Why Actor Isolation Matters
+- **Data Race Prevention**: Ensures all property modifications happen within the SwiftData model's actor context
+- **Thread Safety**: Prevents concurrent access issues in multi-threaded environments
+- **Swift 6 Compliance**: Required for strict concurrency checking
+- **Model Integrity**: Maintains data consistency across concurrent operations
+
+### Best Practices
+- **Never use `nonisolated`** on computed property setters that modify stored properties
+- **Use actor-isolated setters** for all SwiftData model properties
+- **Test concurrency scenarios** to ensure thread safety
+- **Document actor boundaries** in complex models
 
 ### Cache Service Integration
 For `@MainActor` cache services:

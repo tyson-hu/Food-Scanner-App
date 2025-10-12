@@ -34,7 +34,7 @@ public final class UserFoodPrefs {
     }
 
     // Computed properties
-    public nonisolated var defaultUnit: Unit {
+    public var defaultUnit: Unit {
         get { Self.decodeUnit(defaultUnitRaw) }
         set {
             defaultUnitRaw = Self.encodeUnit(newValue)
@@ -42,7 +42,7 @@ public final class UserFoodPrefs {
         }
     }
 
-    public nonisolated var defaultMeal: Meal {
+    public var defaultMeal: Meal {
         get { Meal(rawValue: defaultMealRaw) ?? Meal.lunch }
         set {
             defaultMealRaw = newValue.rawValue

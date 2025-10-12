@@ -62,7 +62,7 @@ public final class FoodRef {
     }
 
     // Computed properties for easy access
-    public nonisolated var householdUnits: [HouseholdUnit]? {
+    public var householdUnits: [HouseholdUnit]? {
         get {
             guard let data = householdUnitsData else { return nil }
             return try? JSONDecoder().decode([HouseholdUnit].self, from: data)
@@ -73,7 +73,7 @@ public final class FoodRef {
         }
     }
 
-    public nonisolated var foodLoggingNutrients: FoodLoggingNutrients? {
+    public var foodLoggingNutrients: FoodLoggingNutrients? {
         get {
             guard let data = foodLoggingNutrientsData else { return nil }
             return try? JSONDecoder().decode(FoodLoggingNutrients.self, from: data)
