@@ -18,13 +18,19 @@ struct FoodSearchViewModelTests {
         viewModel.query = "yogurt"
         viewModel.onQueryChange()
 
-        // Wait for debounce (250ms) + mock latency (200ms) + extra headroom
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+        // Wait for search to complete with multiple attempts
+        var attempts = 0
+        let maxAttempts = 20 // 2 seconds total
+        while viewModel.phase != .results && attempts < maxAttempts {
+            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
+            attempts += 1
+        }
 
-        #expect(viewModel.phase == .results)
+        #expect(viewModel.phase == .results, "Expected phase to be .results, but got \(viewModel.phase)")
         #expect(
             viewModel.genericResults.contains(where: { $0.id == "fdc:1234" }) || viewModel.brandedResults
-                .contains(where: { $0.id == "fdc:1234" })
+                .contains(where: { $0.id == "fdc:1234" }),
+            "Expected to find food with ID 'fdc:1234' in results. Generic: \(viewModel.genericResults.map(\.id)), Branded: \(viewModel.brandedResults.map(\.id))"
         )
     }
 
