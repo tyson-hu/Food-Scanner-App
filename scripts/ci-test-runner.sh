@@ -256,7 +256,8 @@ run_tests_with_monitoring() {
     # Count tests for monitoring
     local test_count=$(grep -c "◇ Test.*started" "$log_file" 2>/dev/null || echo "0")
     test_count=${test_count:-0}  # Ensure it's not empty
-    if [ "$test_count" -gt 0 ] && [ $((test_count % 10)) -eq 0 ]; then
+    # Validate test_count is a number before arithmetic operations
+    if [[ "$test_count" =~ ^[0-9]+$ ]] && [ "$test_count" -gt 0 ] && [ $((test_count % 10)) -eq 0 ]; then
         log_info "Tests started so far: $test_count"
     fi
             
