@@ -28,7 +28,10 @@ struct RecentFoodTests {
         #expect(recentFood.foodGID == "fdc:12345")
         #expect(recentFood.useCount == 5)
         #expect(recentFood.isFavorite == true)
-        #expect(recentFood.lastUsedAt != Date()) // Should be initialized
+        // Verify timestamp is initialized (within reasonable time window)
+        let now = Date()
+        let timeDifference = abs(recentFood.lastUsedAt.timeIntervalSince(now))
+        #expect(timeDifference < 1.0) // Should be within 1 second
     }
 
     @Test("usage frequency updates")
@@ -143,7 +146,10 @@ struct RecentFoodTests {
         #expect(recentFood.foodGID == "fdc:99999")
         #expect(recentFood.useCount == 1)
         #expect(recentFood.isFavorite == false)
-        #expect(recentFood.lastUsedAt != Date()) // Should be initialized
+        // Verify timestamp is initialized (within reasonable time window)
+        let now = Date()
+        let timeDifference = abs(recentFood.lastUsedAt.timeIntervalSince(now))
+        #expect(timeDifference < 1.0) // Should be within 1 second
     }
 
     @Test("score calculation with different time intervals")

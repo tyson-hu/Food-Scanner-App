@@ -29,7 +29,10 @@ struct UserFoodPrefsTests {
         #expect(prefs.defaultUnit == .grams)
         #expect(prefs.defaultQty == 150.0)
         #expect(prefs.defaultMeal == .breakfast)
-        #expect(prefs.updatedAt != Date()) // Should be initialized
+        // Verify timestamp is initialized (within reasonable time window)
+        let now = Date()
+        let timeDifference = abs(prefs.updatedAt.timeIntervalSince(now))
+        #expect(timeDifference < 1.0) // Should be within 1 second
     }
 
     @Test("default portion recall")
