@@ -69,7 +69,7 @@ public struct FoodEntryBuilder {
         let nutrients: FoodLoggingNutrients = if let existingNutrients = foodRef.foodLoggingNutrients {
             existingNutrients
         } else {
-            await MainActor.run { FoodLoggingNutrients() }
+            FoodLoggingNutrients()
         }
 
         // Calculate snapshot nutrients using SnapshotNutrientCalculator
@@ -80,12 +80,10 @@ public struct FoodEntryBuilder {
             densityGPerMl: nil, // FoodRef doesn't store density
             householdUnits: foodRef.householdUnits
         )
-        let snapshotNutrients = await MainActor.run {
-            SnapshotNutrientCalculator.calculateSnapshot(
-                per100Nutrients: nutrients,
-                params: params
-            )
-        }
+        let snapshotNutrients = SnapshotNutrientCalculator.calculateSnapshot(
+            per100Nutrients: nutrients,
+            params: params
+        )
 
         // Convert snapshot nutrients to legacy format for backward compatibility
         let nutrientsSnapshot = [
@@ -100,15 +98,13 @@ public struct FoodEntryBuilder {
         ].compactMapValues { $0 }
 
         // Calculate resolved quantity using PortionResolver
-        let resolvedGrams = await MainActor.run {
-            PortionResolver.resolveToGrams(
-                quantity: quantity,
-                unit: unit,
-                gramsPerServing: foodRef.gramsPerServing,
-                densityGPerMl: nil,
-                householdUnits: foodRef.householdUnits
-            )
-        } ?? quantity * 100.0 // Fallback to 100g per serving
+        let resolvedGrams = PortionResolver.resolveToGrams(
+            quantity: quantity,
+            unit: unit,
+            gramsPerServing: foodRef.gramsPerServing,
+            densityGPerMl: nil,
+            householdUnits: foodRef.householdUnits
+        ) ?? quantity * 100.0 // Fallback to 100g per serving
 
         return FoodEntry(
             kind: .catalog,
