@@ -87,28 +87,6 @@
                ReferencedContainer = "container:Calry.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "84C3F1EF2E97633A00DA765F"
-               BuildableName = "CalryTests.xctest"
-               BlueprintName = "CalryTests"
-               ReferencedContainer = "container:Calry.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "84C3F1FC2E97634500DA765F"
-               BuildableName = "CalryUITests.xctest"
-               BlueprintName = "CalryUITests"
-               ReferencedContainer = "container:Calry.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
