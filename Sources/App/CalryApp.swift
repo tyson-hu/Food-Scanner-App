@@ -17,7 +17,12 @@ struct CalryApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .modelContainer(for: [FoodEntry.self])
+                .modelContainer(for: [
+                    FoodEntry.self,
+                    FoodRef.self,
+                    UserFoodPrefs.self,
+                    RecentFood.self
+                ])
                 .environment(\.appEnv, appEnv)
         }
     }
