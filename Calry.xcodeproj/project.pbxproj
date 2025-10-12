@@ -26,9 +26,9 @@
 /* Begin PBXFileReference section */
 		842FD2BF2E82E2D300CD2A5F /* Calry.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Calry.xctestplan; sourceTree = "<group>"; };
 		846281442E88875C00BBEBF6 /* Calry-CI-Offline.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Calry-CI-Offline.xctestplan"; sourceTree = "<group>"; };
-		84C3F1F02E97633A00DA765F /* CalryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = CalryTests.xctest; path = build/Debug-iphoneos/Calry.app/PlugIns/CalryTests.xctest; sourceTree = "<group>"; };
-		84C3F1FD2E97634500DA765F /* CalryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = CalryUITests.xctest; path = build/Debug-iphoneos/CalryUITests-Runner.app/PlugIns/CalryUITests.xctest; sourceTree = "<group>"; };
-		84F634A82E8F0C8600516D5F /* Calry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Calry.app; path = build/Debug-iphoneos/Calry.app; sourceTree = "<group>"; };
+		84C3A7E62E97710E009C6BFA /* CalryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		84C3A7E72E97710E009C6BFA /* Calry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calry.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		84C3A7E82E97710E009C6BFA /* CalryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -107,6 +107,9 @@
 				842FD2BF2E82E2D300CD2A5F /* Calry.xctestplan */,
 				842FCEBB2E7B365000CD2A5F /* Sources */,
 				842FD0C22E7E072C00CD2A5F /* Tests */,
+				84C3A7E62E97710E009C6BFA /* CalryTests.xctest */,
+				84C3A7E72E97710E009C6BFA /* Calry.app */,
+				84C3A7E82E97710E009C6BFA /* CalryUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -131,8 +134,8 @@
 			name = Calry;
 			packageProductDependencies = (
 			);
-			productName = "Calry";
-			productReference = 84F634A82E8F0C8600516D5F /* Calry.app */;
+			productName = Calry;
+			productReference = 84C3A7E72E97710E009C6BFA /* Calry.app */;
 			productType = "com.apple.product-type.application";
 		};
 		84C3F1EF2E97633A00DA765F /* CalryTests */ = {
@@ -152,7 +155,7 @@
 			packageProductDependencies = (
 			);
 			productName = CalryTests;
-			productReference = 84C3F1F02E97633A00DA765F /* CalryTests.xctest */;
+			productReference = 84C3A7E62E97710E009C6BFA /* CalryTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		84C3F1FC2E97634500DA765F /* CalryUITests */ = {
@@ -172,7 +175,7 @@
 			packageProductDependencies = (
 			);
 			productName = CalryUITests;
-			productReference = 84C3F1FD2E97634500DA765F /* CalryUITests.xctest */;
+			productReference = 84C3A7E82E97710E009C6BFA /* CalryUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
