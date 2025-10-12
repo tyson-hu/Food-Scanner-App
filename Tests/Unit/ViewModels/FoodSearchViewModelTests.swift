@@ -21,7 +21,7 @@ struct FoodSearchViewModelTests {
         // Wait for search to complete with multiple attempts
         var attempts = 0
         let maxAttempts = 20 // 2 seconds total
-        while viewModel.phase != .results && attempts < maxAttempts {
+        while viewModel.phase != .results, attempts < maxAttempts {
             try await Task.sleep(nanoseconds: 100_000_000) // 100ms
             attempts += 1
         }

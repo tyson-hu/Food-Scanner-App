@@ -9,41 +9,63 @@
 import Foundation
 import SwiftData
 
-@MainActor
 final class FoodLogRepositorySwiftData: FoodLogRepository {
-    private let context: ModelContext
+    let store: FoodLogStore
 
-    init(context: ModelContext) {
-        self.context = context
+    init(container: ModelContainer) {
+        store = FoodLogStore(container: container)
     }
 
     func log(_ entry: FoodEntry) async throws {
-        context.insert(entry)
-        try context.save()
+        // Convert FoodEntry to DTO to avoid actor isolation issues
+        let dto = FoodEntryDTO.from(entry)
+        // Pass the DTO directly to the store instead of converting back to FoodEntry
+        try await store.add(dto)
     }
 
-    func entries(on day: Date) async throws -> [FoodEntry] {
-        let cal = Calendar.current
-        let start = cal.startOfDay(for: day)
-        guard let end = cal.date(byAdding: .day, value: 1, to: start) else {
-            return []
-        }
-        let descriptor = FetchDescriptor<FoodEntry>(
-            predicate: #Predicate { $0.date >= start && $0.date < end },
-            sortBy: [.init(\.date, order: .reverse)]
-        )
-        return try context.fetch(descriptor)
+    func entries(on day: Date) async throws -> [FoodEntryDTO] {
+        try await store.entries(for: day)
+    }
+
+    func entries(on day: Date, forMeal meal: Meal) async throws -> [FoodEntryDTO] {
+        try await store.entries(for: day, meal: meal)
     }
 
     func totals(on day: Date) async throws -> DayTotals {
         let items = try await entries(on: day)
-        return items.reduce(.init(calories: 0, protein: 0, carbs: 0, fat: 0)) { acc, entry in
-            .init(
+        return items.reduce(DayTotals(
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            saturatedFat: nil,
+            carbs: 0,
+            fiber: nil,
+            sugars: nil,
+            sodium: nil,
+            cholesterol: nil
+        )) { acc, entry in
+            DayTotals(
                 calories: acc.calories + entry.calories,
                 protein: acc.protein + entry.protein,
+                fat: acc.fat + entry.fat,
+                saturatedFat: acc.saturatedFat.map { $0 + (entry.snapSaturatedFat ?? 0) } ?? entry.snapSaturatedFat,
                 carbs: acc.carbs + entry.carbs,
-                fat: acc.fat + entry.fat
+                fiber: acc.fiber.map { $0 + (entry.snapFiber ?? 0) } ?? entry.snapFiber,
+                sugars: acc.sugars.map { $0 + (entry.snapSugars ?? 0) } ?? entry.snapSugars,
+                sodium: acc.sodium.map { $0 + (entry.snapSodium ?? 0) } ?? entry.snapSodium,
+                cholesterol: acc.cholesterol.map { $0 + (entry.snapCholesterol ?? 0) } ?? entry.snapCholesterol
             )
         }
+    }
+
+    func update(_ entry: FoodEntry) async throws {
+        // Convert FoodEntry to DTO to avoid actor isolation issues
+        let dto = FoodEntryDTO.from(entry)
+        // Pass the DTO directly to the store instead of converting back to FoodEntry
+        try await store.update(dto)
+    }
+
+    func delete(entryId: UUID) async throws {
+        try await store.delete(entryId: entryId)
     }
 }

@@ -10,7 +10,7 @@ import Observation
 
 @Observable
 final class TodayViewModel {
-    var totals = DayTotals(calories: 0, protein: 0, carbs: 0, fat: 0)
+    var totals = DayTotals(calories: 0, protein: 0, fat: 0, carbs: 0)
 
     // MARK: Hook to repo later..
 }

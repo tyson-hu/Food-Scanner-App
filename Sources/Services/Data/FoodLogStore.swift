@@ -26,7 +26,37 @@ actor FoodLogStore {
     // MARK: - CRUD Operations for FoodEntry
 
     /// Add a new food entry
-    func add(_ entry: FoodEntry) throws {
+    func add(_ dto: FoodEntryDTO) throws {
+        let entry = FoodEntry(
+            kind: dto.kind,
+            name: dto.name,
+            meal: dto.meal,
+            quantity: dto.quantity,
+            unit: dto.unit,
+            foodGID: dto.foodGID,
+            customName: dto.customName,
+            gramsResolved: dto.gramsResolved,
+            note: dto.note,
+            snapEnergyKcal: dto.snapEnergyKcal,
+            snapProtein: dto.snapProtein,
+            snapFat: dto.snapFat,
+            snapSaturatedFat: dto.snapSaturatedFat,
+            snapCarbs: dto.snapCarbs,
+            snapFiber: dto.snapFiber,
+            snapSugars: dto.snapSugars,
+            snapSodium: dto.snapSodium,
+            snapCholesterol: dto.snapCholesterol,
+            brand: dto.brand,
+            fdcId: dto.fdcId,
+            servingDescription: dto.servingDescription,
+            resolvedToBase: dto.resolvedToBase,
+            baseUnit: dto.baseUnit,
+            calories: dto.calories,
+            protein: dto.protein,
+            fat: dto.fat,
+            carbs: dto.carbs,
+            nutrientsSnapshot: dto.nutrientsSnapshot
+        )
         context.insert(entry)
         try context.save()
     }
@@ -70,7 +100,44 @@ actor FoodLogStore {
     }
 
     /// Update an existing food entry
-    func update(_ entry: FoodEntry) throws {
+    func update(_ dto: FoodEntryDTO) throws {
+        // Find the existing entry by ID
+        let entryId = dto.id
+        let predicate = #Predicate<FoodEntry> { entry in
+            entry.id == entryId
+        }
+        let descriptor = FetchDescriptor<FoodEntry>(predicate: predicate)
+        if let existingEntry = try context.fetch(descriptor).first {
+            // Update the existing entry with DTO values
+            existingEntry.kind = dto.kind
+            existingEntry.name = dto.name
+            existingEntry.meal = dto.meal
+            existingEntry.quantity = dto.quantity
+            existingEntry.unit = dto.unit
+            existingEntry.foodGID = dto.foodGID
+            existingEntry.customName = dto.customName
+            existingEntry.gramsResolved = dto.gramsResolved
+            existingEntry.note = dto.note
+            existingEntry.snapEnergyKcal = dto.snapEnergyKcal
+            existingEntry.snapProtein = dto.snapProtein
+            existingEntry.snapFat = dto.snapFat
+            existingEntry.snapSaturatedFat = dto.snapSaturatedFat
+            existingEntry.snapCarbs = dto.snapCarbs
+            existingEntry.snapFiber = dto.snapFiber
+            existingEntry.snapSugars = dto.snapSugars
+            existingEntry.snapSodium = dto.snapSodium
+            existingEntry.snapCholesterol = dto.snapCholesterol
+            existingEntry.brand = dto.brand
+            existingEntry.fdcId = dto.fdcId
+            existingEntry.servingDescription = dto.servingDescription
+            existingEntry.resolvedToBase = dto.resolvedToBase
+            existingEntry.baseUnit = dto.baseUnit
+            existingEntry.calories = dto.calories
+            existingEntry.protein = dto.protein
+            existingEntry.fat = dto.fat
+            existingEntry.carbs = dto.carbs
+            existingEntry.nutrientsSnapshot = dto.nutrientsSnapshot
+        }
         try context.save()
     }
 
