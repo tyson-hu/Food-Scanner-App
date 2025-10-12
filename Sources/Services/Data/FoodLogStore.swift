@@ -367,7 +367,7 @@ struct FoodEntryDTO: Sendable, Equatable {
 
 /// Value-type snapshot of RecentFood for cross-actor communication
 struct RecentFoodDTO: Sendable, Equatable {
-    let id: UUID
+    let id: Int
     let foodGID: String
     let lastUsedAt: Date
     let useCount: Int
@@ -375,7 +375,7 @@ struct RecentFoodDTO: Sendable, Equatable {
 
     nonisolated static func from(_ recent: RecentFood) -> RecentFoodDTO {
         RecentFoodDTO(
-            id: UUID(), // SwiftData uses PersistentIdentifier, but we need UUID for DTO
+            id: recent.persistentModelID.hashValue, // Preserve model identifier
             foodGID: recent.foodGID,
             lastUsedAt: recent.lastUsedAt,
             useCount: recent.useCount,
@@ -386,7 +386,7 @@ struct RecentFoodDTO: Sendable, Equatable {
 
 /// Value-type snapshot of FoodRef for cross-actor communication
 struct FoodRefDTO: Sendable, Equatable {
-    let id: UUID
+    let id: Int
     let gid: String
     let source: SourceTag
     let name: String
@@ -399,7 +399,7 @@ struct FoodRefDTO: Sendable, Equatable {
 
     nonisolated static func from(_ foodRef: FoodRef) -> FoodRefDTO {
         FoodRefDTO(
-            id: UUID(), // SwiftData uses PersistentIdentifier, but we need UUID for DTO
+            id: foodRef.persistentModelID.hashValue, // Preserve model identifier
             gid: foodRef.gid,
             source: foodRef.source,
             name: foodRef.name,
@@ -415,7 +415,7 @@ struct FoodRefDTO: Sendable, Equatable {
 
 /// Value-type snapshot of UserFoodPrefs for cross-actor communication
 struct UserFoodPrefsDTO: Sendable, Equatable {
-    let id: UUID
+    let id: Int
     let userId: String
     let foodGID: String
     let defaultUnit: Unit
@@ -425,7 +425,7 @@ struct UserFoodPrefsDTO: Sendable, Equatable {
 
     nonisolated static func from(_ prefs: UserFoodPrefs) -> UserFoodPrefsDTO {
         UserFoodPrefsDTO(
-            id: UUID(), // SwiftData uses PersistentIdentifier, but we need UUID for DTO
+            id: prefs.persistentModelID.hashValue, // Preserve model identifier
             userId: prefs.userId,
             foodGID: prefs.foodGID,
             defaultUnit: prefs.defaultUnit,
