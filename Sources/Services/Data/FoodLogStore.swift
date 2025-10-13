@@ -44,6 +44,7 @@ actor FoodLogStore {
             snapCarbs: dto.snapCarbs,
             snapFiber: dto.snapFiber,
             snapSugars: dto.snapSugars,
+            snapAddedSugars: dto.snapAddedSugars,
             snapSodium: dto.snapSodium,
             snapCholesterol: dto.snapCholesterol,
             brand: dto.brand,
@@ -127,6 +128,7 @@ actor FoodLogStore {
             existingEntry.snapCarbs = dto.snapCarbs
             existingEntry.snapFiber = dto.snapFiber
             existingEntry.snapSugars = dto.snapSugars
+            existingEntry.snapAddedSugars = dto.snapAddedSugars
             existingEntry.snapSodium = dto.snapSodium
             existingEntry.snapCholesterol = dto.snapCholesterol
             existingEntry.brand = dto.brand
@@ -384,6 +386,7 @@ struct FoodEntryDTO: Sendable, Equatable {
     let snapCarbs: Double?
     let snapFiber: Double?
     let snapSugars: Double?
+    let snapAddedSugars: Double?
     let snapSodium: Double?
     let snapCholesterol: Double?
     let brand: String?
@@ -417,6 +420,7 @@ struct FoodEntryDTO: Sendable, Equatable {
             snapCarbs: entry.snapCarbs,
             snapFiber: entry.snapFiber,
             snapSugars: entry.snapSugars,
+            snapAddedSugars: entry.snapAddedSugars,
             snapSodium: entry.snapSodium,
             snapCholesterol: entry.snapCholesterol,
             brand: entry.brand,

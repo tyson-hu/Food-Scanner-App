@@ -16,6 +16,7 @@ struct DayTotals: Sendable, Equatable {
     var carbs: Double
     var fiber: Double?
     var sugars: Double?
+    var addedSugars: Double?
     var sodium: Double?
     var cholesterol: Double?
 }

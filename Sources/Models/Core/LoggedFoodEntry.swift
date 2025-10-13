@@ -44,6 +44,7 @@ public final class FoodEntry {
     public var snapCarbs: Double?
     public var snapFiber: Double?
     public var snapSugars: Double?
+    public var snapAddedSugars: Double?
     public var snapSodium: Double?
     public var snapCholesterol: Double?
 
@@ -93,6 +94,7 @@ public final class FoodEntry {
         snapCarbs = nil
         snapFiber = nil
         snapSugars = nil
+        snapAddedSugars = nil
         snapSodium = nil
         snapCholesterol = nil
     }
@@ -116,6 +118,7 @@ public final class FoodEntry {
         snapCarbs: Double? = nil,
         snapFiber: Double? = nil,
         snapSugars: Double? = nil,
+        snapAddedSugars: Double? = nil,
         snapSodium: Double? = nil,
         snapCholesterol: Double? = nil,
         // Legacy fields for compatibility
@@ -148,6 +151,7 @@ public final class FoodEntry {
         self.snapCarbs = snapCarbs
         self.snapFiber = snapFiber
         self.snapSugars = snapSugars
+        self.snapAddedSugars = snapAddedSugars
         self.snapSodium = snapSodium
         self.snapCholesterol = snapCholesterol
 

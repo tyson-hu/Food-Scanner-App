@@ -16,6 +16,10 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
         store = FoodLogStore(container: container)
     }
 
+    init(store: FoodLogStore) {
+        self.store = store
+    }
+
     func log(_ entry: FoodEntry) async throws {
         // Convert FoodEntry to DTO to avoid actor isolation issues
         let dto = FoodEntryDTO.from(entry)
@@ -41,6 +45,7 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
             carbs: 0,
             fiber: nil,
             sugars: nil,
+            addedSugars: nil,
             sodium: nil,
             cholesterol: nil
         )) { acc, entry in
@@ -52,6 +57,7 @@ final class FoodLogRepositorySwiftData: FoodLogRepository {
                 carbs: acc.carbs + entry.carbs,
                 fiber: acc.fiber.map { $0 + (entry.snapFiber ?? 0) } ?? entry.snapFiber,
                 sugars: acc.sugars.map { $0 + (entry.snapSugars ?? 0) } ?? entry.snapSugars,
+                addedSugars: acc.addedSugars.map { $0 + (entry.snapAddedSugars ?? 0) } ?? entry.snapAddedSugars,
                 sodium: acc.sodium.map { $0 + (entry.snapSodium ?? 0) } ?? entry.snapSodium,
                 cholesterol: acc.cholesterol.map { $0 + (entry.snapCholesterol ?? 0) } ?? entry.snapCholesterol
             )
