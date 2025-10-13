@@ -123,6 +123,7 @@ public struct FoodEntryBuilder {
             snapCarbs: snapshotNutrients.carbs,
             snapFiber: snapshotNutrients.fiber,
             snapSugars: snapshotNutrients.sugars,
+            snapAddedSugars: snapshotNutrients.addedSugars,
             snapSodium: snapshotNutrients.sodium,
             snapCholesterol: snapshotNutrients.cholesterol,
             brand: foodRef.brand,

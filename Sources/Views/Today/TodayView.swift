@@ -118,9 +118,15 @@ struct TodayView: View {
                     }
             }
         case let .portion(foodGID, meal):
-            Text("Portion sheet: \(foodGID) → \(meal.displayName)")
-                .navigationTitle("Add to \(meal.displayName)")
-                .navigationBarTitleDisplayMode(.inline)
+            PortionSheetView(
+                foodGID: foodGID,
+                meal: meal,
+                store: viewModel.store,
+                repository: viewModel.repository,
+                onComplete: {
+                    await viewModel.load()
+                }
+            )
         case let .editEntry(entryId):
             Text("Edit entry: \(entryId)")
                 .navigationTitle("Edit Entry")

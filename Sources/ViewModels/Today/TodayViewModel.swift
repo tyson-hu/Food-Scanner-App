@@ -12,8 +12,8 @@ import Observation
 @MainActor
 @Observable
 final class TodayViewModel {
-    private let repository: FoodLogRepository
-    private let store: FoodLogStore
+    let repository: FoodLogRepository
+    let store: FoodLogStore
 
     var currentDate = Date()
     var entries: [FoodEntryDTO] = []
