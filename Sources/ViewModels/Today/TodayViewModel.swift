@@ -46,4 +46,14 @@ final class TodayViewModel {
             self.error = error.localizedDescription
         }
     }
+
+    func openSearch(forMeal meal: Meal) {
+        activeSheet = .search(meal: meal, onSelect: { [weak self] gid in
+            self?.handleSearchSelection(gid, meal: meal)
+        })
+    }
+
+    private func handleSearchSelection(_ gid: String, meal: Meal) {
+        activeSheet = .portion(foodGID: gid, meal: meal)
+    }
 }
