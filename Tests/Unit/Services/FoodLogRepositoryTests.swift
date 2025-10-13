@@ -62,8 +62,7 @@ struct FoodLogRepositoryTests {
             protein: 10.0,
             fat: 5.0,
             carbs: 15.0,
-            nutrientsSnapshot: ["calories": 100.0],
-            date: Date()
+            nutrientsSnapshot: ["calories": 100.0]
         )
 
         try await repository.log(entry)
@@ -85,8 +84,7 @@ struct FoodLogRepositoryTests {
             quantity: 1.0,
             unit: "serving",
             foodGID: nil,
-            gramsResolved: 100,
-            date: Date()
+            gramsResolved: 100
         )
 
         let lunchEntry = FoodEntry(
@@ -96,8 +94,7 @@ struct FoodLogRepositoryTests {
             quantity: 1.0,
             unit: "serving",
             foodGID: nil,
-            gramsResolved: 200,
-            date: Date()
+            gramsResolved: 200
         )
 
         let dinnerEntry = FoodEntry(
@@ -107,8 +104,7 @@ struct FoodLogRepositoryTests {
             quantity: 1.0,
             unit: "serving",
             foodGID: nil,
-            gramsResolved: 300,
-            date: Date()
+            gramsResolved: 300
         )
 
         try await repository.log(breakfastEntry)
@@ -143,8 +139,7 @@ struct FoodLogRepositoryTests {
             quantity: 1.0,
             unit: "serving",
             foodGID: nil,
-            gramsResolved: 100,
-            date: Date()
+            gramsResolved: 100
         )
 
         try await repository.log(entry)
@@ -174,8 +169,7 @@ struct FoodLogRepositoryTests {
             quantity: 1.0,
             unit: "serving",
             foodGID: nil,
-            gramsResolved: 100,
-            date: Date()
+            gramsResolved: 100
         )
 
         try await repository.log(entry)
@@ -207,8 +201,7 @@ struct FoodLogRepositoryTests {
             calories: 100.0,
             protein: 10.0,
             fat: 5.0,
-            carbs: 15.0,
-            date: Date()
+            carbs: 15.0
         )
 
         let entry2 = FoodEntry(
@@ -222,8 +215,7 @@ struct FoodLogRepositoryTests {
             calories: 200.0,
             protein: 20.0,
             fat: 10.0,
-            carbs: 30.0,
-            date: Date()
+            carbs: 30.0
         )
 
         try await repository.log(entry1)
@@ -257,8 +249,7 @@ struct FoodLogRepositoryTests {
             snapFiber: 3.0,
             snapSugars: 5.0,
             snapSodium: 100.0,
-            snapCholesterol: 30.0,
-            date: Date()
+            snapCholesterol: 30.0
         )
 
         let entry2 = FoodEntry(
@@ -277,8 +268,7 @@ struct FoodLogRepositoryTests {
             snapFiber: 6.0,
             snapSugars: 10.0,
             snapSodium: 200.0,
-            snapCholesterol: 60.0,
-            date: Date()
+            snapCholesterol: 60.0
         )
 
         try await repository.log(entry1)
@@ -317,8 +307,7 @@ struct FoodLogRepositoryTests {
             snapFiber: nil, // Missing
             snapSugars: 5.0,
             snapSodium: nil, // Missing
-            snapCholesterol: 30.0,
-            date: Date()
+            snapCholesterol: 30.0
         )
 
         let entry2 = FoodEntry(
@@ -337,8 +326,7 @@ struct FoodLogRepositoryTests {
             snapFiber: 6.0, // Present
             snapSugars: nil, // Missing
             snapSodium: 200.0, // Present
-            snapCholesterol: nil, // Missing
-            date: Date()
+            snapCholesterol: nil // Missing
         )
 
         try await repository.log(entry1)
@@ -408,8 +396,7 @@ struct FoodLogRepositoryTests {
             protein: 5.0,
             fat: 2.0,
             carbs: 15.0,
-            nutrientsSnapshot: ["calories": 100.0, "protein": 5.0],
-            date: Date()
+            nutrientsSnapshot: ["calories": 100.0, "protein": 5.0]
         )
 
         try await repository.log(entry)
@@ -455,7 +442,6 @@ struct FoodLogRepositoryTests {
 private extension FoodEntryDTO {
     func toFoodEntry() -> FoodEntry {
         FoodEntry(
-            id: id,
             kind: kind,
             name: name,
             meal: meal,
@@ -484,8 +470,7 @@ private extension FoodEntryDTO {
             protein: protein,
             fat: fat,
             carbs: carbs,
-            nutrientsSnapshot: nutrientsSnapshot,
-            date: date
+            nutrientsSnapshot: nutrientsSnapshot
         )
     }
 }
