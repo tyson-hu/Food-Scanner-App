@@ -36,17 +36,54 @@ struct TodayView: View {
         @Bindable var bindableVM = viewModel
 
         ScrollView {
-            VStack(spacing: AppTheme.Spacing.md) {
+            VStack(spacing: AppTheme.Spacing.lg) {
                 TodayHeaderView(currentDate: $bindableVM.currentDate)
                 TodaySummaryView(
                     totals: viewModel.totals,
                     onAddFood: { viewModel.openSearch(forMeal: .lunch) }
                 )
-                // Meal sections and quick add in later phases
+                mealSections(viewModel)
             }
         }
         .task(id: viewModel.currentDate) {
             await viewModel.load()
+        }
+    }
+
+    @ViewBuilder
+    private func mealSections(_ viewModel: TodayViewModel) -> some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            MealSectionView(
+                meal: .breakfast,
+                entries: viewModel.breakfastEntries,
+                onAddFood: { viewModel.openSearch(forMeal: .breakfast) },
+                onEditEntry: { viewModel.editEntry($0) },
+                onDeleteEntry: { id in Task { await viewModel.deleteEntry(id) } }
+            )
+
+            MealSectionView(
+                meal: .lunch,
+                entries: viewModel.lunchEntries,
+                onAddFood: { viewModel.openSearch(forMeal: .lunch) },
+                onEditEntry: { viewModel.editEntry($0) },
+                onDeleteEntry: { id in Task { await viewModel.deleteEntry(id) } }
+            )
+
+            MealSectionView(
+                meal: .dinner,
+                entries: viewModel.dinnerEntries,
+                onAddFood: { viewModel.openSearch(forMeal: .dinner) },
+                onEditEntry: { viewModel.editEntry($0) },
+                onDeleteEntry: { id in Task { await viewModel.deleteEntry(id) } }
+            )
+
+            MealSectionView(
+                meal: .snack,
+                entries: viewModel.snackEntries,
+                onAddFood: { viewModel.openSearch(forMeal: .snack) },
+                onEditEntry: { viewModel.editEntry($0) },
+                onDeleteEntry: { id in Task { await viewModel.deleteEntry(id) } }
+            )
         }
     }
 }
