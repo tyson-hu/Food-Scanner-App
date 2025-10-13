@@ -3,12 +3,6 @@ included:
   - "Tests"
 
 excluded:
-  - "Sources/Platform/Shared/Config"
-  - "Sources/Platform/iOS/App/Resources"
-  - "Sources/Platform/iOS/App/Assets.xcassets"
-  - "Sources/Platform/iOS/App/AppIcon.icon"
-  - "Sources/Platform/iOS/App/PrivacyInfo.xcprivacy"
-  - "Sources/Platform/iOS/App/Samples"
   - "DerivedData"
   - ".build"
   - "**/*.generated.swift"
