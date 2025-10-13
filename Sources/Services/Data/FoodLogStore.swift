@@ -57,6 +57,8 @@ actor FoodLogStore {
             carbs: dto.carbs,
             nutrientsSnapshot: dto.nutrientsSnapshot
         )
+        // Preserve the intended date from the DTO
+        entry.date = dto.date
         context.insert(entry)
         try context.save()
     }
