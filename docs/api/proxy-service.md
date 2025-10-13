@@ -272,7 +272,7 @@ case let .proxyError(errorResponse):
 ProxyError.proxyError(ProxyApiError) 
     ↓ (FoodDataClientAdapter)
 FoodDataError.customError(String)
-    ↓ (AddFoodSummaryViewModel)
+    ↓ (FoodViewModel)
 error.localizedDescription
     ↓ (UI)
 User sees specific error message

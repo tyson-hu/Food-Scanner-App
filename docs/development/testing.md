@@ -193,7 +193,7 @@ xcodebuild test \
 @Test func testSearchViewModel() async throws {
     // Arrange
     let mockClient = MockFoodDataClient()
-    let viewModel = AddFoodSearchViewModel(client: mockClient)
+    let viewModel = FoodSearchViewModel(client: mockClient)
     
     // Act
     await viewModel.searchFoods(query: "apple")
@@ -339,7 +339,7 @@ func createMockSearchResult() -> SearchResult {
     // Arrange
     let mockClient = MockFoodDataClient()
     mockClient.shouldThrowError = FoodDataError.networkUnavailable
-    let viewModel = AddFoodSearchViewModel(client: mockClient)
+    let viewModel = FoodSearchViewModel(client: mockClient)
     
     // Act
     await viewModel.searchFoods(query: "apple")
@@ -354,7 +354,7 @@ func createMockSearchResult() -> SearchResult {
 ```swift
 @Test func testInvalidInput() async throws {
     // Arrange
-    let viewModel = AddFoodSearchViewModel()
+    let viewModel = FoodSearchViewModel()
     
     // Act
     await viewModel.searchFoods(query: "")

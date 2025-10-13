@@ -25,7 +25,6 @@ Calry/
 │   │   │   │   ├── AddFoodLogPayload.swift      # Logging payload model
 │   │   │   │   └── AnyCodable.swift             # Dynamic JSON handling
 │   │   │   ├── FDC/                    # 🇺🇸 USDA Food Data Central
-│   │   │   │   ├── FDCFoodDetailModels.swift    # FDC food detail models
 │   │   │   │   ├── FDCNutrientModels.swift      # FDC nutrient models
 │   │   │   │   ├── FDCLegacyModels.swift         # Legacy FDC compatibility
 │   │   │   │   └── Converters/                   # 🔄 FDC-specific converters

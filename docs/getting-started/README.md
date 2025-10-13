@@ -141,7 +141,7 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 - **`LoggedFoodRepository.swift`**: Database operations
 
 ### ViewModels
-- **`AddFoodSearchViewModel.swift`**: Search functionality
+- **`FoodSearchViewModel.swift`**: Search functionality
 - **`BarcodeScannerViewModel.swift`**: Scanner logic
 - **`TodayViewModel.swift`**: Daily tracking
 

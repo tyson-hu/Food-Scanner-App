@@ -56,7 +56,7 @@ MVVM separates the app into three distinct layers:
 **Example Structure**:
 ```swift
 struct AddFoodSearchView: View {
-    @State private var viewModel = AddFoodSearchViewModel()
+    @State private var viewModel = FoodSearchViewModel()
     
     var body: some View {
         // UI implementation
@@ -83,7 +83,7 @@ struct AddFoodSearchView: View {
 ```swift
 @MainActor
 @Observable
-final class AddFoodSearchViewModel {
+final class FoodSearchViewModel {
     var searchResults: [FoodCard] = []
     var isLoading: Bool = false
     var errorMessage: String?
@@ -97,7 +97,7 @@ final class AddFoodSearchViewModel {
 ```
 
 **Key Files**:
-- `Sources/ViewModels/AddFood/AddFoodSearchViewModel.swift`
+- `Sources/ViewModels/AddFood/FoodSearchViewModel.swift`
 - `Sources/ViewModels/Scanner/BarcodeScannerViewModel.swift`
 - `Sources/ViewModels/Today/TodayViewModel.swift`
 
@@ -195,7 +195,7 @@ class ViewModel {
 ```swift
 @Test func testSearchFunctionality() async {
     let mockClient = MockFoodDataClient()
-    let viewModel = AddFoodSearchViewModel(client: mockClient)
+    let viewModel = FoodSearchViewModel(client: mockClient)
     
     await viewModel.searchFoods(query: "apple")
     

@@ -360,7 +360,7 @@ private func convertProxyErrorToFoodDataError(_ error: ProxyError) -> FoodDataEr
 ```
 
 ### User-Facing Error Display
-**Location**: `AddFoodSummaryViewModel.swift`
+**Location**: `FoodViewModel.swift`
 ```swift
 // Displays specific error messages to users
 catch {
