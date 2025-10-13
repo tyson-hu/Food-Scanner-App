@@ -17,6 +17,7 @@ struct PortionSheetView: View {
     let onComplete: () async -> Void
 
     init(
+        mode: PortionSheetMode,
         foodGID: String,
         meal: Meal,
         store: FoodLogStore,
@@ -24,6 +25,7 @@ struct PortionSheetView: View {
         onComplete: @escaping () async -> Void
     ) {
         _viewModel = State(initialValue: PortionSheetViewModel(
+            mode: mode,
             foodGID: foodGID,
             meal: meal,
             store: store,
@@ -47,16 +49,16 @@ struct PortionSheetView: View {
                     portionContent
                 }
             }
-            .navigationTitle("Add to \(viewModel.meal.displayName)")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button(actionTitle) {
                         Task {
-                            await viewModel.logEntry()
+                            await viewModel.saveEntry()
                             await onComplete()
                             dismiss()
                         }
@@ -66,6 +68,24 @@ struct PortionSheetView: View {
         }
         .task {
             await viewModel.load()
+        }
+    }
+
+    private var navigationTitle: String {
+        switch viewModel.mode {
+        case .add:
+            "Add to \(viewModel.meal.displayName)"
+        case .edit:
+            "Edit Entry"
+        }
+    }
+
+    private var actionTitle: String {
+        switch viewModel.mode {
+        case .add:
+            "Add"
+        case .edit:
+            "Save"
         }
     }
 
@@ -177,6 +197,7 @@ struct PortionSheetView: View {
     let repository = FoodLogRepositorySwiftData(store: store)
 
     return PortionSheetView(
+        mode: .add,
         foodGID: "sample-gid",
         meal: .lunch,
         store: store,

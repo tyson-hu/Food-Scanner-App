@@ -119,6 +119,7 @@ struct TodayView: View {
             }
         case let .portion(foodGID, meal):
             PortionSheetView(
+                mode: .add,
                 foodGID: foodGID,
                 meal: meal,
                 store: viewModel.store,
@@ -128,9 +129,30 @@ struct TodayView: View {
                 }
             )
         case let .editEntry(entryId):
-            Text("Edit entry: \(entryId)")
-                .navigationTitle("Edit Entry")
-                .navigationBarTitleDisplayMode(.inline)
+            editEntrySheet(entryId: entryId, viewModel: viewModel)
+        }
+    }
+
+    @ViewBuilder
+    private func editEntrySheet(entryId: UUID, viewModel: TodayViewModel) -> some View {
+        if let entry = viewModel.entries.first(where: { $0.id == entryId }),
+           let foodGID = entry.foodGID {
+            PortionSheetView(
+                mode: .edit(entryId: entryId),
+                foodGID: foodGID,
+                meal: entry.meal,
+                store: viewModel.store,
+                repository: viewModel.repository,
+                onComplete: {
+                    await viewModel.load()
+                }
+            )
+        } else {
+            ContentUnavailableView(
+                "Entry Not Found",
+                systemImage: "exclamationmark.triangle",
+                description: Text("The selected entry could not be found.")
+            )
         }
     }
 }
