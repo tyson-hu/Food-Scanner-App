@@ -59,6 +59,9 @@ struct TodayView: View {
         .task {
             await viewModel.loadQuickAdd()
         }
+        .sheet(item: $bindableVM.activeSheet) { route in
+            sheetContent(for: route, viewModel: viewModel)
+        }
     }
 
     @ViewBuilder
@@ -95,6 +98,33 @@ struct TodayView: View {
                 onEditEntry: { viewModel.editEntry($0) },
                 onDeleteEntry: { id in Task { await viewModel.deleteEntry(id) } }
             )
+        }
+    }
+
+    @ViewBuilder
+    private func sheetContent(for route: SheetRoute, viewModel: TodayViewModel) -> some View {
+        switch route {
+        case let .search(meal, onSelect):
+            NavigationStack {
+                FoodSearchView(onSelect: onSelect)
+                    .navigationTitle("Add to \(meal.displayName)")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") {
+                                viewModel.activeSheet = nil
+                            }
+                        }
+                    }
+            }
+        case let .portion(foodGID, meal):
+            Text("Portion sheet: \(foodGID) → \(meal.displayName)")
+                .navigationTitle("Add to \(meal.displayName)")
+                .navigationBarTitleDisplayMode(.inline)
+        case let .editEntry(entryId):
+            Text("Edit entry: \(entryId)")
+                .navigationTitle("Edit Entry")
+                .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
