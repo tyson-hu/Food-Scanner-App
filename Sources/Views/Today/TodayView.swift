@@ -42,11 +42,22 @@ struct TodayView: View {
                     totals: viewModel.totals,
                     onAddFood: { viewModel.openSearch(forMeal: .lunch) }
                 )
+
+                QuickAddGridView(
+                    recentFoods: viewModel.recentFoods,
+                    favoriteFoods: viewModel.favoriteFoods,
+                    foodNames: viewModel.foodNames,
+                    onSelect: { gid, meal in viewModel.quickAdd(foodGID: gid, meal: meal) }
+                )
+
                 mealSections(viewModel)
             }
         }
         .task(id: viewModel.currentDate) {
             await viewModel.load()
+        }
+        .task {
+            await viewModel.loadQuickAdd()
         }
     }
 
