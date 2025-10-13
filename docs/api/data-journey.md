@@ -34,7 +34,7 @@ This document traces the complete journey of food data from raw API responses to
 ## 🚀 Journey Stages
 
 ### Stage 1: Raw Data Fetching
-**Location**: `Sources/Services/External/Networking/ProxyClient.swift`
+**Location**: `Sources/Services/Networking/ProxyClient.swift`
 
 The journey begins with HTTP requests to the calry.org proxy service.
 
@@ -201,7 +201,7 @@ private func determineCompleteness(hasNutrients: Bool, hasServing: Bool, ...) ->
 ---
 
 ### Stage 6: Model Conversion
-**Location**: `Sources/Services/External/Networking/FoodDataConverter.swift`
+**Location**: `Sources/Services/Networking/FoodDataConverter.swift`
 
 Internal normalized data gets converted to public API models for UI consumption.
 

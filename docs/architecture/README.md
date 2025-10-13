@@ -78,7 +78,7 @@ The Calry app follows a clean iOS-focused MVVM architecture with clear separatio
 
 ## 🎯 Component Responsibilities
 
-### 📱 UI Layer (`Sources/UI/`)
+### 📱 UI Layer (`Sources/Views/`)
 **Responsibility**: User interface and user interaction
 - **Screens**: Complete screen implementations
 - **Components**: Reusable UI components

@@ -43,7 +43,7 @@ MVVM separates the app into three distinct layers:
 
 ## 🏗️ Implementation Details
 
-### 📱 **View Layer** (`Sources/UI/`)
+### 📱 **View Layer** (`Sources/Views/`)
 
 **Responsibility**: User interface and user interaction
 

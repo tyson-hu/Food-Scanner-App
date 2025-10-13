@@ -120,7 +120,7 @@ SwiftLint enforces code style and conventions:
 swiftlint
 
 # Run SwiftLint with specific file
-swiftlint Sources/Models/API/FDC/FDCFoodDetailModels.swift
+swiftlint Sources/Models/API/FDC/FDCNutrientModels.swift
 
 # Run SwiftLint with auto-fix
 swiftlint --fix
@@ -143,7 +143,7 @@ swiftformat --dryrun .
 swiftformat .
 
 # Format specific file
-swiftformat Sources/Models/API/FDC/FDCFoodDetailModels.swift
+swiftformat Sources/Models/API/FDC/FDCNutrientModels.swift
 
 # Check formatting (lint mode)
 swiftformat --lint .
