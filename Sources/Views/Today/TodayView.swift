@@ -51,6 +51,8 @@ struct TodayView: View {
                 )
 
                 mealSections(viewModel)
+
+                DayTotalsView(totals: viewModel.totals)
             }
         }
         .task(id: viewModel.currentDate) {

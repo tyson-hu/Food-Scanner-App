@@ -143,12 +143,14 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 ### ViewModels
 - **`FoodSearchViewModel.swift`**: Search functionality
 - **`BarcodeScannerViewModel.swift`**: Scanner logic
-- **`TodayViewModel.swift`**: Daily tracking
+- **`TodayViewModel.swift`**: Daily tracking and meal management
+- **`PortionSheetViewModel.swift`**: Live portion selection with nutrient preview
 
 ### Views
 - **`AddFoodHomeView.swift`**: Main add food screen
 - **`BarcodeScannerView.swift`**: Scanner interface
-- **`TodayView.swift`**: Daily nutrition view
+- **`TodayView.swift`**: Complete daily nutrition dashboard
+- **`PortionSheetView.swift`**: Advanced portion selection with live preview
 
 ## 🔍 Debugging Tips
 

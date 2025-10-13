@@ -16,6 +16,7 @@ public struct DVConstants: Sendable {
     public static let saturatedFat: Double = 20 // g
     public static let carbs: Double = 275 // g
     public static let fiber: Double = 28 // g
+    public static let addedSugars: Double = 50 // g
     public static let sodium: Double = 2_300 // mg
     public static let cholesterol: Double = 300 // mg
 }
@@ -55,28 +56,38 @@ public struct DVCalculator: Sendable {
     }
 
     private static func getDVConstant(for nutrient: String) -> Double? {
-        switch nutrient {
-        case "energy", "calories", "kcal":
+        // Macronutrients
+        if ["energy", "calories", "kcal"].contains(nutrient) {
             return DVConstants.energy
-        case "protein":
-            return DVConstants.protein
-        case "fat", "total fat":
-            return DVConstants.fat
-        case "saturated fat", "saturatedfat":
-            return DVConstants.saturatedFat
-        case "carbs", "carbohydrate", "carbohydrates", "total carbohydrate":
-            return DVConstants.carbs
-        case "fiber", "dietary fiber":
-            return DVConstants.fiber
-        case "sodium":
-            return DVConstants.sodium
-        case "cholesterol":
-            return DVConstants.cholesterol
-        // Nutrients without established DV values
-        case "sugars", "total sugars", "added sugars", "addedsugars":
-            return nil
-        default:
-            return nil
         }
+        if nutrient == "protein" {
+            return DVConstants.protein
+        }
+        if ["fat", "total fat"].contains(nutrient) {
+            return DVConstants.fat
+        }
+        if ["saturated fat", "saturatedfat"].contains(nutrient) {
+            return DVConstants.saturatedFat
+        }
+        if ["carbs", "carbohydrate", "carbohydrates", "total carbohydrate"].contains(nutrient) {
+            return DVConstants.carbs
+        }
+
+        // Micronutrients
+        if ["fiber", "dietary fiber"].contains(nutrient) {
+            return DVConstants.fiber
+        }
+        if ["added sugars", "addedsugars"].contains(nutrient) {
+            return DVConstants.addedSugars
+        }
+        if nutrient == "sodium" {
+            return DVConstants.sodium
+        }
+        if nutrient == "cholesterol" {
+            return DVConstants.cholesterol
+        }
+
+        // Nutrients without established DV values
+        return nil
     }
 }

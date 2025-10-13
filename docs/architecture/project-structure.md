@@ -52,9 +52,15 @@ Calry/
 │   │   │       │   │   └── FDCNormalizer.swift             # FDC-specific normalizer
 │   │   │       │   └── OFF/            # 🌍 OFF normalization
 │   │   │       │       └── OFFNormalizer.swift             # OFF-specific normalizer
-│   │   │       └── Utilities/          # 🛠️ Unit conversion utilities
-│   │   │           ├── UnitConversion.swift                # Unit conversion
-│   │   │           └── ProductSourceDetection.swift        # Source detection
+│   │   │       ├── Utilities/          # 🛠️ Unit conversion utilities
+│   │   │       │   ├── UnitConversion.swift                # Unit conversion
+│   │   │       │   ├── PortionResolver.swift               # Portion-to-grams conversion
+│   │   │       │   ├── SnapshotNutrientCalculator.swift    # Live nutrient calculation
+│   │   │       │   ├── SnapshotNutrientCalculator+Validation.swift # Unit validation
+│   │   │       │   ├── DVCalculator.swift                  # Daily Value calculations
+│   │   │       │   └── ProductSourceDetection.swift        # Source detection
+│   │   │       └── Store/              # 🗄️ Data store
+│   │   │           └── FoodLogStore.swift                 # SwiftData store actor
 │   │   ├── Internal/                   # 🔧 Internal services
 │   │   │   └── APIConfiguration.swift                     # API configuration service
 │   │   └── Networking/                 # 🌍 Network services
@@ -74,9 +80,12 @@ Calry/
 │   │   ├── Scanner/                    # 📷 Barcode scanning
 │   │   │   └── BarcodeScannerViewModel.swift          # Scanner logic
 │   │   ├── Today/                     # 📅 Today view
-│   │   │   └── TodayViewModel.swift                   # Today view logic
+│   │   │   ├── TodayViewModel.swift                   # Today view logic
+│   │   │   └── PortionSheetViewModel.swift            # Portion selection logic
 │   │   └── PhotoIntake/               # 📸 Photo recognition
 │   │       └── PhotoIntakeViewModel.swift             # Photo processing
+│   ├── Navigation/                     # 🧭 Navigation
+│   │   └── SheetRoute.swift                           # Sheet navigation routing
 │   └── Views/                          # 🎨 SwiftUI Views
 │       ├── AddFood/                    # ➕ Add food screens
 │       │   ├── AddFoodHomeView.swift                  # Add food home screen
@@ -92,14 +101,25 @@ Calry/
 │       ├── Scanner/                    # 📷 Scanner screens (legacy)
 │       │   └── BarcodeScannerView.swift                # Scanner screen
 │       ├── Today/                     # 📅 Today screens
-│       │   └── TodayView.swift                        # Today view screen
+│       │   ├── TodayView.swift                        # Main Today view screen
+│       │   ├── TodayHeaderView.swift                 # Date navigation header
+│       │   ├── TodaySummaryView.swift                # Calorie ring and macros
+│       │   ├── MealSectionView.swift                 # Meal-specific entry display
+│       │   ├── FoodEntryRowView.swift                # Individual food entry row
+│       │   ├── QuickAddGridView.swift                # Recent/favorite foods grid
+│       │   ├── PortionSheetView.swift                # Portion selection sheet
+│       │   └── DayTotalsView.swift                   # Daily nutrition totals
 │       ├── Settings/                  # ⚙️ Settings screens
 │       │   └── SettingsView.swift                     # Settings screen
 │       ├── Profile/                   # 👤 Profile screens
 │       │   └── ProfileView.swift                      # Profile screen
 │       └── Design/                     # 🎨 Design system
+│           ├── AppTheme.swift                          # Design system (colors, typography, spacing)
 │           └── Components/             # 🧩 UI components
-│               └── UnsupportedProductView.swift        # Unsupported product UI
+│               ├── SectionHeaderView.swift              # Section headers
+│               ├── CalorieRingView.swift                # Calorie progress ring
+│               ├── PrimaryButton.swift                  # Primary action button
+│               └── UnsupportedProductView.swift          # Unsupported product UI
 ├── Tests/                              # 🧪 Test code
 │   ├── Unit/                           # 🔬 Unit tests (CI-friendly)
 │   │   ├── Models/                     # 📋 Model tests
