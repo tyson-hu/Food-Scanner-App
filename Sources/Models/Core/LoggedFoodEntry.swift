@@ -29,10 +29,10 @@ public final class FoodEntry {
     var nutrientsSnapshot: [String: Double] = [:] // totals computed at log time
 
     // NEW FIELDS FOR 0.4.0
-    public var kind = EntryKind.catalog
+    public var kind: EntryKind = Calry.EntryKind.catalog
     public var foodGID: String? // Link to FoodRef
     public var customName: String? // For manual entries
-    public var meal = Meal.lunch // Default meal
+    public var meal: Meal = Calry.Meal.lunch // Default meal
     public var gramsResolved: Double? // Actual grams when known
     public var note: String? // Optional user note
 
