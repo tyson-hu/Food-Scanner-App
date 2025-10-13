@@ -2,11 +2,11 @@
 
 ## 🏗️ Build Configuration
 
-This document explains the build process and configuration for the Food Scanner iOS app.
+This document explains the build process and configuration for the Calry iOS app.
 
 ## 🎯 Build Overview
 
-The Food Scanner app uses a robust build system with offline mode support for reliable CI/CD pipelines.
+The Calry app uses a robust build system with offline mode support for reliable CI/CD pipelines.
 
 ### Key Features
 - **Offline Mode**: No network dependencies during CI builds
@@ -33,9 +33,9 @@ ENABLE_BITCODE = NO
 ```
 
 ### Build Schemes
-- **Food Scanner**: Main app scheme
-- **Food Scanner Tests**: Test scheme
-- **Food Scanner UI Tests**: UI test scheme
+- **Calry**: Main app scheme
+- **Calry Tests**: Test scheme
+- **Calry UI Tests**: UI test scheme
 
 ## 🚀 Build Process
 
@@ -66,25 +66,25 @@ swiftformat .
 ### 3. **Build Steps**
 ```bash
 # Clean build
-xcodebuild clean -scheme "Food Scanner"
+xcodebuild clean -scheme "Calry"
 
 # Build for simulator (with warning filtering)
 ./scripts/build-without-appintents-warning.sh
 
 # Or build directly
-xcodebuild build -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16"
+xcodebuild build -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16"
 
 # Build for device
-xcodebuild build -scheme "Food Scanner" -destination "generic/platform=iOS"
+xcodebuild build -scheme "Calry" -destination "generic/platform=iOS"
 ```
 
 ### 4. **Test Execution**
 ```bash
 # Run unit tests
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16" -testPlan "FoodScanner"
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16" -testPlan "Calry"
 
 # Run CI offline tests
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16" -testPlan "FoodScanner-CI-Offline"
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16" -testPlan "Calry-CI-Offline"
 ```
 
 ## 🔧 Build Scripts
@@ -120,7 +120,7 @@ SwiftLint enforces code style and conventions:
 swiftlint
 
 # Run SwiftLint with specific file
-swiftlint Sources/Models/API/FDC/FDCFoodDetailModels.swift
+swiftlint Sources/Models/API/FDC/FDCNutrientModels.swift
 
 # Run SwiftLint with auto-fix
 swiftlint --fix
@@ -143,7 +143,7 @@ swiftformat --dryrun .
 swiftformat .
 
 # Format specific file
-swiftformat Sources/Models/API/FDC/FDCFoodDetailModels.swift
+swiftformat Sources/Models/API/FDC/FDCNutrientModels.swift
 
 # Check formatting (lint mode)
 swiftformat --lint .
@@ -161,14 +161,14 @@ swiftlint && swiftformat --lint .
 
 ## 🧪 Test Plans
 
-### FoodScanner.xctestplan
+### Calry.xctestplan
 **Full test coverage including network tests**
 - Unit tests for all components
 - Integration tests with real API calls
 - UI tests for user interface flows
 - Performance tests for critical paths
 
-### FoodScanner-CI-Offline.xctestplan
+### Calry-CI-Offline.xctestplan
 **CI-optimized offline test plan**
 - Unit tests with mocked services
 - Integration tests with mock data
@@ -191,9 +191,9 @@ xcrun simctl install $SIMULATOR_ID /path/to/app
 
 # Run tests
 xcodebuild test \
-  -scheme "Food Scanner" \
+  -scheme "Calry" \
   -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
-  -testPlan "FoodScanner-CI-Offline" \
+  -testPlan "Calry-CI-Offline" \
   -derivedDataPath $DERIVED_DATA_PATH \
   -resultBundlePath ./TestResults.xcresult
 ```
@@ -204,16 +204,16 @@ xcodebuild test \
 # simulator-manager.sh
 
 # Create simulator
-xcrun simctl create "Food Scanner Test" "iPhone 16" "iOS 26.0"
+xcrun simctl create "Calry Test" "iPhone 16" "iOS 26.0"
 
 # Boot simulator
-xcrun simctl boot "Food Scanner Test"
+xcrun simctl boot "Calry Test"
 
 # Install app
-xcrun simctl install "Food Scanner Test" /path/to/app
+xcrun simctl install "Calry Test" /path/to/app
 
 # Run tests
-xcrun simctl launch "Food Scanner Test" com.foodscanner.app
+xcrun simctl launch "Calry Test" com.foodscanner.app
 ```
 
 ## 🚨 Error Handling
@@ -277,10 +277,10 @@ jobs:
           swiftformat --lint .
       
       - name: Build
-        run: xcodebuild build -scheme "Food Scanner"
+        run: xcodebuild build -scheme "Calry"
       
       - name: Test
-        run: xcodebuild test -scheme "Food Scanner" -testPlan "FoodScanner-CI-Offline"
+        run: xcodebuild test -scheme "Calry" -testPlan "Calry-CI-Offline"
 ```
 
 ### Security Scanning
@@ -330,4 +330,4 @@ jobs:
 - **Monitor resource usage** during builds
 - **Clean up** build artifacts regularly
 
-This build process ensures reliable, efficient builds and testing for the Food Scanner app.
+This build process ensures reliable, efficient builds and testing for the Calry app.

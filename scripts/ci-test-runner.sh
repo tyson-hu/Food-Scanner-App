@@ -41,21 +41,21 @@ grant_permissions() {
     log_info "Granting permissions to prevent test interruptions..."
     
     # Grant camera permission
-    if xcrun simctl privacy "$udid" grant camera tysonhu.foodscanner 2>/dev/null; then
+    if xcrun simctl privacy "$udid" grant camera app.tysonhu.calry 2>/dev/null; then
         log_info "Camera permission granted"
     else
         log_warning "Failed to grant camera permission"
     fi
     
     # Grant photo library permission
-    if xcrun simctl privacy "$udid" grant photos tysonhu.foodscanner 2>/dev/null; then
+    if xcrun simctl privacy "$udid" grant photos app.tysonhu.calry 2>/dev/null; then
         log_info "Photo library permission granted"
     else
         log_warning "Failed to grant photo library permission"
     fi
     
     # Grant microphone permission (in case it's needed)
-    if xcrun simctl privacy "$udid" grant microphone tysonhu.foodscanner 2>/dev/null; then
+    if xcrun simctl privacy "$udid" grant microphone app.tysonhu.calry 2>/dev/null; then
         log_info "Microphone permission granted"
     else
         log_warning "Failed to grant microphone permission"
@@ -188,8 +188,8 @@ run_tests_with_monitoring() {
     # Filter out AppIntents metadata extraction warning that's harmless but CI-blocking
     (
         xcodebuild \
-            -scheme "Food Scanner" \
-            -testPlan "FoodScanner-CI-Offline" \
+            -scheme "Calry" \
+            -testPlan "Calry-CI-Offline" \
             -destination "id=$dest_id" \
             -destination-timeout 60 \
             -derivedDataPath "$derived_data_path" \
@@ -202,7 +202,7 @@ run_tests_with_monitoring() {
             -skipPackagePluginValidation \
             -skipMacroValidation \
             -disableAutomaticPackageResolution \
-            -skip-testing:FoodScannerUITests \
+            -skip-testing:CalryUITests \
             -parallel-testing-enabled NO \
             -maximum-concurrent-test-simulator-destinations 1 \
             -test-timeouts-enabled YES \
@@ -255,7 +255,9 @@ run_tests_with_monitoring() {
     
     # Count tests for monitoring
     local test_count=$(grep -c "◇ Test.*started" "$log_file" 2>/dev/null || echo "0")
-    if [ "$test_count" -gt 0 ] && [ $((test_count % 10)) -eq 0 ]; then
+    test_count=${test_count:-0}  # Ensure it's not empty
+    # Validate test_count is a number before arithmetic operations
+    if [[ "$test_count" =~ ^[0-9]+$ ]] && [ "$test_count" -gt 0 ] && [ $((test_count % 10)) -eq 0 ]; then
         log_info "Tests started so far: $test_count"
     fi
             

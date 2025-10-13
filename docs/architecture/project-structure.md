@@ -2,15 +2,15 @@
 
 ## 🏗️ Current Project Organization
 
-The Food Scanner app follows a clean iOS-focused MVVM architecture with clear separation of concerns. This document provides a detailed tree map of the current project structure.
+The Calry app follows a clean iOS-focused MVVM architecture with clear separation of concerns, enhanced with comprehensive food logging capabilities. This document provides a detailed tree map of the current project structure.
 
 ## 📁 Complete Project Structure
 
 ```
-Food Scanner/
+Calry/
 ├── Sources/                           # 📱 All source code
 │   ├── App/                           # 🚀 App configuration
-│   │   ├── FoodScannerApp.swift                       # Main app entry point
+│   │   ├── CalryApp.swift                       # Main app entry point
 │   │   ├── RootView.swift                             # Root view controller
 │   │   ├── AppEnvironment.swift                       # Dependency injection
 │   │   ├── AppLaunchEnvironment.swift                 # Launch environment
@@ -25,7 +25,6 @@ Food Scanner/
 │   │   │   │   ├── AddFoodLogPayload.swift      # Logging payload model
 │   │   │   │   └── AnyCodable.swift             # Dynamic JSON handling
 │   │   │   ├── FDC/                    # 🇺🇸 USDA Food Data Central
-│   │   │   │   ├── FDCFoodDetailModels.swift    # FDC food detail models
 │   │   │   │   ├── FDCNutrientModels.swift      # FDC nutrient models
 │   │   │   │   ├── FDCLegacyModels.swift         # Legacy FDC compatibility
 │   │   │   │   └── Converters/                   # 🔄 FDC-specific converters
@@ -53,9 +52,15 @@ Food Scanner/
 │   │   │       │   │   └── FDCNormalizer.swift             # FDC-specific normalizer
 │   │   │       │   └── OFF/            # 🌍 OFF normalization
 │   │   │       │       └── OFFNormalizer.swift             # OFF-specific normalizer
-│   │   │       └── Utilities/          # 🛠️ Unit conversion utilities
-│   │   │           ├── UnitConversion.swift                # Unit conversion
-│   │   │           └── ProductSourceDetection.swift        # Source detection
+│   │   │       ├── Utilities/          # 🛠️ Unit conversion utilities
+│   │   │       │   ├── UnitConversion.swift                # Unit conversion
+│   │   │       │   ├── PortionResolver.swift               # Portion-to-grams conversion
+│   │   │       │   ├── SnapshotNutrientCalculator.swift    # Live nutrient calculation
+│   │   │       │   ├── SnapshotNutrientCalculator+Validation.swift # Unit validation
+│   │   │       │   ├── DVCalculator.swift                  # Daily Value calculations
+│   │   │       │   └── ProductSourceDetection.swift        # Source detection
+│   │   │       └── Store/              # 🗄️ Data store
+│   │   │           └── FoodLogStore.swift                 # SwiftData store actor
 │   │   ├── Internal/                   # 🔧 Internal services
 │   │   │   └── APIConfiguration.swift                     # API configuration service
 │   │   └── Networking/                 # 🌍 Network services
@@ -69,35 +74,52 @@ Food Scanner/
 │   │       └── FDCMock.swift                          # Mock client for testing
 │   ├── ViewModels/                     # 🧠 MVVM ViewModels
 │   │   ├── AddFood/                    # ➕ Add food flow
-│   │   │   ├── AddFoodSearchViewModel.swift           # Search functionality
-│   │   │   ├── AddFoodDetailViewModel.swift           # Detail view logic
-│   │   │   └── AddFoodSummaryViewModel.swift          # Summary and logging
+│   │   │   ├── FoodSearchViewModel.swift              # Search functionality
+│   │   │   ├── FoodDetailsViewModel.swift             # Detail view logic
+│   │   │   └── FoodViewModel.swift                    # Summary and logging
 │   │   ├── Scanner/                    # 📷 Barcode scanning
 │   │   │   └── BarcodeScannerViewModel.swift          # Scanner logic
 │   │   ├── Today/                     # 📅 Today view
-│   │   │   └── TodayViewModel.swift                   # Today view logic
+│   │   │   ├── TodayViewModel.swift                   # Today view logic
+│   │   │   └── PortionSheetViewModel.swift            # Portion selection logic
 │   │   └── PhotoIntake/               # 📸 Photo recognition
 │   │       └── PhotoIntakeViewModel.swift             # Photo processing
+│   ├── Navigation/                     # 🧭 Navigation
+│   │   └── SheetRoute.swift                           # Sheet navigation routing
 │   └── Views/                          # 🎨 SwiftUI Views
 │       ├── AddFood/                    # ➕ Add food screens
 │       │   ├── AddFoodHomeView.swift                  # Add food home screen
-│       │   ├── AddFoodSearchView.swift                # Search screen
-│       │   ├── AddFoodDetailView.swift                # Detail screen
-│       │   ├── AddFoodSummaryView.swift               # Summary screen
-│       │   └── BarcodeSearchResultsView.swift         # Barcode results
-│       ├── Scanner/                    # 📷 Scanner screens
+│       │   ├── FoodView.swift                         # Main food display (shared)
+│       │   ├── FoodDetailsView.swift                  # Detailed food display (shared)
+│       │   ├── Scanner/                               # 📷 Scanner screens
+│       │   │   ├── BarcodeScannerView.swift           # Scanner screen
+│       │   │   └── BarcodeSearchResultsView.swift     # Barcode results
+│       │   ├── PhotoIntake/                           # 📸 Photo recognition
+│       │   │   └── PhotoIntakeView.swift              # Photo intake screen
+│       │   └── Search/                                # 🔍 Text search
+│       │       └── FoodSearchView.swift               # Search screen
+│       ├── Scanner/                    # 📷 Scanner screens (legacy)
 │       │   └── BarcodeScannerView.swift                # Scanner screen
 │       ├── Today/                     # 📅 Today screens
-│       │   └── TodayView.swift                        # Today view screen
+│       │   ├── TodayView.swift                        # Main Today view screen
+│       │   ├── TodayHeaderView.swift                 # Date navigation header
+│       │   ├── TodaySummaryView.swift                # Calorie ring and macros
+│       │   ├── MealSectionView.swift                 # Meal-specific entry display
+│       │   ├── FoodEntryRowView.swift                # Individual food entry row
+│       │   ├── QuickAddGridView.swift                # Recent/favorite foods grid
+│       │   ├── PortionSheetView.swift                # Portion selection sheet
+│       │   └── DayTotalsView.swift                   # Daily nutrition totals
 │       ├── Settings/                  # ⚙️ Settings screens
 │       │   └── SettingsView.swift                     # Settings screen
 │       ├── Profile/                   # 👤 Profile screens
 │       │   └── ProfileView.swift                      # Profile screen
-│       ├── PhotoIntake/               # 📸 Photo recognition
-│       │   └── PhotoIntakeView.swift                  # Photo intake screen
 │       └── Design/                     # 🎨 Design system
+│           ├── AppTheme.swift                          # Design system (colors, typography, spacing)
 │           └── Components/             # 🧩 UI components
-│               └── UnsupportedProductView.swift        # Unsupported product UI
+│               ├── SectionHeaderView.swift              # Section headers
+│               ├── CalorieRingView.swift                # Calorie progress ring
+│               ├── PrimaryButton.swift                  # Primary action button
+│               └── UnsupportedProductView.swift          # Unsupported product UI
 ├── Tests/                              # 🧪 Test code
 │   ├── Unit/                           # 🔬 Unit tests (CI-friendly)
 │   │   ├── Models/                     # 📋 Model tests
@@ -112,16 +134,16 @@ Food Scanner/
 │   │   │           ├── FDCMockTests.swift                      # Mock tests
 │   │   │           └── FDCDISelectionTests.swift               # Selection tests
 │   │   ├── ViewModels/                 # 🧠 ViewModel tests
-│   │   │   ├── AddFoodSearchViewModelTests.swift               # Search tests
-│   │   │   ├── AddFoodDetailViewModelTests.swift               # Detail tests
+│   │   │   ├── FoodSearchViewModelTests.swift                  # Search tests
+│   │   │   ├── FoodDetailsViewModelTests.swift                 # Detail tests
 │   │   │   └── BarcodeScannerViewModelTests.swift              # Scanner tests
 │   │   ├── BaseUnitTests.swift                                 # Unit test base
-│   │   └── FoodScannerTests.swift                              # Main test file
+│   │   └── CalryTests.swift                              # Main test file
 │   └── UI/                             # 🎨 UI tests (Local only)
 │       ├── Screens/                    # 📱 Screen tests
 │       │   ├── AddFlowUITests.swift                             # Add flow tests
-│       │   ├── FoodScannerUITests.swift                         # Main UI tests
-│       │   └── FoodScannerUITestsLaunchTests.swift             # Launch tests
+│       │   ├── CalryUITests.swift                         # Main UI tests
+│       │   └── CalryUITestsLaunchTests.swift             # Launch tests
 │       └── BaseUITestCase.swift                                # UI test base
 ├── Resources/                          # 📦 App resources
 │   ├── Assets.xcassets/               # 🎨 Images and colors
@@ -139,9 +161,9 @@ Food Scanner/
 │   ├── simulator-manager.sh            # Simulator management
 │   └── test-local-network.sh          # Local network testing
 ├── docs/                               # 📚 Documentation
-├── Food Scanner.xcodeproj/             # 🏗️ Xcode project
-├── FoodScanner.xctestplan              # 🧪 Test plan
-├── FoodScanner-CI-Offline.xctestplan  # 🧪 CI offline test plan
+├── Calry.xcodeproj/             # 🏗️ Xcode project
+├── Calry.xctestplan              # 🧪 Test plan
+├── Calry-CI-Offline.xctestplan  # 🧪 CI offline test plan
 ├── Info.plist                          # ℹ️ App information
 └── README.md                           # 📋 Project overview
 ```
@@ -264,4 +286,4 @@ Tests/UI/ → Sources/Views/ → Sources/ViewModels/
 - **Easy to find** corresponding tests
 - **Clear separation** of test types
 
-This project structure provides a solid foundation for the Food Scanner app with clear organization, easy navigation, and maintainable design.
+This project structure provides a solid foundation for the Calry app with clear organization, easy navigation, and maintainable design.

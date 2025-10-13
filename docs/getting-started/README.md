@@ -11,7 +11,7 @@ getting-started/
 
 ## 🚀 Quick Start Guide
 
-Welcome to the Food Scanner iOS app! This guide will get you up and running quickly.
+Welcome to the Calry iOS app! This guide will get you up and running quickly.
 
 ## ⚡ 5-Minute Setup
 
@@ -24,8 +24,8 @@ Welcome to the Food Scanner iOS app! This guide will get you up and running quic
 ### 2. **Clone & Open** (1 minute)
 ```bash
 git clone <repository-url>
-cd "Food Scanner"
-open "Food Scanner.xcodeproj"
+cd "Calry"
+open "Calry.xcodeproj"
 ```
 
 ### 3. **Setup Local CI Environment** (2 minutes)
@@ -53,7 +53,6 @@ source .env.ci
 ### Data Sources
 - **🇺🇸 FDC**: USDA Food Data Central (comprehensive nutrition)
 - **🌍 OFF**: Open Food Facts (community data)
-- **💊 DSLD**: Dietary Supplement Label Database (future)
 
 ## 🏗️ Project Structure Overview
 
@@ -142,14 +141,16 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 - **`LoggedFoodRepository.swift`**: Database operations
 
 ### ViewModels
-- **`AddFoodSearchViewModel.swift`**: Search functionality
+- **`FoodSearchViewModel.swift`**: Search functionality
 - **`BarcodeScannerViewModel.swift`**: Scanner logic
-- **`TodayViewModel.swift`**: Daily tracking
+- **`TodayViewModel.swift`**: Daily tracking and meal management
+- **`PortionSheetViewModel.swift`**: Live portion selection with nutrient preview
 
 ### Views
 - **`AddFoodHomeView.swift`**: Main add food screen
 - **`BarcodeScannerView.swift`**: Scanner interface
-- **`TodayView.swift`**: Daily nutrition view
+- **`TodayView.swift`**: Complete daily nutrition dashboard
+- **`PortionSheetView.swift`**: Advanced portion selection with live preview
 
 ## 🔍 Debugging Tips
 
@@ -170,7 +171,7 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 
 ## 🚀 Ready to Go!
 
-You're now ready to start developing with the Food Scanner app! 
+You're now ready to start developing with the Calry app! 
 
 - **📖 [Installation Guide](installation.md)** for detailed setup
 - **🏗️ [Architecture Overview](../architecture/README.md)** for system understanding

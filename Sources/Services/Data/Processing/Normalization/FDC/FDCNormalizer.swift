@@ -1,6 +1,6 @@
 //
 //  FDCNormalizer.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -19,7 +19,7 @@ public struct FDCNormalizer {
 
     // MARK: - FDC Normalization
 
-    private func normalizeFDCData(_ envelope: FdcEnvelope, _ data: FdcFood) -> NormalizedFood {
+    private func normalizeFDCData(_ envelope: FdcEnvelope, _ data: FdcProduct) -> NormalizedFood {
         // Extract basic info
         let primaryName = data.description ?? "Unknown Food"
         let brand = data.brandName ?? data.brandOwner
@@ -105,7 +105,7 @@ public struct FDCNormalizer {
         )
     }
 
-    private func extractFDCServing(_ data: FdcFood) -> NormalizedServing? {
+    private func extractFDCServing(_ data: FdcProduct) -> NormalizedServing? {
         guard let servingSize = data.servingSize,
               let servingSizeUnit = data.servingSizeUnit else {
             return nil
@@ -123,7 +123,7 @@ public struct FDCNormalizer {
         )
     }
 
-    private func extractFDCPortions(_ data: FdcFood) -> [NormalizedPortion] {
+    private func extractFDCPortions(_ data: FdcProduct) -> [NormalizedPortion] {
         var portions: [NormalizedPortion] = []
 
         // Add serving portion if available
@@ -175,7 +175,7 @@ public struct FDCNormalizer {
         return portions
     }
 
-    private func normalizeFDCNutrients(_ data: FdcFood) -> [NormalizedNutrient] {
+    private func normalizeFDCNutrients(_ data: FdcProduct) -> [NormalizedNutrient] {
         var nutrients: [NormalizedNutrient] = []
 
         // Extract label nutrients (per-serving) and convert to per-100g
@@ -264,7 +264,7 @@ public struct FDCNormalizer {
 
     // MARK: - Helper Functions
 
-    private func extractServingGrams(_ data: FdcFood) -> Double? {
+    private func extractServingGrams(_ data: FdcProduct) -> Double? {
         guard let servingSize = data.servingSize,
               let servingSizeUnit = data.servingSizeUnit else {
             return nil
