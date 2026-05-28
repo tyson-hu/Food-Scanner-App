@@ -1,6 +1,6 @@
 //
 //  FoodDataConverter.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -74,8 +74,8 @@ public struct FoodDataConverter {
 
     // MARK: - Conversion to public models
 
-    func convertToFoodMinimalCard(_ normalizedFood: NormalizedFood) -> FoodMinimalCard {
-        FoodMinimalCard(
+    func convertToFoodCard(_ normalizedFood: NormalizedFood) -> FoodCard {
+        FoodCard(
             id: normalizedFood.gid,
             kind: normalizedFood.kind,
             code: normalizedFood.barcode,
@@ -95,8 +95,8 @@ public struct FoodDataConverter {
         )
     }
 
-    func convertToFoodAuthoritativeDetail(_ normalizedFood: NormalizedFood) -> FoodAuthoritativeDetail {
-        FoodAuthoritativeDetail(
+    func convertToFoodDetails(_ normalizedFood: NormalizedFood) -> FoodDetails {
+        FoodDetails(
             id: normalizedFood.gid,
             kind: normalizedFood.kind,
             code: normalizedFood.barcode,
@@ -109,7 +109,6 @@ public struct FoodDataConverter {
             portions: normalizedFood.portions.map { convertToFoodPortion($0) },
             densityGPerMl: normalizedFood.densityGPerMl,
             nutrients: normalizedFood.nutrients.map { convertToFoodNutrient($0) },
-            dsidPredictions: nil, // Not available in new architecture
             provenance: FoodProvenance(
                 source: convertToSourceTag(normalizedFood.source),
                 id: normalizedFood.gid,
@@ -118,7 +117,7 @@ public struct FoodDataConverter {
         )
     }
 
-    func convertToFDCFoodSummary(_ foodCard: FoodMinimalCard) -> FDCFoodSummary {
+    func convertToFDCFoodSummary(_ foodCard: FoodCard) -> FDCFoodSummary {
         FDCFoodSummary(
             id: extractFDCId(from: foodCard.id),
             name: foodCard.description ?? "Unknown Food",

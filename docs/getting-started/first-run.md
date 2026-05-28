@@ -2,7 +2,7 @@
 
 ## 🚀 Running the App for First Time
 
-This guide walks you through running the Food Scanner app for the first time and understanding its core features.
+This guide walks you through running the Calry app for the first time and understanding its core features.
 
 ## ⚡ Quick Start
 
@@ -64,7 +64,6 @@ This guide walks you through running the Food Scanner app for the first time and
 ### Supported Sources
 - **🇺🇸 FDC**: USDA Food Data Central (comprehensive nutrition)
 - **🌍 OFF**: Open Food Facts (community data)
-- **💊 DSLD**: Dietary Supplement Label Database (future)
 
 ### Data Quality
 - **FDC**: High quality, government data
@@ -184,4 +183,4 @@ If you've successfully:
 - ✅ **Added food to log**
 - ✅ **Viewed daily totals**
 
-You're ready to start developing with the Food Scanner app! The system is working correctly and you can begin exploring the codebase and adding new features.
+You're ready to start developing with the Calry app! The system is working correctly and you can begin exploring the codebase and adding new features.

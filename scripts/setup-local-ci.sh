@@ -128,13 +128,13 @@ check_build_settings() {
     log_info "Checking build settings..."
     
     # Check if project exists
-    if [[ ! -f "Food Scanner.xcodeproj/project.pbxproj" ]]; then
-        log_error "Food Scanner.xcodeproj not found. Run this script from the project root."
+    if [[ ! -f "Calry.xcodeproj/project.pbxproj" ]]; then
+        log_error "Calry.xcodeproj not found. Run this script from the project root."
         exit 1
     fi
     
     # Get build settings
-    local build_settings=$(xcodebuild -project "Food Scanner.xcodeproj" -scheme "Food Scanner" -configuration Debug -showBuildSettings 2>/dev/null || echo "")
+    local build_settings=$(xcodebuild -project "Calry.xcodeproj" -scheme "Calry" -configuration Debug -showBuildSettings 2>/dev/null || echo "")
     
     if [[ -z "$build_settings" ]]; then
         log_warning "Could not retrieve build settings. Make sure the scheme exists."

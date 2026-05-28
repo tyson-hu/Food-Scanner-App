@@ -1,6 +1,6 @@
 //
 //  LoggedFoodEntryBuilder.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -56,10 +56,144 @@ public struct FoodEntryBuilder {
         ).withDate(date)
     }
 
-    // MARK: - Builder from new API models
+    // MARK: - Builder from FoodRef (NEW)
+
+    public static func from(
+        foodRef: FoodRef,
+        quantity: Double,
+        unit: Unit,
+        meal: Meal,
+        at date: Date = .now
+    ) async -> FoodEntry {
+        // Extract nutrients from FoodRef
+        let nutrients: FoodLoggingNutrients = if let existingNutrients = foodRef.foodLoggingNutrients {
+            existingNutrients
+        } else {
+            FoodLoggingNutrients()
+        }
+
+        // Calculate snapshot nutrients using SnapshotNutrientCalculator
+        let params = SnapshotNutrientCalculator.CalculationParams(
+            quantity: quantity,
+            unit: unit,
+            gramsPerServing: foodRef.gramsPerServing,
+            densityGPerMl: nil, // FoodRef doesn't store density
+            householdUnits: foodRef.householdUnits
+        )
+        let snapshotNutrients = SnapshotNutrientCalculator.calculateSnapshot(
+            per100Nutrients: nutrients,
+            params: params
+        )
+
+        // Convert snapshot nutrients to legacy format for backward compatibility
+        let nutrientsSnapshot = [
+            "calories": snapshotNutrients.energyKcal,
+            "protein": snapshotNutrients.protein,
+            "fat": snapshotNutrients.fat,
+            "carbs": snapshotNutrients.carbs,
+            "fiber": snapshotNutrients.fiber,
+            "sugars": snapshotNutrients.sugars,
+            "sodium": snapshotNutrients.sodium,
+            "cholesterol": snapshotNutrients.cholesterol
+        ].compactMapValues { $0 }
+
+        // Calculate resolved quantity using PortionResolver
+        let resolvedGrams = PortionResolver.resolveToGrams(
+            quantity: quantity,
+            unit: unit,
+            gramsPerServing: foodRef.gramsPerServing,
+            densityGPerMl: nil,
+            householdUnits: foodRef.householdUnits
+        ) ?? quantity * 100.0 // Fallback to 100g per serving
+
+        return FoodEntry(
+            kind: .catalog,
+            name: foodRef.name,
+            meal: meal,
+            quantity: quantity,
+            unit: unit.displayName,
+            foodGID: foodRef.gid,
+            customName: nil,
+            gramsResolved: resolvedGrams,
+            note: nil,
+            snapEnergyKcal: snapshotNutrients.energyKcal,
+            snapProtein: snapshotNutrients.protein,
+            snapFat: snapshotNutrients.fat,
+            snapSaturatedFat: snapshotNutrients.saturatedFat,
+            snapCarbs: snapshotNutrients.carbs,
+            snapFiber: snapshotNutrients.fiber,
+            snapSugars: snapshotNutrients.sugars,
+            snapAddedSugars: snapshotNutrients.addedSugars,
+            snapSodium: snapshotNutrients.sodium,
+            snapCholesterol: snapshotNutrients.cholesterol,
+            brand: foodRef.brand,
+            fdcId: extractFdcId(from: foodRef.gid),
+            servingDescription: formatServingDescription(quantity: quantity, unit: unit),
+            resolvedToBase: resolvedGrams,
+            baseUnit: "g", // Always resolve to grams
+            calories: snapshotNutrients.energyKcal ?? 0.0,
+            protein: snapshotNutrients.protein ?? 0.0,
+            fat: snapshotNutrients.fat ?? 0.0,
+            carbs: snapshotNutrients.carbs ?? 0.0,
+            nutrientsSnapshot: nutrientsSnapshot
+        ).withDate(date)
+    }
+
+    // MARK: - Manual Entry Builder (NEW)
+
+    public nonisolated static func manual(
+        name: String,
+        energyKcal: Double,
+        meal: Meal,
+        protein: Double? = nil,
+        fat: Double? = nil,
+        carbs: Double? = nil,
+        at date: Date = .now
+    ) -> FoodEntry {
+        // Create nutrients snapshot for manual entry
+        let nutrientsSnapshot = [
+            "calories": energyKcal,
+            "protein": protein,
+            "fat": fat,
+            "carbs": carbs
+        ].compactMapValues { $0 }
+
+        return FoodEntry(
+            kind: .manual,
+            name: name,
+            meal: meal,
+            quantity: 1.0,
+            unit: "serving",
+            foodGID: nil,
+            customName: name,
+            gramsResolved: 100.0,
+            note: nil,
+            snapEnergyKcal: energyKcal,
+            snapProtein: protein,
+            snapFat: fat,
+            snapSaturatedFat: nil,
+            snapCarbs: carbs,
+            snapFiber: nil,
+            snapSugars: nil,
+            snapSodium: nil,
+            snapCholesterol: nil,
+            brand: nil,
+            fdcId: nil,
+            servingDescription: "1× serving",
+            resolvedToBase: 100.0, // Default to 100g
+            baseUnit: "g",
+            calories: energyKcal,
+            protein: protein ?? 0.0,
+            fat: fat ?? 0.0,
+            carbs: carbs ?? 0.0,
+            nutrientsSnapshot: nutrientsSnapshot
+        ).withDate(date)
+    }
+
+    // MARK: - Builder from new API models (EXISTING - kept for backward compatibility)
 
     public nonisolated static func from(
-        foodCard: FoodMinimalCard,
+        foodCard: FoodCard,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {
@@ -120,7 +254,7 @@ public struct FoodEntryBuilder {
     }
 
     public nonisolated static func from(
-        foodDetails: FoodAuthoritativeDetail,
+        foodDetails: FoodDetails,
         multiplier servingMultiplier: Double,
         at date: Date = .now
     ) -> FoodEntry {
@@ -178,6 +312,28 @@ public struct FoodEntryBuilder {
     }
 
     // MARK: - Helper Functions
+
+    // Helper to extract FDC ID from GID
+    private nonisolated static func extractFdcId(from gid: String) -> Int? {
+        if gid.hasPrefix("fdc:"), let id = Int(gid.dropFirst(4)) {
+            return id
+        }
+        return nil
+    }
+
+    // Helper to format serving description for new Unit enum
+    private nonisolated static func formatServingDescription(quantity: Double, unit: Unit) -> String {
+        switch unit {
+        case .grams:
+            return String(format: "%.2f g", quantity)
+        case .milliliters:
+            return String(format: "%.2f ml", quantity)
+        case .serving:
+            return String(format: "%.2f× serving", quantity)
+        case let .household(label):
+            return String(format: "%.2f× %@", quantity, label)
+        }
+    }
 
     // Helper to calculate nutrient values
     private nonisolated static func calculateNutrientValue(

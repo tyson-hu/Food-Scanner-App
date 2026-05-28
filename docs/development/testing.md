@@ -2,7 +2,7 @@
 
 ## 🧪 Testing Strategy
 
-This document provides comprehensive testing guidelines for the Food Scanner iOS app.
+This document provides comprehensive testing guidelines for the Calry iOS app.
 
 ## 🎯 Testing Philosophy
 
@@ -47,8 +47,8 @@ Tests/
 - **Mock classes**: `Mock*`
 
 ### Test Target Configuration
-- **FoodScannerTests**: Unit tests only (excludes UI test files)
-- **FoodScannerUITests**: UI tests only (includes all UI test files)
+- **CalryTests**: Unit tests only (excludes UI test files)
+- **CalryUITests**: UI tests only (includes all UI test files)
 - **Proper Separation**: UI tests isolated from unit tests to prevent configuration issues
 
 ### Test Plans
@@ -124,9 +124,9 @@ final class MyUITests: BaseUITestCase {
 
 # Or use xcodebuild directly
 xcodebuild test \
-    -scheme "Food Scanner" \
+    -scheme "Calry" \
     -destination "platform=iOS Simulator,name=iPhone 16" \
-    -testPlan "FoodScanner-CI-Offline" \
+    -testPlan "Calry-CI-Offline" \
     SWIFT_STRICT_CONCURRENCY=complete \
     OTHER_SWIFT_FLAGS='-warnings-as-errors'
 ```
@@ -151,14 +151,14 @@ xcodebuild test \
 
 ### Model Testing
 ```swift
-@Test func testFoodMinimalCardInitialization() {
+@Test func testFoodCardInitialization() {
     // Arrange
     let id = "fdc:123456"
     let description = "Apple"
     let nutrients = [FoodNutrient(id: 1008, name: "Energy", amount: 52.0, unit: "kcal")]
     
     // Act
-    let foodCard = FoodMinimalCard(
+    let foodCard = FoodCard(
         id: id,
         description: description,
         nutrients: nutrients
@@ -193,7 +193,7 @@ xcodebuild test \
 @Test func testSearchViewModel() async throws {
     // Arrange
     let mockClient = MockFoodDataClient()
-    let viewModel = AddFoodSearchViewModel(client: mockClient)
+    let viewModel = FoodSearchViewModel(client: mockClient)
     
     // Act
     await viewModel.searchFoods(query: "apple")
@@ -232,7 +232,7 @@ xcodebuild test \
     
     let response = try await client.searchFoods(query: "apple")
     let normalized = service.normalize(response.results.first!)
-    let publicModel = converter.convertToFoodMinimalCard(normalized)
+    let publicModel = converter.convertToFoodCard(normalized)
     
     #expect(publicModel.id != nil)
     #expect(publicModel.description != nil)
@@ -339,7 +339,7 @@ func createMockSearchResult() -> SearchResult {
     // Arrange
     let mockClient = MockFoodDataClient()
     mockClient.shouldThrowError = FoodDataError.networkUnavailable
-    let viewModel = AddFoodSearchViewModel(client: mockClient)
+    let viewModel = FoodSearchViewModel(client: mockClient)
     
     // Act
     await viewModel.searchFoods(query: "apple")
@@ -354,7 +354,7 @@ func createMockSearchResult() -> SearchResult {
 ```swift
 @Test func testInvalidInput() async throws {
     // Arrange
-    let viewModel = AddFoodSearchViewModel()
+    let viewModel = FoodSearchViewModel()
     
     // Act
     await viewModel.searchFoods(query: "")
@@ -376,7 +376,7 @@ func createMockSearchResult() -> SearchResult {
 ### Coverage Measurement
 ```bash
 # Generate coverage report
-xcodebuild test -scheme "Food Scanner" -destination "platform=iOS Simulator,name=iPhone 16" -enableCodeCoverage YES
+xcodebuild test -scheme "Calry" -destination "platform=iOS Simulator,name=iPhone 16" -enableCodeCoverage YES
 
 # View coverage report
 xcrun xccov view DerivedData/Logs/Test/*.xcresult
@@ -385,8 +385,8 @@ xcrun xccov view DerivedData/Logs/Test/*.xcresult
 ## 🔧 Test Configuration
 
 ### Test Plans
-- **FoodScanner.xctestplan**: Full test coverage
-- **FoodScanner-CI-Offline.xctestplan**: CI-optimized offline tests
+- **Calry.xctestplan**: Full test coverage
+- **Calry-CI-Offline.xctestplan**: CI-optimized offline tests
 
 ### Test Environment
 ```swift
@@ -462,4 +462,4 @@ func testWithLogging() {
 }
 ```
 
-This testing guide ensures comprehensive test coverage and reliable testing practices for the Food Scanner app.
+This testing guide ensures comprehensive test coverage and reliable testing practices for the Calry app.

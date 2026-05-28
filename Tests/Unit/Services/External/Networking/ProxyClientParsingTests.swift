@@ -1,12 +1,12 @@
 //
 //  ProxyClientParsingTests.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
 //
 
-@testable import Food_Scanner
+@testable import Calry
 import Foundation
 import Testing
 
@@ -378,13 +378,13 @@ struct ProxyClientParsingTests {
         let errorData = Data("""
         {
             "error": "NOT_FOUND",
-            "id": "gtin:00000096619123456"
+            "id": "0885909950800"
         }
         """.utf8)
 
         let errorResponse = try JSONDecoder().decode(ProxyErrorResponse.self, from: errorData)
         #expect(errorResponse.error == "NOT_FOUND")
-        #expect(errorResponse.id == "gtin:00000096619123456")
+        #expect(errorResponse.id == "0885909950800")
     }
 
     // MARK: - Safe Decoding Tests

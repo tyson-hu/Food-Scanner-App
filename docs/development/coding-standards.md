@@ -2,7 +2,7 @@
 
 ## 📝 Code Style and Standards
 
-This document defines the coding standards and style guidelines for the Food Scanner iOS app.
+This document defines the coding standards and style guidelines for the Calry iOS app.
 
 ## 🎯 General Principles
 
@@ -26,6 +26,7 @@ This document defines the coding standards and style guidelines for the Food Sca
 - **Proper actor boundaries** for thread safety
 - **Use `MainActor.run`** for cross-actor access
 - **Avoid `@unchecked Sendable`** when possible
+- **SwiftData Model Safety**: Never use `nonisolated` computed property setters that modify stored properties in SwiftData models
 
 ## 📋 Naming Conventions
 
@@ -38,7 +39,7 @@ This document defines the coding standards and style guidelines for the Food Sca
 ```swift
 // Classes and Structs
 class FoodDataClient { }
-struct FoodMinimalCard { }
+struct FoodCard { }
 
 // Protocols
 protocol FoodDataClientProtocol { }
@@ -51,7 +52,7 @@ enum RawSource { }
 ### Variables and Functions
 ```swift
 // Variables (camelCase)
-var searchResults: [FoodMinimalCard] = []
+var searchResults: [FoodCard] = []
 var isLoading: Bool = false
 
 // Functions (camelCase)
@@ -69,7 +70,7 @@ let timeoutInterval: TimeInterval = 30.0
 public func searchFoods(query: String) async throws -> FoodSearchResponse
 
 // Internal implementation
-private func processSearchResults(_ results: [SearchResult]) -> [FoodMinimalCard]
+private func processSearchResults(_ results: [SearchResult]) -> [FoodCard]
 
 // File-private
 fileprivate func validateInput(_ input: String) -> Bool
@@ -112,7 +113,7 @@ public struct FoodDataClient: FoodDataClientProtocol {
 ```swift
 // MARK: - Properties
 private let client: FoodDataClient
-private var searchResults: [FoodMinimalCard] = []
+private var searchResults: [FoodCard] = []
 
 // MARK: - Initialization
 init(client: FoodDataClient) {
@@ -175,7 +176,7 @@ struct FoodSearchView: View {
 @Observable
 final class FoodSearchViewModel {
     // MARK: - Published Properties
-    var searchResults: [FoodMinimalCard] = []
+    var searchResults: [FoodCard] = []
     var isLoading: Bool = false
     var errorMessage: String?
     
@@ -405,6 +406,53 @@ func someMethod() async {
     }
 }
 ```
+
+## 🗄️ SwiftData Concurrency Safety
+
+### Computed Property Setters
+SwiftData models are actor-isolated, so computed property setters must respect actor boundaries:
+
+```swift
+// ❌ Incorrect - nonisolated setter bypasses actor isolation
+@Model
+class FoodRef {
+    public var householdUnitsData: Data?
+    
+    public nonisolated var householdUnits: [HouseholdUnit]? {
+        get { /* decode logic */ }
+        set {
+            householdUnitsData = newValue.flatMap { try? JSONEncoder().encode($0) }
+            updatedAt = .now  // ❌ Direct modification of stored property
+        }
+    }
+}
+
+// ✅ Correct - Actor-isolated setter ensures thread safety
+@Model
+class FoodRef {
+    public var householdUnitsData: Data?
+    
+    public var householdUnits: [HouseholdUnit]? {
+        get { /* decode logic */ }
+        set {
+            householdUnitsData = newValue.flatMap { try? JSONEncoder().encode($0) }
+            updatedAt = .now  // ✅ Safe modification within actor context
+        }
+    }
+}
+```
+
+### Why Actor Isolation Matters
+- **Data Race Prevention**: Ensures all property modifications happen within the SwiftData model's actor context
+- **Thread Safety**: Prevents concurrent access issues in multi-threaded environments
+- **Swift 6 Compliance**: Required for strict concurrency checking
+- **Model Integrity**: Maintains data consistency across concurrent operations
+
+### Best Practices
+- **Never use `nonisolated`** on computed property setters that modify stored properties
+- **Use actor-isolated setters** for all SwiftData model properties
+- **Test concurrency scenarios** to ensure thread safety
+- **Document actor boundaries** in complex models
 
 ### Cache Service Integration
 For `@MainActor` cache services:
@@ -638,4 +686,4 @@ let array = [String]() // For ordered collections
 let filteredResults = results.lazy.filter { $0.isValid }
 ```
 
-This coding standards guide ensures consistent, maintainable, and high-quality code across the Food Scanner app.
+This coding standards guide ensures consistent, maintainable, and high-quality code across the Calry app.

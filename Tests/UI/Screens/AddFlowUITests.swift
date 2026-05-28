@@ -1,6 +1,6 @@
 //
 //  AddFlowUITests.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -10,7 +10,7 @@
 
 final class AddFlowUITests: BaseUITestCase {
     @MainActor
-    func test_AddFood_search_detail_log_updates_today() {
+    func test_AddFood_search_detail_log_updates_today() throws {
         // Go to Add tab
         let addTab = app.tabBars.buttons["Add"]
         XCTAssertTrue(addTab.waitForExistence(timeout: 3), "Add tab not found")

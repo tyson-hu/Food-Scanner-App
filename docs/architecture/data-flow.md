@@ -2,7 +2,7 @@
 
 ## 📊 High-Level Data Flow
 
-This document provides a high-level overview of how data flows through the Food Scanner app system.
+This document provides a high-level overview of how data flows through the Calry app system.
 
 ## 🎯 System Data Flow Diagram
 
@@ -242,4 +242,4 @@ enum ViewState {
 - **Memory usage** tracking
 - **Network performance** monitoring
 
-This data flow overview provides a comprehensive understanding of how data moves through the Food Scanner app system, from user input to data persistence and display.
+This data flow overview provides a comprehensive understanding of how data moves through the Calry app system, from user input to data persistence and display.

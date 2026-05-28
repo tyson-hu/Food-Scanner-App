@@ -157,7 +157,7 @@ NormalizedFood {
 
 ### 4. **Public Model**
 ```swift
-FoodMinimalCard {
+FoodCard {
     id: "off:0123456789012",
     description: "Coca-Cola",
     brand: "Coca-Cola",

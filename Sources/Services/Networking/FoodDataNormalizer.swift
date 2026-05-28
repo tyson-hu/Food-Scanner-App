@@ -1,6 +1,6 @@
 //
 //  FoodDataNormalizer.swift
-//  Food Scanner
+//  Calry
 //
 //  Created by Tyson Hu on 10/02/25.
 //  Copyright © 2025 Tyson Hu. All rights reserved.
@@ -36,8 +36,8 @@ public struct FoodDataNormalizer {
 
                 // Create unique GID for each food item
                 let foodGid = "fdc:\(fdcId)"
-                // Convert FdcSearchItem to FdcFood for normalization
-                let fdcFoodData = FdcFood(
+                // Convert FdcSearchItem to FdcProduct for normalization
+                let fdcProductData = FdcProduct(
                     dataType: fdcFood.dataType.flatMap { FdcDataType(rawValue: $0) },
                     fdcId: fdcFood.fdcId,
                     description: fdcFood.description,
@@ -65,7 +65,7 @@ public struct FoodDataNormalizer {
                     source: envelope.source,
                     barcode: fdcFood.gtinUpc,
                     fetchedAt: envelope.fetchedAt,
-                    raw: fdcFoodData
+                    raw: fdcProductData
                 )
                 normalizedFoods.append(normalizationService.normalizeFDC(fdcEnvelope))
             }
@@ -106,8 +106,8 @@ public struct FoodDataNormalizer {
 
             // Create unique GID for each food item
             let foodGid = "fdc:\(fdcId)"
-            // Convert FdcSearchItem to FdcFood for normalization
-            let fdcFoodData = FdcFood(
+            // Convert FdcSearchItem to FdcProduct for normalization
+            let fdcProductData = FdcProduct(
                 dataType: fdcFood.dataType.flatMap { FdcDataType(rawValue: $0) },
                 fdcId: fdcFood.fdcId,
                 description: fdcFood.description,
@@ -136,7 +136,7 @@ public struct FoodDataNormalizer {
                 source: .fdc,
                 barcode: fdcFood.gtinUpc,
                 fetchedAt: ISO8601DateFormatter().string(from: Date()),
-                raw: fdcFoodData
+                raw: fdcProductData
             )
             normalizedFoods.append(normalizationService.normalizeFDC(fdcEnvelope))
         }

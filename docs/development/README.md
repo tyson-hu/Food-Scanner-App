@@ -95,7 +95,7 @@ source .env.ci
    - Check the main-actor isolation guide
 
 4. **"Tests fail locally but pass in CI"**
-   - Ensure you're using the same test plan: `FoodScanner-CI-Offline`
+   - Ensure you're using the same test plan: `Calry-CI-Offline`
    - Check environment variables are set correctly
    - Verify simulator is properly configured
 
@@ -116,7 +116,7 @@ source .env.ci
 - `ENABLE_PREVIEWS=NO`
 
 ### Test Configuration
-- Test Plan: `FoodScanner-CI-Offline`
+- Test Plan: `Calry-CI-Offline`
 - Destination: iPhone 16 simulator
 - Parallel testing: Disabled
 - UI tests: Skipped

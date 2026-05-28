@@ -2,7 +2,7 @@
 
 ## 🧠 MVVM Implementation Details
 
-This document explains how the MVVM (Model-View-ViewModel) pattern is implemented in the Food Scanner app.
+This document explains how the MVVM (Model-View-ViewModel) pattern is implemented in the Calry app.
 
 ## 🎯 MVVM Overview
 
@@ -43,7 +43,7 @@ MVVM separates the app into three distinct layers:
 
 ## 🏗️ Implementation Details
 
-### 📱 **View Layer** (`Sources/UI/`)
+### 📱 **View Layer** (`Sources/Views/`)
 
 **Responsibility**: User interface and user interaction
 
@@ -56,7 +56,7 @@ MVVM separates the app into three distinct layers:
 **Example Structure**:
 ```swift
 struct AddFoodSearchView: View {
-    @State private var viewModel = AddFoodSearchViewModel()
+    @State private var viewModel = FoodSearchViewModel()
     
     var body: some View {
         // UI implementation
@@ -83,8 +83,8 @@ struct AddFoodSearchView: View {
 ```swift
 @MainActor
 @Observable
-final class AddFoodSearchViewModel {
-    var searchResults: [FoodMinimalCard] = []
+final class FoodSearchViewModel {
+    var searchResults: [FoodCard] = []
     var isLoading: Bool = false
     var errorMessage: String?
     
@@ -97,7 +97,7 @@ final class AddFoodSearchViewModel {
 ```
 
 **Key Files**:
-- `Sources/ViewModels/AddFood/AddFoodSearchViewModel.swift`
+- `Sources/ViewModels/AddFood/FoodSearchViewModel.swift`
 - `Sources/ViewModels/Scanner/BarcodeScannerViewModel.swift`
 - `Sources/ViewModels/Today/TodayViewModel.swift`
 
@@ -113,7 +113,7 @@ final class AddFoodSearchViewModel {
 
 **Example Structure**:
 ```swift
-struct FoodMinimalCard: Sendable, Codable, Equatable {
+struct FoodCard: Sendable, Codable, Equatable {
     let id: String
     let description: String
     let brand: String?
@@ -195,7 +195,7 @@ class ViewModel {
 ```swift
 @Test func testSearchFunctionality() async {
     let mockClient = MockFoodDataClient()
-    let viewModel = AddFoodSearchViewModel(client: mockClient)
+    let viewModel = FoodSearchViewModel(client: mockClient)
     
     await viewModel.searchFoods(query: "apple")
     
@@ -292,4 +292,4 @@ struct View: SwiftUI.View {
 }
 ```
 
-This MVVM implementation provides a solid foundation for the Food Scanner app with clear separation of concerns, excellent testability, and seamless SwiftUI integration.
+This MVVM implementation provides a solid foundation for the Calry app with clear separation of concerns, excellent testability, and seamless SwiftUI integration.

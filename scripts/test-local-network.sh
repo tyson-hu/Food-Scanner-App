@@ -22,8 +22,8 @@ echo ""
 
 # Run tests with network tests enabled
 xcodebuild \
-    -scheme "Food Scanner" \
-    -testPlan "FoodScanner" \
+    -scheme "Calry" \
+    -testPlan "Calry" \
     -destination "id=$SIMULATOR_ID" \
     -destination-timeout 180 \
     -derivedDataPath ./DerivedData \
@@ -34,7 +34,7 @@ xcodebuild \
     -skipPackagePluginValidation \
     -skipMacroValidation \
     -disableAutomaticPackageResolution \
-    -skip-testing:FoodScannerUITests \
+    -skip-testing:CalryUITests \
     -parallel-testing-enabled NO \
     -maximum-concurrent-test-simulator-destinations 1 \
     test

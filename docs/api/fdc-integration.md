@@ -64,7 +64,7 @@ GET /barcode/{barcode}
 
 ### FDC Raw Data Structure
 ```swift
-struct FdcFood: Codable {
+struct FdcProduct: Codable {
     let fdcId: Int?
     let description: String?
     let dataType: FdcDataType?
@@ -75,7 +75,7 @@ struct FdcFood: Codable {
     let servingSizeUnit: String?
     let householdServingFullText: String?
     let nutrients: [FdcNutrient]?
-    let foodPortions: [FdcFoodPortion]?
+    let foodPortions: [FdcProductPortion]?
     let brandedFoodCategory: String?
     let gtinUpc: String?
     let publicationDate: String?
@@ -128,7 +128,7 @@ struct FdcNutrient: Codable {
 FdcEnvelope {
     gid: "fdc:123456",
     source: .fdc,
-    raw: FdcFood { ... }
+    raw: FdcProduct { ... }
 }
 ```
 
@@ -150,7 +150,7 @@ NormalizedFood {
 
 ### 4. **Public Model**
 ```swift
-FoodMinimalCard {
+FoodCard {
     id: "fdc:123456",
     description: "Apple, raw, with skin",
     nutrients: [
@@ -197,7 +197,7 @@ Different FDC data types require different processing:
 FDC provides multiple serving size options:
 
 ```swift
-struct FdcFoodPortion: Codable {
+struct FdcProductPortion: Codable {
     let amount: Double?
     let gramWeight: Double?
     let portionDescription: String?
@@ -213,13 +213,13 @@ struct FdcFoodPortion: Codable {
 func normalize(_ envelope: FdcEnvelope) -> NormalizedFood
 
 // Extract serving information
-private func extractFDCServing(_ data: FdcFood) -> NormalizedServing?
+private func extractFDCServing(_ data: FdcProduct) -> NormalizedServing?
 
 // Extract portions
-private func extractFDCPortions(_ data: FdcFood) -> [NormalizedPortion]
+private func extractFDCPortions(_ data: FdcProduct) -> [NormalizedPortion]
 
 // Normalize nutrients
-private func normalizeFDCNutrients(_ data: FdcFood) -> [NormalizedNutrient]
+private func normalizeFDCNutrients(_ data: FdcProduct) -> [NormalizedNutrient]
 
 // Determine base unit
 private func determineBaseUnit(from servingSizeUnit: String?, category: String?) -> BaseUnit

@@ -2,7 +2,7 @@
 
 ## 🚨 Common Issues
 
-This document provides solutions for common issues encountered during development and CI/CD of the Food Scanner app.
+This document provides solutions for common issues encountered during development and CI/CD of the Calry app.
 
 ## 🔧 Local CI Environment Issues
 
@@ -79,7 +79,7 @@ echo $NETWORK_TESTING_DISABLED
 rm -rf ~/Library/Developer/Xcode/DerivedData
 
 # Clean build folder
-xcodebuild clean -scheme "Food Scanner"
+xcodebuild clean -scheme "Calry"
 
 # Reset package dependencies
 rm -rf .build
@@ -102,7 +102,7 @@ xcodebuild -resolvePackageDependencies
 xcrun simctl list devices
 
 # Create new simulator
-xcrun simctl create "Food Scanner Test" "iPhone 16" "iOS 26.0"
+xcrun simctl create "Calry Test" "iPhone 16" "iOS 26.0"
 
 # Reset simulator
 xcrun simctl erase all
@@ -122,7 +122,7 @@ rm -rf .build
 xcodebuild -resolvePackageDependencies
 
 # Update packages
-xcodebuild -scheme "Food Scanner" -resolvePackageDependencies
+xcodebuild -scheme "Calry" -resolvePackageDependencies
 ```
 
 ## 🧪 Test Issues
@@ -395,7 +395,7 @@ xcrun simctl list devices
 ### Command Line Tools
 ```bash
 # View device logs
-xcrun simctl spawn booted log stream --predicate 'process == "Food Scanner"'
+xcrun simctl spawn booted log stream --predicate 'process == "Calry"'
 
 # Check simulator status
 xcrun simctl list devices
@@ -423,12 +423,12 @@ xcodebuild -version
 **Solutions**:
 ```bash
 # Check project configuration
-# UI test files should be in FoodScannerUITests target, not FoodScannerTests
+# UI test files should be in CalryUITests target, not CalryTests
 
 # Verify test target membership in Xcode:
 # 1. Select UI test files in Tests/UI/
 # 2. Check File Inspector
-# 3. Ensure they're in FoodScannerUITests target only
+# 3. Ensure they're in CalryUITests target only
 ```
 
 #### "Duplicate Build File Warnings"
@@ -438,7 +438,7 @@ xcodebuild -version
 ```bash
 # Check project.pbxproj for duplicate file references
 # Remove files from incorrect targets
-# Ensure UI tests are only in FoodScannerUITests target
+# Ensure UI tests are only in CalryUITests target
 ```
 
 #### "AppIntents metadata extraction warning"
@@ -548,7 +548,7 @@ func testMethod() {
 
 # Or manually with xcodebuild
 xcodebuild test \
-    -scheme "Food Scanner" \
+    -scheme "Calry" \
     -destination "platform=iOS Simulator,name=iPhone 16" \
     SWIFT_STRICT_CONCURRENCY=complete \
     OTHER_SWIFT_FLAGS='-warnings-as-errors'
@@ -571,4 +571,4 @@ xcodebuild test \
 - **Xcode documentation**
 - **Swift community** resources
 
-This troubleshooting guide provides solutions for common issues encountered during Food Scanner app development and deployment.
+This troubleshooting guide provides solutions for common issues encountered during Calry app development and deployment.

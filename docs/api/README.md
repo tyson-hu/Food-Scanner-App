@@ -16,14 +16,12 @@ api/
 
 ## 🌐 Multi-Source API Integration
 
-The Food Scanner app integrates with multiple data sources through a unified proxy API to provide comprehensive food and supplement information.
+The Calry app integrates with multiple data sources through a unified proxy API to provide comprehensive food and supplement information.
 
 ### Supported Data Sources
 
 - **🇺🇸 FDC (Food Data Central)**: USDA's comprehensive food database
 - **🌍 OFF (Open Food Facts)**: Community-driven food database
-- **💊 DSLD (Dietary Supplement Label Database)**: NIH's supplement database (future)
-- **🧪 DSID (Dietary Supplement Ingredient Database)**: Future support planned
 
 ### Barcode Lookup Architecture
 
@@ -38,9 +36,7 @@ The app uses a union type system for barcode lookups that preserves data source 
 
 All food items are identified using GIDs with source prefixes:
 - `fdc:12345` - FDC food item
-- `off:67890` - OFF food item  
-- `dsld:11111` - DSLD supplement item (future)
-- `dsid:22222` - DSID supplement ingredient (future)
+- `off:67890` - OFF food item
 
 ## 🎯 Data Journey Overview
 
@@ -125,8 +121,8 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 ### Data Models
 - **Envelope<T>**: Generic wrapper for raw data
 - **NormalizedFood**: Canonical internal model
-- **FoodMinimalCard**: Public search result model
-- **FoodAuthoritativeDetail**: Public detail model
+- **FoodCard**: Public search result model (renamed from FoodMinimalCard)
+- **FoodDetails**: Public detail model (renamed from FoodAuthoritativeDetail)
 
 ### Processing Pipeline
 1. **Fetch**: Raw data from proxy service
@@ -157,4 +153,4 @@ Raw Proxy Data → Envelope Wrapping → Source Detection → Normalization → 
 5. **Track data sources** for debugging
 6. **Validate GID format** before processing
 
-This documentation provides everything needed to understand and work with the Food Scanner API integration system.
+This documentation provides everything needed to understand and work with the Calry API integration system.

@@ -2,7 +2,7 @@
 
 ## 🔍 Debugging Techniques
 
-This document provides comprehensive debugging techniques and tools for the Food Scanner iOS app.
+This document provides comprehensive debugging techniques and tools for the Calry iOS app.
 
 ## 🎯 Debugging Strategy
 
@@ -131,7 +131,7 @@ final class DebugViewModel {
         }
     }
     
-    var searchResults: [FoodMinimalCard] = [] {
+    var searchResults: [FoodCard] = [] {
         didSet {
             print("📋 Results updated: \(searchResults.count) items")
         }
@@ -371,7 +371,7 @@ func debugPerformanceIssue() {
 ### Console Commands
 ```bash
 # View device logs
-xcrun simctl spawn booted log stream --predicate 'process == "Food Scanner"'
+xcrun simctl spawn booted log stream --predicate 'process == "Calry"'
 
 # Check simulator status
 xcrun simctl list devices
@@ -476,4 +476,4 @@ func debugBarcodeLookup(barcode: String) async {
 - **Invalid GID**: GID format doesn't match expected pattern (`fdc:` or `off:`)
 - **Decoding Errors**: JSON structure doesn't match Swift model
 
-This debugging guide provides comprehensive techniques and tools for effectively debugging issues in the Food Scanner app.
+This debugging guide provides comprehensive techniques and tools for effectively debugging issues in the Calry app.
